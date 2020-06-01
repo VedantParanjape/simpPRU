@@ -15,7 +15,8 @@ GSoC 2020 project under BeagleBoard.org
 ### Milestone 1
 * [ ] int data type
 * [ ] bool data type
-* [ ] binary operators
+* [ ] arithmetic operators
+* [ ] relational operators
 
 ### Milestone 2
 * [ ] Unary operators

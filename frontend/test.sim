@@ -1,0 +1,9 @@
+bool abv := false;
+a>b;
+3<b;
+3<=5;
+3>=2;
+3!=4;
+4=4;
+
+/* test comment*/
