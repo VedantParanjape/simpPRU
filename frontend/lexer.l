@@ -11,7 +11,7 @@
 
 whitespace           (\t|" "|\r)
 newline              (\n)
-integer              (-?[0-9]+)
+integer              ([+-]?[0-9]+)
 bool                 ("true"|"false")
 datatype             ("int"|"bool")
 binary_operators     ("+"|"-"|"*"|"/")
