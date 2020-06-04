@@ -25,14 +25,14 @@ terminal             (";")
 
 {whitespace}            {;}
 {newline}               {linenumber++;}
-{integer}               {printf("%s\n", yytext); yylval.integer = atoi(yytext); return _integer;                        }
-{bool}                  {printf("%s\n", yytext); yylval.integer = atoi(yytext); return _boolean;                        }
-{datatype}              {printf("%s\n", yytext); yylval.character_token = strdup(yytext); return _datatype;             }
-{binary_operators}      {printf("%s\n", yytext); yylval.character_token = strdup(yytext); return _binary_operators;     }
-{relational_operators}  {printf("%s\n", yytext); yylval.character_token = strdup(yytext); return _relational_operators; }
-{assignment_operator}   {printf("%s\n", yytext); yylval.character_token = strdup(yytext); return _relational_operators; }
-{identifier}            {printf("%s\n", yytext); yylval.character_token = strdup(yytext); return _identifier;           }
-{terminal}              {printf("%s\n", yytext); yylval.character_token = strdup(yytext); return _terminal;             }
+{integer}               {/*printf("%s\n", yytext);*/ yylval.integer = atoi(yytext); return _integer;                        }
+{bool}                  {/*printf("%s\n", yytext);*/ yylval.integer = atoi(yytext); return _boolean;                        }
+{datatype}              {/*printf("%s\n", yytext);*/ yylval.character_token = strdup(yytext); return _datatype;             }
+{binary_operators}      {/*printf("%s\n", yytext);*/ yylval.character_token = strdup(yytext); return _binary_operators;     }
+{relational_operators}  {/*printf("%s\n", yytext);*/ yylval.character_token = strdup(yytext); return _relational_operators; }
+{assignment_operator}   {/*printf("%s\n", yytext);*/ yylval.character_token = strdup(yytext); return _assignment_operator;  }
+{identifier}            {/*printf("%s\n", yytext);*/ yylval.character_token = strdup(yytext); return _identifier;           }
+{terminal}              {/*printf("%s\n", yytext);*/ yylval.character_token = strdup(yytext); return _terminal;             }
 
 "/*"            {BEGIN(comment);                              }
 <comment>"*/"   {BEGIN(INITIAL);                              }

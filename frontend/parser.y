@@ -5,14 +5,15 @@
 void yyerror(char* s);
 extern int yylex();
 extern int yyparse();
+extern FILE* yyin;
 %}
 
 %union{
     int integer;
     int boolean;
-    const char* character_token
+    char* character_token
 }
-// %start line
+%start line
 
 %token <integer> _integer
 %token <boolean> _boolean
@@ -23,63 +24,66 @@ extern int yyparse();
 %token <character_token> _identifier
 %token <character_token> _terminal
 
-%type <integer> expression term
+%type <integer> line expression term
 %type <character_token> assignment
 %%
 
-// line: 
-//     assignment ';' {
-//         ;
-//     }
-//     ;
+line: 
+    assignment ';' {
+        ;
+    }
+    | line assignment {
+
+    }
+    ;
 
 assignment:
-    _identifier ':''=' expression {
-        printf("expression: ");
+    _datatype _identifier _assignment_operator expression _terminal{
+        printf("assignment\n ");
     }
     ;
 
 expression
-    : term {
+    : term{
         printf("term: ");
     }
-    | expression '+' term {
+    | expression _binary_operators term{
         printf("expression + term: ");
     }
-    | expression '-' term {
+    | expression '-' term{
         printf("expression - term: ");
     }
-    | expression '*' term {
+    | expression '*' term{
         printf("expression * term: ");
     }
-    | expression '/' term {
+    | expression '/' term{
         printf("expression / term: ");
     }
-    | expression '>' term {
+    | expression '>' term{
         printf("expression > term: ");
     }
-    | expression '>''=' term {
+    | expression '>''=' term{
         printf("expression >= term: ");
     }
-    | expression '<' term {
+    | expression '<' term{
         printf("expression < term: ");
     }
-    | expression '<''=' term {
+    | expression '<''=' term{
         printf("expression <= term: ");
     }
-    | expression '=' term {
+    | expression '=' term{
         printf("expression = term: ");
     }
-    | expression '!''=' term {
+    | expression '!''=' term{
         printf("expression != term: ");
     }
     ;
 
 term
-    : _integer {
+    : _integer{
         printf("number: %d\n", $1);
     }
-    | _identifier {
+    | _identifier{
         printf("identifier: %s\n", $1);
     }
     ;
@@ -87,10 +91,10 @@ term
 
 int main()
 {
-    while(1)
-    {
-        yyparse();
-    }
+    /* FILE* fhandle = fopen("test.sim", "r"); */
+    /* yyin = fhandle; */
+
+    while(yyparse());
 }
 
 void yyerror (char *s) 
