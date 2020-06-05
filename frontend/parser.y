@@ -11,88 +11,69 @@ extern FILE* yyin;
 %union{
     int integer;
     int boolean;
-    char* character_token
+    char* identifier;
 }
-%start line
 
-%token <integer> _integer
-%token <boolean> _boolean
-%token <character_token> _datatype
-%token <character_token> _binary_operators
-%token <character_token> _relational_operators
-%token <character_token> _assignment_operator
-%token <character_token> _identifier
-%token <character_token> _terminal
+%left OPR_ADD OPR_SUB
+%left OPR_MUL OPR_DIV
 
-%type <integer> line expression term
-%type <character_token> assignment
+%left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_LE OPR_GE
+
+%token OPR_ASSIGNMENT
+
+%token SEMICOLON
+
+%token DT_INT
+%token DT_BOOL
+
+%token <integer> CONST_INT
+%token <boolean> CONST_BOOL
+
+%token <identifier> IDENTIFIER
+
+%type <integer> declaration
 %%
 
-line: 
-    assignment ';' {
-        ;
-    }
-    | line assignment {
-
-    }
-    ;
-
-assignment:
-    _datatype _identifier _assignment_operator expression _terminal{
-        printf("assignment\n ");
-    }
-    ;
-
-expression
-    : term{
-        printf("term: ");
-    }
-    | expression _binary_operators term{
-        printf("expression + term: ");
-    }
-    | expression '-' term{
-        printf("expression - term: ");
-    }
-    | expression '*' term{
-        printf("expression * term: ");
-    }
-    | expression '/' term{
-        printf("expression / term: ");
-    }
-    | expression '>' term{
-        printf("expression > term: ");
-    }
-    | expression '>''=' term{
-        printf("expression >= term: ");
-    }
-    | expression '<' term{
-        printf("expression < term: ");
-    }
-    | expression '<''=' term{
-        printf("expression <= term: ");
-    }
-    | expression '=' term{
-        printf("expression = term: ");
-    }
-    | expression '!''=' term{
-        printf("expression != term: ");
-    }
-    ;
-
-term
-    : _integer{
-        printf("number: %d\n", $1);
-    }
-    | _identifier{
-        printf("identifier: %s\n", $1);
-    }
-    ;
+declaration: DT_INT IDENTIFIER SEMICOLON { 
+               printf ("int %s ;\n", $2);
+               free($2);
+           }
+           /* | DT_INT IDENTIFIER OPR_ASSIGNMENT expression SEMICOLON {
+               printf ("int %s := exp ;\n", $2);
+               free($2);
+           }  */
+           | DT_BOOL IDENTIFIER SEMICOLON {
+               printf ("bool %s ;\n", $2);
+               free($2);
+           }
+           /* | DT_BOOL IDENTIFIER OPR_ASSIGNMENT expression SEMICOLON {
+               printf ("bool %s := exp ;\n", $2);
+               free($2);
+           } */
+           ;
+/* 
+expression: CONST_INT {
+              printf ("%d\n", $1);
+          }
+          | expression OPR_ADD CONST_INT {
+              printf ("%d\n", $1 + $3);
+          } 
+          | expression OPR_SUB CONST_INT {
+              printf ("%d\n", $1 - $3);
+          } 
+          | expression OPR_MUL CONST_INT {
+              printf ("%d\n", $1 * $3);
+          } 
+          | expression OPR_DIV CONST_INT {
+              printf ("%d\n", $1 / $3);
+          } 
+          ; */
 %%
 
 int main()
 {
-    /* FILE* fhandle = fopen("test.sim", "r"); */
-    /* yyin = fhandle; */
+    FILE* fhandle = fopen("test.sim", "r");
+    yyin = fhandle;
 
     while(yyparse());
 }
