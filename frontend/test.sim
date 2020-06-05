@@ -1,3 +1,9 @@
 int a;
 int abv;
 bool test;
+int abc := -32;
+int af := -32 -3;
+int af := 32+ 3 +45;
+int af := 32 *3;
+int af := 33/3;
+/* int abc := test */
