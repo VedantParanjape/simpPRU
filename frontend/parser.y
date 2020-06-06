@@ -6,6 +6,7 @@ void yyerror(const char* s);
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
+
 %}
 
 %define parse.error verbose
@@ -21,7 +22,7 @@ extern FILE* yyin;
 %left OPR_MUL OPR_DIV
 %left NEG
 
-%left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_LE OPR_GE
+%left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_GE OPR_LE
 
 %left OPR_BW_NOT OPR_BW_AND OPR_BW_OR
 
@@ -38,7 +39,7 @@ extern FILE* yyin;
 %token <identifier> IDENTIFIER
 
 %type <integer> arithmetic_expression
-%type <boolean> boolean_expression
+%type <boolean> boolean_expression relational_expression 
 %%
 
 declarations: declarations declaration
@@ -58,6 +59,10 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                free($2);
            }
            | DT_BOOL IDENTIFIER OPR_ASSIGNMENT boolean_expression SEMICOLON {
+               printf ("%s := %d\n", $2, $4);
+               free($2);
+           }
+           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT relational_expression SEMICOLON {
                printf ("%s := %d\n", $2, $4);
                free($2);
            }
@@ -94,6 +99,29 @@ boolean_expression: CONST_BOOL {
           } 
           | boolean_expression OPR_BW_OR boolean_expression {
               $$ = $1 | $3;
+          }
+          ;
+
+relational_expression: CONST_INT {
+              $$ = $1 ? 1 : 0; 
+          }
+          | CONST_INT OPR_GT CONST_INT {
+              $$ = $1 > $3;
+          }
+          | CONST_INT OPR_LT CONST_INT {
+              $$ = $1 < $3;
+          }
+          | CONST_INT OPR_EQ CONST_INT {
+              $$ = $1 == $3;
+          }
+          | CONST_INT OPR_NE CONST_INT {
+              $$ = $1 != $3;
+          }
+          | CONST_INT OPR_GE CONST_INT {
+              $$ = $1 >= $3;
+          }
+          | CONST_INT OPR_LE CONST_INT {
+              $$ = $1 <= $3;
           }
           ;
 %%

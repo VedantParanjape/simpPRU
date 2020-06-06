@@ -3,4 +3,5 @@ int abv;
 bool test := ~true & true & true;
 int af := 32+ 3*3/3;
 int abc:= -3 - 3-9;
+bool a:= 1!=1;
 /* int abc := test */
