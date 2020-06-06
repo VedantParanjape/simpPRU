@@ -137,4 +137,5 @@ int main()
 void yyerror (const char *s) 
 {
     fprintf (stderr, "error: %s\n", s);
+    exit(0);
 } 
