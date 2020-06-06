@@ -1,9 +1,6 @@
 int a;
 int abv;
-bool test;
-int abc := -32;
-int af := -32 -3;
-int af := 32+ 3 +45;
-int af := 32 *3;
-int af := 33/3;
+bool test := ~true & true & true;
+int af := 32+ 3*3/3;
+int abc:= -3 - 3-9;
 /* int abc := test */

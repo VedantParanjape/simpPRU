@@ -19,8 +19,11 @@ extern FILE* yyin;
 
 %left OPR_ADD OPR_SUB
 %left OPR_MUL OPR_DIV
+%left NEG
 
 %left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_LE OPR_GE
+
+%left OPR_BW_NOT OPR_BW_AND OPR_BW_OR
 
 %token OPR_ASSIGNMENT
 
@@ -35,7 +38,7 @@ extern FILE* yyin;
 %token <identifier> IDENTIFIER
 
 %type <integer> arithmetic_expression
-/* %type <boolean> boolean_expression */
+%type <boolean> boolean_expression
 %%
 
 declarations: declarations declaration
@@ -46,44 +49,53 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                printf ("int %s ;\n", $2);
                free($2);
            }
-           | DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expressions SEMICOLON {
-               printf ("%s := ", $2);
+           | DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+               printf ("%s := %d\n", $2, $4);
                free($2);
            } 
            | DT_BOOL IDENTIFIER SEMICOLON {
                printf ("bool %s ;\n", $2);
                free($2);
            }
-           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT arithmetic_expressions SEMICOLON {
-               printf ("%s := ", $2);
+           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT boolean_expression SEMICOLON {
+               printf ("%s := %d\n", $2, $4);
                free($2);
            }
            ;
 
-arithmetic_expressions: arithmetic_expressions arithmetic_expression
-                      | arithmetic_expression
-                      ;
-
 arithmetic_expression: CONST_INT {
-              printf ("%d\n", $1);
+              $$ = $1;
           }
-          | arithmetic_expression OPR_ADD CONST_INT {
-              printf ("%d\n", $1 + $3);
+          | arithmetic_expression OPR_ADD arithmetic_expression {
+              $$ = $1 + $3;
           } 
-          | arithmetic_expression OPR_SUB CONST_INT {
-              printf ("%d\n", $1 - $3);
+          | arithmetic_expression OPR_SUB arithmetic_expression {
+              $$ = $1 - $3;
           } 
-          | arithmetic_expression OPR_MUL CONST_INT {
-              printf ("%d\n", $1 * $3);
+          | arithmetic_expression OPR_MUL arithmetic_expression {
+              $$ = $1 * $3;
           } 
-          | arithmetic_expression OPR_DIV CONST_INT {
-              printf ("%d\n", $1 / $3);
+          | arithmetic_expression OPR_DIV arithmetic_expression {
+              $$ = $1 / $3;
+          }
+          | OPR_SUB arithmetic_expression %prec NEG {
+              $$ = -$2;
           } 
           ;
-/* 
+
 boolean_expression: CONST_BOOL {
-              printf ("%d\n", $1);  
-          } */
+              $$ = $1;  
+          }
+          | OPR_BW_NOT boolean_expression {
+              $$ = $2 ? 0 : 1;
+          }
+          | boolean_expression OPR_BW_AND boolean_expression {
+              $$ = $1 & $3;
+          } 
+          | boolean_expression OPR_BW_OR boolean_expression {
+              $$ = $1 | $3;
+          }
+          ;
 %%
 
 int main()

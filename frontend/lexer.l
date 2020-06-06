@@ -13,11 +13,12 @@
 
 whitespace           (\t|" "|\r)
 newline              (\n)
-integer              ([-]?[0-9]+)
+integer              ([0-9]+)
 bool                 ("true"|"false")
 datatype             ("int"|"bool")
 arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
+unary_operators      ("~"|"&"|"|")
 assignment_operator  ([:][=])
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
@@ -103,6 +104,21 @@ terminal             ([;])
   else if (!strcmp(yytext, "!="))
   {
     return OPR_NE;
+  }
+}
+
+{unary_operators}       {
+  if (!strcmp(yytext, "~"))
+  {
+    return OPR_BW_NOT;
+  }
+  else if (!strcmp(yytext, "&"))
+  {
+    return OPR_BW_AND;
+  }
+  else if (!strcmp(yytext, "|"))
+  {
+    return OPR_BW_OR;
   }
 }
 
