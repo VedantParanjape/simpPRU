@@ -18,6 +18,7 @@ extern FILE* yyin;
     char* identifier;
 }
 
+
 %left OPR_ADD OPR_SUB
 %left OPR_MUL OPR_DIV
 %left NEG
@@ -25,6 +26,8 @@ extern FILE* yyin;
 %left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_GE OPR_LE
 
 %left OPR_BW_NOT OPR_BW_AND OPR_BW_OR
+
+%left OPR_LGL_NOT OPR_LGL_AND OPR_LGL_OR
 
 %token OPR_ASSIGNMENT
 
@@ -39,7 +42,7 @@ extern FILE* yyin;
 %token <identifier> IDENTIFIER
 
 %type <integer> arithmetic_expression
-%type <boolean> boolean_expression relational_expression 
+%type <boolean> boolean_expression relational_expression logical_expression boolean_result
 %%
 
 declarations: declarations declaration
@@ -63,6 +66,10 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                free($2);
            }
            | DT_BOOL IDENTIFIER OPR_ASSIGNMENT relational_expression SEMICOLON {
+               printf ("%s := %d\n", $2, $4);
+               free($2);
+           }
+           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT logical_expression SEMICOLON {
                printf ("%s := %d\n", $2, $4);
                free($2);
            }
@@ -102,26 +109,41 @@ boolean_expression: CONST_BOOL {
           }
           ;
 
-relational_expression: CONST_INT {
+relational_expression: arithmetic_expression {
               $$ = $1 ? 1 : 0; 
           }
-          | CONST_INT OPR_GT CONST_INT {
+          | arithmetic_expression OPR_GT arithmetic_expression {
               $$ = $1 > $3;
           }
-          | CONST_INT OPR_LT CONST_INT {
+          | arithmetic_expression OPR_LT arithmetic_expression {
               $$ = $1 < $3;
           }
-          | CONST_INT OPR_EQ CONST_INT {
+          | arithmetic_expression OPR_EQ arithmetic_expression {
               $$ = $1 == $3;
           }
-          | CONST_INT OPR_NE CONST_INT {
+          | arithmetic_expression OPR_NE arithmetic_expression {
               $$ = $1 != $3;
           }
-          | CONST_INT OPR_GE CONST_INT {
+          | arithmetic_expression OPR_GE arithmetic_expression {
               $$ = $1 >= $3;
           }
-          | CONST_INT OPR_LE CONST_INT {
+          | arithmetic_expression OPR_LE arithmetic_expression {
               $$ = $1 <= $3;
+          }
+          ;
+
+boolean_result: boolean_expression 
+              | relational_expression
+              ;
+
+logical_expression: OPR_LGL_NOT boolean_result {
+              $$ = $2 ? 0 : 1;
+          } 
+          | boolean_result OPR_LGL_AND boolean_result {
+              $$ = $1 & $3;
+          }
+          | boolean_result OPR_LGL_OR boolean_result {
+              $$ = $1 | $3;
           }
           ;
 %%

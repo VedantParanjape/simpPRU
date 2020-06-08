@@ -18,7 +18,8 @@ bool                 ("true"|"false")
 datatype             ("int"|"bool")
 arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
-unary_operators      ("~"|"&"|"|")
+bitwise_operators    ("~"|"&"|"|")
+logical_operators    ("not"|"and"|"or")
 assignment_operator  ([:][=])
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
@@ -107,7 +108,7 @@ terminal             ([;])
   }
 }
 
-{unary_operators}       {
+{bitwise_operators}       {
   if (!strcmp(yytext, "~"))
   {
     return OPR_BW_NOT;
@@ -119,6 +120,21 @@ terminal             ([;])
   else if (!strcmp(yytext, "|"))
   {
     return OPR_BW_OR;
+  }
+}
+
+{logical_operators}       {
+  if (!strcmp(yytext, "not"))
+  {
+    return OPR_LGL_NOT;
+  }
+  else if (!strcmp(yytext, "and"))
+  {
+    return OPR_LGL_AND;
+  }
+  else if (!strcmp(yytext, "or"))
+  {
+    return OPR_LGL_OR;
   }
 }
 
