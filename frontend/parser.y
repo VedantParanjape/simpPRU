@@ -18,7 +18,7 @@ extern FILE* yyin;
     char* identifier;
 }
 
-
+%left LPAREN RPAREN
 %left OPR_ADD OPR_SUB
 %left OPR_MUL OPR_DIV
 %left NEG
@@ -42,7 +42,7 @@ extern FILE* yyin;
 %token <identifier> IDENTIFIER
 
 %type <integer> arithmetic_expression
-%type <boolean> boolean_expression relational_expression logical_expression boolean_result
+%type <boolean> boolean_expression relational_expression logical_expression bool_expressions
 %%
 
 declarations: declarations declaration
@@ -61,19 +61,16 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                printf ("bool %s ;\n", $2);
                free($2);
            }
-           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT boolean_expression SEMICOLON {
-               printf ("%s := %d\n", $2, $4);
-               free($2);
-           }
-           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT relational_expression SEMICOLON {
-               printf ("%s := %d\n", $2, $4);
-               free($2);
-           }
-           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT logical_expression SEMICOLON {
+           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
                printf ("%s := %d\n", $2, $4);
                free($2);
            }
            ;
+
+bool_expressions: boolean_expression 
+                | relational_expression 
+                | logical_expression
+                ;
 
 arithmetic_expression: CONST_INT {
               $$ = $1;
@@ -93,6 +90,9 @@ arithmetic_expression: CONST_INT {
           | OPR_SUB arithmetic_expression %prec NEG {
               $$ = -$2;
           } 
+          | LPAREN arithmetic_expression RPAREN {
+              $$ = $2;
+          }
           ;
 
 boolean_expression: CONST_BOOL {
@@ -106,6 +106,9 @@ boolean_expression: CONST_BOOL {
           } 
           | boolean_expression OPR_BW_OR boolean_expression {
               $$ = $1 | $3;
+          }
+          | LPAREN boolean_expression RPAREN {
+              $$ = $2;
           }
           ;
 
@@ -132,17 +135,14 @@ relational_expression: arithmetic_expression {
           }
           ;
 
-boolean_result: boolean_expression 
-              | relational_expression
-              ;
 
-logical_expression: OPR_LGL_NOT boolean_result {
+logical_expression: OPR_LGL_NOT bool_expressions {
               $$ = $2 ? 0 : 1;
           } 
-          | boolean_result OPR_LGL_AND boolean_result {
+          | bool_expressions OPR_LGL_AND bool_expressions {
               $$ = $1 & $3;
           }
-          | boolean_result OPR_LGL_OR boolean_result {
+          | bool_expressions OPR_LGL_OR bool_expressions {
               $$ = $1 | $3;
           }
           ;

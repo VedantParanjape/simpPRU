@@ -13,6 +13,7 @@
 
 whitespace           (\t|" "|\r)
 newline              (\n)
+parenthesis          ("("|")")
 integer              ([0-9]+)
 bool                 ("true"|"false")
 datatype             ("int"|"bool")
@@ -31,6 +32,17 @@ terminal             ([;])
 
 {newline}               {
   linenumber++;
+}
+
+{parenthesis}           {
+  if(!strcmp(yytext, "("))
+  {
+    return LPAREN;
+  }
+  else if (!strcmp(yytext, ")"))
+  {
+    return RPAREN;
+  }
 }
 
 {integer}               {
