@@ -1,8 +1,16 @@
+/* variable declaration */
 int a;
 int abv;
+
+/* variable declaration and assignment */
 bool test := ~true & true & true;
 int af := (32*(3+3));
 int abc:= -3 - (3-9);
 bool a:= true and 1 > 3 or (false & true);
 bool test:= ((1+4) > 3) and  (false or true);
-/* int abc := test */
+
+/* variable assignment */
+af := (32*(3+3));
+abc:= -3 - (3-9);
+a:= true and 1 > 3 or (false & true);
+test:= ((1+4) > 3) and  (false or true);

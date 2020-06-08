@@ -7,6 +7,7 @@ extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
 
+#define YYDEBUG 1
 %}
 
 %define parse.error verbose
@@ -19,6 +20,7 @@ extern FILE* yyin;
 }
 
 %left LPAREN RPAREN
+
 %left OPR_ADD OPR_SUB
 %left OPR_MUL OPR_DIV
 %left NEG
@@ -45,27 +47,43 @@ extern FILE* yyin;
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions
 %%
 
-declarations: declarations declaration
-            | declaration
-            ;
+statement_list: statement
+              | statement_list statement
+              ;
+
+statement: declaration
+         | declaration_assignment
+         | assignment
+         ;
 
 declaration: DT_INT IDENTIFIER SEMICOLON { 
                printf ("int %s ;\n", $2);
                free($2);
            }
-           | DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
-               printf ("%s := %d\n", $2, $4);
-               free($2);
-           } 
            | DT_BOOL IDENTIFIER SEMICOLON {
                printf ("bool %s ;\n", $2);
                free($2);
            }
-           | DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
+           ;
+
+declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                printf ("%s := %d\n", $2, $4);
                free($2);
-           }
-           ;
+            }
+            | DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
+               printf ("%s := %d\n", $2, $4);
+               free($2);
+            }
+            ;
+
+assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+               printf("%s := %d\n", $1, $3);
+               free($1);
+            }
+            | IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
+                printf("%s := %d\n", $1, $3);
+                free($1);
+            }
 
 bool_expressions: boolean_expression 
                 | relational_expression 
@@ -112,10 +130,7 @@ boolean_expression: CONST_BOOL {
           }
           ;
 
-relational_expression: arithmetic_expression {
-              $$ = $1 ? 1 : 0; 
-          }
-          | arithmetic_expression OPR_GT arithmetic_expression {
+relational_expression: arithmetic_expression OPR_GT arithmetic_expression {
               $$ = $1 > $3;
           }
           | arithmetic_expression OPR_LT arithmetic_expression {
