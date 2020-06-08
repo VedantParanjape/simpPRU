@@ -133,6 +133,9 @@ relational_expression: arithmetic_expression {
           | arithmetic_expression OPR_LE arithmetic_expression {
               $$ = $1 <= $3;
           }
+          | LPAREN relational_expression RPAREN {
+              $$ = $2;
+          } 
           ;
 
 
@@ -144,6 +147,9 @@ logical_expression: OPR_LGL_NOT bool_expressions {
           }
           | bool_expressions OPR_LGL_OR bool_expressions {
               $$ = $1 | $3;
+          }
+          | LPAREN logical_expression RPAREN {
+              $$ = $2;
           }
           ;
 %%
