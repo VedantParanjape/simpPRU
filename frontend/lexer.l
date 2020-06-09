@@ -13,10 +13,12 @@
 
 whitespace           (\t|" "|\r)
 newline              (\n)
+braces               ("{"|"}")
 parenthesis          ("("|")")
 integer              ([0-9]+)
 bool                 ("true"|"false")
 datatype             ("int"|"bool")
+conditional          ("if"|"elif"|"else")
 arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
 bitwise_operators    ("~"|"&"|"|")
@@ -24,6 +26,7 @@ logical_operators    ("not"|"and"|"or")
 assignment_operator  ([:][=])
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
+separator            ([:])
 %%
 
 {whitespace}            {
@@ -34,8 +37,19 @@ terminal             ([;])
   linenumber++;
 }
 
+{braces}                {
+  if (!strcmp(yytext, "{"))
+  {
+    return LBRACE;
+  }
+  else if (!strcmp(yytext, "}"))
+  {
+    return RBRACE;
+  }
+}
+
 {parenthesis}           {
-  if(!strcmp(yytext, "("))
+  if (!strcmp(yytext, "("))
   {
     return LPAREN;
   }
@@ -71,6 +85,21 @@ terminal             ([;])
   else if (!strcmp(yytext, "bool"))
   {
     return DT_BOOL;
+  }
+}
+
+{conditional}          {
+  if (!strcmp(yytext, "if"))
+  {
+    return KW_IF;
+  }
+  else if (!strcmp(yytext, "elif"))
+  {
+    return KW_ELIF;
+  }
+  else if (!strcmp(yytext, "else"))
+  {
+    return KW_ELSE; 
   }
 }
 
@@ -161,6 +190,10 @@ terminal             ([;])
 
 {terminal}              {
   return SEMICOLON;
+}
+
+{separator}             {
+  return COLON;
 }
 
 "/*"            {BEGIN(comment);                              }

@@ -19,6 +19,8 @@ extern FILE* yyin;
     char* identifier;
 }
 
+%left LBRACE RBRACE
+
 %left LPAREN RPAREN
 
 %left OPR_ADD OPR_SUB
@@ -33,10 +35,12 @@ extern FILE* yyin;
 
 %token OPR_ASSIGNMENT
 
-%token SEMICOLON
+%token SEMICOLON COLON
 
 %token DT_INT
 %token DT_BOOL
+
+%token KW_IF KW_ELIF KW_ELSE
 
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
@@ -47,6 +51,12 @@ extern FILE* yyin;
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions
 %%
 
+translational_unit: statement_list
+                  ;
+
+compound_statement: LBRACE statement_list RBRACE
+                  ;
+
 statement_list: statement
               | statement_list statement
               ;
@@ -54,6 +64,7 @@ statement_list: statement
 statement: declaration
          | declaration_assignment
          | assignment
+         | conditional_statement
          ;
 
 declaration: DT_INT IDENTIFIER SEMICOLON { 
@@ -167,6 +178,23 @@ logical_expression: OPR_LGL_NOT bool_expressions {
               $$ = $2;
           }
           ;
+
+conditional_statement: KW_IF COLON bool_expressions compound_statement {
+                          printf("inside if\n");
+                     }
+                     | KW_IF COLON bool_expressions compound_statement conditional_statement_else {
+                          printf("inside if else\n");
+                     }
+                     ;
+
+/* conditional_statement_elif: conditional_statement_else
+                          | KW_ELIF COLON bool_expressions conditional_statement
+                          | conditional_statement_elif */
+
+conditional_statement_else: KW_ELSE compound_statement {
+                              printf("inside else\n");
+                          }
+                          ;
 %%
 
 int main()

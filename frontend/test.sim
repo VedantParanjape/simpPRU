@@ -14,3 +14,30 @@ af := (32*(3+3));
 abc:= -3 - (3-9);
 a:= true and 1 > 3 or (false & true);
 test:= ((1+4) > 3) and  (false or true);
+
+/* if else */
+if : 3>2 {
+    int a:= 3 +4;
+}
+else {
+    int b:=(3+4)*2;
+}
+
+/* if */
+if : 4!=2 {
+    bool sh := true;
+}
+
+/* if else nested */
+if : 3>2 {
+    int a:= 3 +4;
+    if : 4=4 {
+        bool te := false;
+    }
+    else {
+        int rt := 334;
+    }
+}
+else {
+    int b:=(3+4)*2;
+}
