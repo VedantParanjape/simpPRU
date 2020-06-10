@@ -41,3 +41,33 @@ if : 3>2 {
 else {
     int b:=(3+4)*2;
 }
+
+/* for loop */
+for : i in 1:3 {
+    int a:= 11;
+}
+
+/* while loop */
+while : 3 = 3 {
+    int rt := 90;
+}
+
+/* nested and complex loops */
+for : o in 2:4 {
+    for : h in 5:1 {
+        if : 2>3 {
+            int a;
+        }
+    }
+    while : 3>4 {
+        if : 4=3 {
+            ;
+        }
+    }
+}
+
+while : 4 < 5 {
+    for : jh in 4 : 9 {
+        bool nm := true;
+    }
+}

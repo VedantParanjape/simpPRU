@@ -30,8 +30,7 @@ GSoC 2020 project under BeagleBoard.org
   
 ### Milestone 3
 
-* [ ] Implementing if else elif
+* [x] Implementing if else elif
 * [ ] Implementing for loop
 * [ ] Implementing functions
 * [ ] Implementing Register access
-* [ ] Writing documentation for same

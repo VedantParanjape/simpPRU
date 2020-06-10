@@ -19,6 +19,7 @@ integer              ([0-9]+)
 bool                 ("true"|"false")
 datatype             ("int"|"bool")
 conditional          ("if"|"elif"|"else")
+loops                ("for"|"in"|"while")
 arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
 bitwise_operators    ("~"|"&"|"|")
@@ -100,6 +101,21 @@ separator            ([:])
   else if (!strcmp(yytext, "else"))
   {
     return KW_ELSE; 
+  }
+}
+
+{loops}            {
+  if (!strcmp(yytext, "for"))
+  {
+    return KW_FOR;
+  }
+  else if (!strcmp(yytext, "in"))
+  {
+    return KW_IN;
+  }
+  else if (!strcmp(yytext, "while"))
+  {
+    return KW_WHILE;
   }
 }
 

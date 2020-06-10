@@ -42,6 +42,8 @@ extern FILE* yyin;
 
 %token KW_IF KW_ELIF KW_ELSE
 
+%token KW_FOR KW_IN KW_WHILE
+
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
 
@@ -61,11 +63,19 @@ statement_list: statement
               | statement_list statement
               ;
 
-statement: declaration
+statement: empty_statement
+         | declaration
          | declaration_assignment
          | assignment
          | conditional_statement
+         | loop_statement_for
+         | loop_statement_while
          ;
+
+empty_statement: SEMICOLON {
+              printf ("blank statement\n");
+            }
+            ;
 
 declaration: DT_INT IDENTIFIER SEMICOLON { 
                printf ("int %s ;\n", $2);
@@ -187,14 +197,20 @@ conditional_statement: KW_IF COLON bool_expressions compound_statement {
                      }
                      ;
 
-/* conditional_statement_elif: conditional_statement_else
-                          | KW_ELIF COLON bool_expressions conditional_statement
-                          | conditional_statement_elif */
-
 conditional_statement_else: KW_ELSE compound_statement {
                               printf("inside else\n");
                           }
                           ;
+
+loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement {
+                      printf("inside for => %s => %d : %d\n", $3, $5, $7);
+                  }
+                  ;
+
+loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
+                      printf("inside while\n");
+                    }
+                    ;
 %%
 
 int main()
