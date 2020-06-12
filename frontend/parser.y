@@ -35,7 +35,7 @@ extern FILE* yyin;
 
 %token OPR_ASSIGNMENT
 
-%token SEMICOLON COLON
+%token SEMICOLON COLON COMMA
 
 %token DT_INT
 %token DT_BOOL

@@ -71,3 +71,6 @@ while : 4 < 5 {
         bool nm := true;
     }
 }
+
+int add_as : int a, int e, bool k {
+}

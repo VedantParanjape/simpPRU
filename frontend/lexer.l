@@ -28,6 +28,7 @@ assignment_operator  ([:][=])
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
 separator            ([:])
+comma                ([,])
 %%
 
 {whitespace}            {
@@ -212,6 +213,9 @@ separator            ([:])
   return COLON;
 }
 
+{comma}                 {
+  return COMMA;
+}
 "/*"            {BEGIN(comment);                              }
 <comment>"*/"   {BEGIN(INITIAL);                              }
 <comment>\n     {linenumber++;                                }

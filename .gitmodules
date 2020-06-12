@@ -1,0 +1,3 @@
+[submodule "frontend/klib"]
+	path = frontend/klib
+	url = https://github.com/attractivechaos/klib.git
