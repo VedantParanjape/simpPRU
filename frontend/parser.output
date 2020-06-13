@@ -1,0 +1,1476 @@
+Terminals unused in grammar
+
+   COMMA
+
+
+State 60 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: translational_unit $end
+
+    1 translational_unit: statement_list
+
+    2 compound_statement: LBRACE statement_list RBRACE
+
+    3 statement_list: statement
+    4               | statement_list statement
+
+    5 statement: empty_statement
+    6          | declaration
+    7          | declaration_assignment
+    8          | assignment
+    9          | conditional_statement
+   10          | loop_statement_for
+   11          | loop_statement_while
+
+   12 empty_statement: SEMICOLON
+
+   13 declaration: DT_INT IDENTIFIER SEMICOLON
+   14            | DT_BOOL IDENTIFIER SEMICOLON
+
+   15 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON
+   16                       | DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON
+
+   17 assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON
+   18           | IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON
+
+   19 bool_expressions: boolean_expression
+   20                 | relational_expression
+   21                 | logical_expression
+
+   22 arithmetic_expression: CONST_INT
+   23                      | arithmetic_expression OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression OPR_DIV arithmetic_expression
+   27                      | OPR_SUB arithmetic_expression
+   28                      | LPAREN arithmetic_expression RPAREN
+
+   29 boolean_expression: CONST_BOOL
+   30                   | OPR_BW_NOT boolean_expression
+   31                   | boolean_expression OPR_BW_AND boolean_expression
+   32                   | boolean_expression OPR_BW_OR boolean_expression
+   33                   | LPAREN boolean_expression RPAREN
+
+   34 relational_expression: arithmetic_expression OPR_GT arithmetic_expression
+   35                      | arithmetic_expression OPR_LT arithmetic_expression
+   36                      | arithmetic_expression OPR_EQ arithmetic_expression
+   37                      | arithmetic_expression OPR_NE arithmetic_expression
+   38                      | arithmetic_expression OPR_GE arithmetic_expression
+   39                      | arithmetic_expression OPR_LE arithmetic_expression
+   40                      | LPAREN relational_expression RPAREN
+
+   41 logical_expression: OPR_LGL_NOT bool_expressions
+   42                   | bool_expressions OPR_LGL_AND bool_expressions
+   43                   | bool_expressions OPR_LGL_OR bool_expressions
+   44                   | LPAREN logical_expression RPAREN
+
+   45 conditional_statement: KW_IF COLON bool_expressions compound_statement conditional_statement_else_if conditional_statement_else
+
+   46 conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON bool_expressions compound_statement
+   47                              | KW_ELIF COLON bool_expressions compound_statement
+   48                              | %empty
+
+   49 conditional_statement_else: KW_ELSE compound_statement
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement
+
+   51 loop_statement_while: KW_WHILE COLON bool_expressions compound_statement
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+LBRACE (258) 2
+RBRACE (259) 2
+LPAREN (260) 28 33 40 44
+RPAREN (261) 28 33 40 44
+OPR_ADD (262) 23
+OPR_SUB (263) 24 27
+OPR_MUL (264) 25
+OPR_DIV (265) 26
+NEG (266)
+OPR_GT (267) 34
+OPR_LT (268) 35
+OPR_EQ (269) 36
+OPR_NE (270) 37
+OPR_GE (271) 38
+OPR_LE (272) 39
+OPR_BW_NOT (273) 30
+OPR_BW_AND (274) 31
+OPR_BW_OR (275) 32
+OPR_LGL_NOT (276) 41
+OPR_LGL_AND (277) 42
+OPR_LGL_OR (278) 43
+OPR_ASSIGNMENT (279) 15 16 17 18
+SEMICOLON (280) 12 13 14 15 16 17 18
+COLON (281) 45 46 47 50 51
+COMMA (282)
+DT_INT (283) 13 15
+DT_BOOL (284) 14 16
+KW_IF (285) 45
+KW_ELIF (286) 46 47
+KW_ELSE (287) 49
+KW_FOR (288) 50
+KW_IN (289) 50
+KW_WHILE (290) 51
+CONST_INT (291) 22 50
+CONST_BOOL (292) 29
+IDENTIFIER (293) 13 14 15 16 17 18 50
+
+
+Nonterminals, with rules where they appear
+
+$accept (39)
+    on left: 0
+translational_unit (40)
+    on left: 1, on right: 0
+compound_statement (41)
+    on left: 2, on right: 45 46 47 49 50 51
+statement_list (42)
+    on left: 3 4, on right: 1 2 4
+statement (43)
+    on left: 5 6 7 8 9 10 11, on right: 3 4
+empty_statement (44)
+    on left: 12, on right: 5
+declaration (45)
+    on left: 13 14, on right: 6
+declaration_assignment (46)
+    on left: 15 16, on right: 7
+assignment (47)
+    on left: 17 18, on right: 8
+bool_expressions (48)
+    on left: 19 20 21, on right: 16 18 41 42 43 45 46 47 51
+arithmetic_expression (49)
+    on left: 22 23 24 25 26 27 28, on right: 15 17 23 24 25 26 27 28
+    34 35 36 37 38 39
+boolean_expression (50)
+    on left: 29 30 31 32 33, on right: 19 30 31 32 33
+relational_expression (51)
+    on left: 34 35 36 37 38 39 40, on right: 20 40
+logical_expression (52)
+    on left: 41 42 43 44, on right: 21 44
+conditional_statement (53)
+    on left: 45, on right: 9
+conditional_statement_else_if (54)
+    on left: 46 47 48, on right: 45 46
+conditional_statement_else (55)
+    on left: 49, on right: 45
+loop_statement_for (56)
+    on left: 50, on right: 10
+loop_statement_while (57)
+    on left: 51, on right: 11
+
+
+State 0
+
+    0 $accept: . translational_unit $end
+
+    SEMICOLON   shift, and go to state 1
+    DT_INT      shift, and go to state 2
+    DT_BOOL     shift, and go to state 3
+    KW_IF       shift, and go to state 4
+    KW_FOR      shift, and go to state 5
+    KW_WHILE    shift, and go to state 6
+    IDENTIFIER  shift, and go to state 7
+
+    translational_unit      go to state 8
+    statement_list          go to state 9
+    statement               go to state 10
+    empty_statement         go to state 11
+    declaration             go to state 12
+    declaration_assignment  go to state 13
+    assignment              go to state 14
+    conditional_statement   go to state 15
+    loop_statement_for      go to state 16
+    loop_statement_while    go to state 17
+
+
+State 1
+
+   12 empty_statement: SEMICOLON .
+
+    $default  reduce using rule 12 (empty_statement)
+
+
+State 2
+
+   13 declaration: DT_INT . IDENTIFIER SEMICOLON
+   15 declaration_assignment: DT_INT . IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON
+
+    IDENTIFIER  shift, and go to state 18
+
+
+State 3
+
+   14 declaration: DT_BOOL . IDENTIFIER SEMICOLON
+   16 declaration_assignment: DT_BOOL . IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON
+
+    IDENTIFIER  shift, and go to state 19
+
+
+State 4
+
+   45 conditional_statement: KW_IF . COLON bool_expressions compound_statement conditional_statement_else_if conditional_statement_else
+
+    COLON  shift, and go to state 20
+
+
+State 5
+
+   50 loop_statement_for: KW_FOR . COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement
+
+    COLON  shift, and go to state 21
+
+
+State 6
+
+   51 loop_statement_while: KW_WHILE . COLON bool_expressions compound_statement
+
+    COLON  shift, and go to state 22
+
+
+State 7
+
+   17 assignment: IDENTIFIER . OPR_ASSIGNMENT arithmetic_expression SEMICOLON
+   18           | IDENTIFIER . OPR_ASSIGNMENT bool_expressions SEMICOLON
+
+    OPR_ASSIGNMENT  shift, and go to state 23
+
+
+State 8
+
+    0 $accept: translational_unit . $end
+
+    $end  shift, and go to state 24
+
+
+State 9
+
+    1 translational_unit: statement_list .
+    4 statement_list: statement_list . statement
+
+    SEMICOLON   shift, and go to state 1
+    DT_INT      shift, and go to state 2
+    DT_BOOL     shift, and go to state 3
+    KW_IF       shift, and go to state 4
+    KW_FOR      shift, and go to state 5
+    KW_WHILE    shift, and go to state 6
+    IDENTIFIER  shift, and go to state 7
+
+    $default  reduce using rule 1 (translational_unit)
+
+    statement               go to state 25
+    empty_statement         go to state 11
+    declaration             go to state 12
+    declaration_assignment  go to state 13
+    assignment              go to state 14
+    conditional_statement   go to state 15
+    loop_statement_for      go to state 16
+    loop_statement_while    go to state 17
+
+
+State 10
+
+    3 statement_list: statement .
+
+    $default  reduce using rule 3 (statement_list)
+
+
+State 11
+
+    5 statement: empty_statement .
+
+    $default  reduce using rule 5 (statement)
+
+
+State 12
+
+    6 statement: declaration .
+
+    $default  reduce using rule 6 (statement)
+
+
+State 13
+
+    7 statement: declaration_assignment .
+
+    $default  reduce using rule 7 (statement)
+
+
+State 14
+
+    8 statement: assignment .
+
+    $default  reduce using rule 8 (statement)
+
+
+State 15
+
+    9 statement: conditional_statement .
+
+    $default  reduce using rule 9 (statement)
+
+
+State 16
+
+   10 statement: loop_statement_for .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 17
+
+   11 statement: loop_statement_while .
+
+    $default  reduce using rule 11 (statement)
+
+
+State 18
+
+   13 declaration: DT_INT IDENTIFIER . SEMICOLON
+   15 declaration_assignment: DT_INT IDENTIFIER . OPR_ASSIGNMENT arithmetic_expression SEMICOLON
+
+    OPR_ASSIGNMENT  shift, and go to state 26
+    SEMICOLON       shift, and go to state 27
+
+
+State 19
+
+   14 declaration: DT_BOOL IDENTIFIER . SEMICOLON
+   16 declaration_assignment: DT_BOOL IDENTIFIER . OPR_ASSIGNMENT bool_expressions SEMICOLON
+
+    OPR_ASSIGNMENT  shift, and go to state 28
+    SEMICOLON       shift, and go to state 29
+
+
+State 20
+
+   45 conditional_statement: KW_IF COLON . bool_expressions compound_statement conditional_statement_else_if conditional_statement_else
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 36
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 21
+
+   50 loop_statement_for: KW_FOR COLON . IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement
+
+    IDENTIFIER  shift, and go to state 41
+
+
+State 22
+
+   51 loop_statement_while: KW_WHILE COLON . bool_expressions compound_statement
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 42
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 23
+
+   17 assignment: IDENTIFIER OPR_ASSIGNMENT . arithmetic_expression SEMICOLON
+   18           | IDENTIFIER OPR_ASSIGNMENT . bool_expressions SEMICOLON
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 43
+    arithmetic_expression  go to state 44
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 24
+
+    0 $accept: translational_unit $end .
+
+    $default  accept
+
+
+State 25
+
+    4 statement_list: statement_list statement .
+
+    $default  reduce using rule 4 (statement_list)
+
+
+State 26
+
+   15 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT . arithmetic_expression SEMICOLON
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 46
+
+
+State 27
+
+   13 declaration: DT_INT IDENTIFIER SEMICOLON .
+
+    $default  reduce using rule 13 (declaration)
+
+
+State 28
+
+   16 declaration_assignment: DT_BOOL IDENTIFIER OPR_ASSIGNMENT . bool_expressions SEMICOLON
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 47
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 29
+
+   14 declaration: DT_BOOL IDENTIFIER SEMICOLON .
+
+    $default  reduce using rule 14 (declaration)
+
+
+State 30
+
+   28 arithmetic_expression: LPAREN . arithmetic_expression RPAREN
+   33 boolean_expression: LPAREN . boolean_expression RPAREN
+   40 relational_expression: LPAREN . relational_expression RPAREN
+   44 logical_expression: LPAREN . logical_expression RPAREN
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 48
+    arithmetic_expression  go to state 49
+    boolean_expression     go to state 50
+    relational_expression  go to state 51
+    logical_expression     go to state 52
+
+
+State 31
+
+   27 arithmetic_expression: OPR_SUB . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 53
+
+
+State 32
+
+   30 boolean_expression: OPR_BW_NOT . boolean_expression
+
+    LPAREN      shift, and go to state 54
+    OPR_BW_NOT  shift, and go to state 32
+    CONST_BOOL  shift, and go to state 35
+
+    boolean_expression  go to state 55
+
+
+State 33
+
+   41 logical_expression: OPR_LGL_NOT . bool_expressions
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 56
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 34
+
+   22 arithmetic_expression: CONST_INT .
+
+    $default  reduce using rule 22 (arithmetic_expression)
+
+
+State 35
+
+   29 boolean_expression: CONST_BOOL .
+
+    $default  reduce using rule 29 (boolean_expression)
+
+
+State 36
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+   45 conditional_statement: KW_IF COLON bool_expressions . compound_statement conditional_statement_else_if conditional_statement_else
+
+    LBRACE       shift, and go to state 57
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+
+    compound_statement  go to state 60
+
+
+State 37
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   34 relational_expression: arithmetic_expression . OPR_GT arithmetic_expression
+   35                      | arithmetic_expression . OPR_LT arithmetic_expression
+   36                      | arithmetic_expression . OPR_EQ arithmetic_expression
+   37                      | arithmetic_expression . OPR_NE arithmetic_expression
+   38                      | arithmetic_expression . OPR_GE arithmetic_expression
+   39                      | arithmetic_expression . OPR_LE arithmetic_expression
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+    OPR_GT   shift, and go to state 65
+    OPR_LT   shift, and go to state 66
+    OPR_EQ   shift, and go to state 67
+    OPR_NE   shift, and go to state 68
+    OPR_GE   shift, and go to state 69
+    OPR_LE   shift, and go to state 70
+
+
+State 38
+
+   19 bool_expressions: boolean_expression .
+   31 boolean_expression: boolean_expression . OPR_BW_AND boolean_expression
+   32                   | boolean_expression . OPR_BW_OR boolean_expression
+
+    OPR_BW_AND  shift, and go to state 71
+    OPR_BW_OR   shift, and go to state 72
+
+    $default  reduce using rule 19 (bool_expressions)
+
+
+State 39
+
+   20 bool_expressions: relational_expression .
+
+    $default  reduce using rule 20 (bool_expressions)
+
+
+State 40
+
+   21 bool_expressions: logical_expression .
+
+    $default  reduce using rule 21 (bool_expressions)
+
+
+State 41
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER . KW_IN CONST_INT COLON CONST_INT compound_statement
+
+    KW_IN  shift, and go to state 73
+
+
+State 42
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+   51 loop_statement_while: KW_WHILE COLON bool_expressions . compound_statement
+
+    LBRACE       shift, and go to state 57
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+
+    compound_statement  go to state 74
+
+
+State 43
+
+   18 assignment: IDENTIFIER OPR_ASSIGNMENT bool_expressions . SEMICOLON
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+    SEMICOLON    shift, and go to state 75
+
+
+State 44
+
+   17 assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression . SEMICOLON
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   34 relational_expression: arithmetic_expression . OPR_GT arithmetic_expression
+   35                      | arithmetic_expression . OPR_LT arithmetic_expression
+   36                      | arithmetic_expression . OPR_EQ arithmetic_expression
+   37                      | arithmetic_expression . OPR_NE arithmetic_expression
+   38                      | arithmetic_expression . OPR_GE arithmetic_expression
+   39                      | arithmetic_expression . OPR_LE arithmetic_expression
+
+    OPR_ADD    shift, and go to state 61
+    OPR_SUB    shift, and go to state 62
+    OPR_MUL    shift, and go to state 63
+    OPR_DIV    shift, and go to state 64
+    OPR_GT     shift, and go to state 65
+    OPR_LT     shift, and go to state 66
+    OPR_EQ     shift, and go to state 67
+    OPR_NE     shift, and go to state 68
+    OPR_GE     shift, and go to state 69
+    OPR_LE     shift, and go to state 70
+    SEMICOLON  shift, and go to state 76
+
+
+State 45
+
+   28 arithmetic_expression: LPAREN . arithmetic_expression RPAREN
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 77
+
+
+State 46
+
+   15 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression . SEMICOLON
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+
+    OPR_ADD    shift, and go to state 61
+    OPR_SUB    shift, and go to state 62
+    OPR_MUL    shift, and go to state 63
+    OPR_DIV    shift, and go to state 64
+    SEMICOLON  shift, and go to state 78
+
+
+State 47
+
+   16 declaration_assignment: DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions . SEMICOLON
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+    SEMICOLON    shift, and go to state 79
+
+
+State 48
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+
+
+State 49
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   28                      | LPAREN arithmetic_expression . RPAREN
+   34 relational_expression: arithmetic_expression . OPR_GT arithmetic_expression
+   35                      | arithmetic_expression . OPR_LT arithmetic_expression
+   36                      | arithmetic_expression . OPR_EQ arithmetic_expression
+   37                      | arithmetic_expression . OPR_NE arithmetic_expression
+   38                      | arithmetic_expression . OPR_GE arithmetic_expression
+   39                      | arithmetic_expression . OPR_LE arithmetic_expression
+
+    RPAREN   shift, and go to state 80
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+    OPR_GT   shift, and go to state 65
+    OPR_LT   shift, and go to state 66
+    OPR_EQ   shift, and go to state 67
+    OPR_NE   shift, and go to state 68
+    OPR_GE   shift, and go to state 69
+    OPR_LE   shift, and go to state 70
+
+
+State 50
+
+   19 bool_expressions: boolean_expression .
+   31 boolean_expression: boolean_expression . OPR_BW_AND boolean_expression
+   32                   | boolean_expression . OPR_BW_OR boolean_expression
+   33                   | LPAREN boolean_expression . RPAREN
+
+    RPAREN      shift, and go to state 81
+    OPR_BW_AND  shift, and go to state 71
+    OPR_BW_OR   shift, and go to state 72
+
+    $default  reduce using rule 19 (bool_expressions)
+
+
+State 51
+
+   20 bool_expressions: relational_expression .
+   40 relational_expression: LPAREN relational_expression . RPAREN
+
+    RPAREN  shift, and go to state 82
+
+    $default  reduce using rule 20 (bool_expressions)
+
+
+State 52
+
+   21 bool_expressions: logical_expression .
+   44 logical_expression: LPAREN logical_expression . RPAREN
+
+    RPAREN  shift, and go to state 83
+
+    $default  reduce using rule 21 (bool_expressions)
+
+
+State 53
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   27                      | OPR_SUB arithmetic_expression .
+
+    $default  reduce using rule 27 (arithmetic_expression)
+
+
+State 54
+
+   33 boolean_expression: LPAREN . boolean_expression RPAREN
+
+    LPAREN      shift, and go to state 54
+    OPR_BW_NOT  shift, and go to state 32
+    CONST_BOOL  shift, and go to state 35
+
+    boolean_expression  go to state 84
+
+
+State 55
+
+   30 boolean_expression: OPR_BW_NOT boolean_expression .
+   31                   | boolean_expression . OPR_BW_AND boolean_expression
+   32                   | boolean_expression . OPR_BW_OR boolean_expression
+
+    $default  reduce using rule 30 (boolean_expression)
+
+
+State 56
+
+   41 logical_expression: OPR_LGL_NOT bool_expressions .
+   42                   | bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+
+    $default  reduce using rule 41 (logical_expression)
+
+
+State 57
+
+    2 compound_statement: LBRACE . statement_list RBRACE
+
+    SEMICOLON   shift, and go to state 1
+    DT_INT      shift, and go to state 2
+    DT_BOOL     shift, and go to state 3
+    KW_IF       shift, and go to state 4
+    KW_FOR      shift, and go to state 5
+    KW_WHILE    shift, and go to state 6
+    IDENTIFIER  shift, and go to state 7
+
+    statement_list          go to state 85
+    statement               go to state 10
+    empty_statement         go to state 11
+    declaration             go to state 12
+    declaration_assignment  go to state 13
+    assignment              go to state 14
+    conditional_statement   go to state 15
+    loop_statement_for      go to state 16
+    loop_statement_while    go to state 17
+
+
+State 58
+
+   42 logical_expression: bool_expressions OPR_LGL_AND . bool_expressions
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 86
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 59
+
+   43 logical_expression: bool_expressions OPR_LGL_OR . bool_expressions
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 87
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 60
+
+   45 conditional_statement: KW_IF COLON bool_expressions compound_statement . conditional_statement_else_if conditional_statement_else
+
+    KW_ELIF  shift, and go to state 88
+
+    KW_ELIF   [reduce using rule 48 (conditional_statement_else_if)]
+    $default  reduce using rule 48 (conditional_statement_else_if)
+
+    conditional_statement_else_if  go to state 89
+
+
+State 61
+
+   23 arithmetic_expression: arithmetic_expression OPR_ADD . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 90
+
+
+State 62
+
+   24 arithmetic_expression: arithmetic_expression OPR_SUB . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 91
+
+
+State 63
+
+   25 arithmetic_expression: arithmetic_expression OPR_MUL . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 92
+
+
+State 64
+
+   26 arithmetic_expression: arithmetic_expression OPR_DIV . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 93
+
+
+State 65
+
+   34 relational_expression: arithmetic_expression OPR_GT . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 94
+
+
+State 66
+
+   35 relational_expression: arithmetic_expression OPR_LT . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 95
+
+
+State 67
+
+   36 relational_expression: arithmetic_expression OPR_EQ . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 96
+
+
+State 68
+
+   37 relational_expression: arithmetic_expression OPR_NE . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 97
+
+
+State 69
+
+   38 relational_expression: arithmetic_expression OPR_GE . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 98
+
+
+State 70
+
+   39 relational_expression: arithmetic_expression OPR_LE . arithmetic_expression
+
+    LPAREN     shift, and go to state 45
+    OPR_SUB    shift, and go to state 31
+    CONST_INT  shift, and go to state 34
+
+    arithmetic_expression  go to state 99
+
+
+State 71
+
+   31 boolean_expression: boolean_expression OPR_BW_AND . boolean_expression
+
+    LPAREN      shift, and go to state 54
+    OPR_BW_NOT  shift, and go to state 32
+    CONST_BOOL  shift, and go to state 35
+
+    boolean_expression  go to state 100
+
+
+State 72
+
+   32 boolean_expression: boolean_expression OPR_BW_OR . boolean_expression
+
+    LPAREN      shift, and go to state 54
+    OPR_BW_NOT  shift, and go to state 32
+    CONST_BOOL  shift, and go to state 35
+
+    boolean_expression  go to state 101
+
+
+State 73
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN . CONST_INT COLON CONST_INT compound_statement
+
+    CONST_INT  shift, and go to state 102
+
+
+State 74
+
+   51 loop_statement_while: KW_WHILE COLON bool_expressions compound_statement .
+
+    $default  reduce using rule 51 (loop_statement_while)
+
+
+State 75
+
+   18 assignment: IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON .
+
+    $default  reduce using rule 18 (assignment)
+
+
+State 76
+
+   17 assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON .
+
+    $default  reduce using rule 17 (assignment)
+
+
+State 77
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   28                      | LPAREN arithmetic_expression . RPAREN
+
+    RPAREN   shift, and go to state 80
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+
+State 78
+
+   15 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON .
+
+    $default  reduce using rule 15 (declaration_assignment)
+
+
+State 79
+
+   16 declaration_assignment: DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON .
+
+    $default  reduce using rule 16 (declaration_assignment)
+
+
+State 80
+
+   28 arithmetic_expression: LPAREN arithmetic_expression RPAREN .
+
+    $default  reduce using rule 28 (arithmetic_expression)
+
+
+State 81
+
+   33 boolean_expression: LPAREN boolean_expression RPAREN .
+
+    $default  reduce using rule 33 (boolean_expression)
+
+
+State 82
+
+   40 relational_expression: LPAREN relational_expression RPAREN .
+
+    $default  reduce using rule 40 (relational_expression)
+
+
+State 83
+
+   44 logical_expression: LPAREN logical_expression RPAREN .
+
+    $default  reduce using rule 44 (logical_expression)
+
+
+State 84
+
+   31 boolean_expression: boolean_expression . OPR_BW_AND boolean_expression
+   32                   | boolean_expression . OPR_BW_OR boolean_expression
+   33                   | LPAREN boolean_expression . RPAREN
+
+    RPAREN      shift, and go to state 81
+    OPR_BW_AND  shift, and go to state 71
+    OPR_BW_OR   shift, and go to state 72
+
+
+State 85
+
+    2 compound_statement: LBRACE statement_list . RBRACE
+    4 statement_list: statement_list . statement
+
+    RBRACE      shift, and go to state 103
+    SEMICOLON   shift, and go to state 1
+    DT_INT      shift, and go to state 2
+    DT_BOOL     shift, and go to state 3
+    KW_IF       shift, and go to state 4
+    KW_FOR      shift, and go to state 5
+    KW_WHILE    shift, and go to state 6
+    IDENTIFIER  shift, and go to state 7
+
+    statement               go to state 25
+    empty_statement         go to state 11
+    declaration             go to state 12
+    declaration_assignment  go to state 13
+    assignment              go to state 14
+    conditional_statement   go to state 15
+    loop_statement_for      go to state 16
+    loop_statement_while    go to state 17
+
+
+State 86
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   42                   | bool_expressions OPR_LGL_AND bool_expressions .
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+
+    $default  reduce using rule 42 (logical_expression)
+
+
+State 87
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+   43                   | bool_expressions OPR_LGL_OR bool_expressions .
+
+    $default  reduce using rule 43 (logical_expression)
+
+
+State 88
+
+   47 conditional_statement_else_if: KW_ELIF . COLON bool_expressions compound_statement
+
+    COLON  shift, and go to state 104
+
+
+State 89
+
+   45 conditional_statement: KW_IF COLON bool_expressions compound_statement conditional_statement_else_if . conditional_statement_else
+   46 conditional_statement_else_if: conditional_statement_else_if . KW_ELIF COLON bool_expressions compound_statement
+
+    KW_ELIF  shift, and go to state 105
+    KW_ELSE  shift, and go to state 106
+
+    conditional_statement_else  go to state 107
+
+
+State 90
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   23                      | arithmetic_expression OPR_ADD arithmetic_expression .
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 23 (arithmetic_expression)
+
+
+State 91
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   24                      | arithmetic_expression OPR_SUB arithmetic_expression .
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 24 (arithmetic_expression)
+
+
+State 92
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   25                      | arithmetic_expression OPR_MUL arithmetic_expression .
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+
+    $default  reduce using rule 25 (arithmetic_expression)
+
+
+State 93
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   26                      | arithmetic_expression OPR_DIV arithmetic_expression .
+
+    $default  reduce using rule 26 (arithmetic_expression)
+
+
+State 94
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   34 relational_expression: arithmetic_expression OPR_GT arithmetic_expression .
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 34 (relational_expression)
+
+
+State 95
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   35 relational_expression: arithmetic_expression OPR_LT arithmetic_expression .
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 35 (relational_expression)
+
+
+State 96
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   36 relational_expression: arithmetic_expression OPR_EQ arithmetic_expression .
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 36 (relational_expression)
+
+
+State 97
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   37 relational_expression: arithmetic_expression OPR_NE arithmetic_expression .
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 37 (relational_expression)
+
+
+State 98
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   38 relational_expression: arithmetic_expression OPR_GE arithmetic_expression .
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 38 (relational_expression)
+
+
+State 99
+
+   23 arithmetic_expression: arithmetic_expression . OPR_ADD arithmetic_expression
+   24                      | arithmetic_expression . OPR_SUB arithmetic_expression
+   25                      | arithmetic_expression . OPR_MUL arithmetic_expression
+   26                      | arithmetic_expression . OPR_DIV arithmetic_expression
+   39 relational_expression: arithmetic_expression OPR_LE arithmetic_expression .
+
+    OPR_ADD  shift, and go to state 61
+    OPR_SUB  shift, and go to state 62
+    OPR_MUL  shift, and go to state 63
+    OPR_DIV  shift, and go to state 64
+
+    $default  reduce using rule 39 (relational_expression)
+
+
+State 100
+
+   31 boolean_expression: boolean_expression . OPR_BW_AND boolean_expression
+   31                   | boolean_expression OPR_BW_AND boolean_expression .
+   32                   | boolean_expression . OPR_BW_OR boolean_expression
+
+    $default  reduce using rule 31 (boolean_expression)
+
+
+State 101
+
+   31 boolean_expression: boolean_expression . OPR_BW_AND boolean_expression
+   32                   | boolean_expression . OPR_BW_OR boolean_expression
+   32                   | boolean_expression OPR_BW_OR boolean_expression .
+
+    $default  reduce using rule 32 (boolean_expression)
+
+
+State 102
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT . COLON CONST_INT compound_statement
+
+    COLON  shift, and go to state 108
+
+
+State 103
+
+    2 compound_statement: LBRACE statement_list RBRACE .
+
+    $default  reduce using rule 2 (compound_statement)
+
+
+State 104
+
+   47 conditional_statement_else_if: KW_ELIF COLON . bool_expressions compound_statement
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 109
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 105
+
+   46 conditional_statement_else_if: conditional_statement_else_if KW_ELIF . COLON bool_expressions compound_statement
+
+    COLON  shift, and go to state 110
+
+
+State 106
+
+   49 conditional_statement_else: KW_ELSE . compound_statement
+
+    LBRACE  shift, and go to state 57
+
+    compound_statement  go to state 111
+
+
+State 107
+
+   45 conditional_statement: KW_IF COLON bool_expressions compound_statement conditional_statement_else_if conditional_statement_else .
+
+    $default  reduce using rule 45 (conditional_statement)
+
+
+State 108
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON . CONST_INT compound_statement
+
+    CONST_INT  shift, and go to state 112
+
+
+State 109
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+   47 conditional_statement_else_if: KW_ELIF COLON bool_expressions . compound_statement
+
+    LBRACE       shift, and go to state 57
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+
+    compound_statement  go to state 113
+
+
+State 110
+
+   46 conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON . bool_expressions compound_statement
+
+    LPAREN       shift, and go to state 30
+    OPR_SUB      shift, and go to state 31
+    OPR_BW_NOT   shift, and go to state 32
+    OPR_LGL_NOT  shift, and go to state 33
+    CONST_INT    shift, and go to state 34
+    CONST_BOOL   shift, and go to state 35
+
+    bool_expressions       go to state 114
+    arithmetic_expression  go to state 37
+    boolean_expression     go to state 38
+    relational_expression  go to state 39
+    logical_expression     go to state 40
+
+
+State 111
+
+   49 conditional_statement_else: KW_ELSE compound_statement .
+
+    $default  reduce using rule 49 (conditional_statement_else)
+
+
+State 112
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT . compound_statement
+
+    LBRACE  shift, and go to state 57
+
+    compound_statement  go to state 115
+
+
+State 113
+
+   47 conditional_statement_else_if: KW_ELIF COLON bool_expressions compound_statement .
+
+    $default  reduce using rule 47 (conditional_statement_else_if)
+
+
+State 114
+
+   42 logical_expression: bool_expressions . OPR_LGL_AND bool_expressions
+   43                   | bool_expressions . OPR_LGL_OR bool_expressions
+   46 conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON bool_expressions . compound_statement
+
+    LBRACE       shift, and go to state 57
+    OPR_LGL_AND  shift, and go to state 58
+    OPR_LGL_OR   shift, and go to state 59
+
+    compound_statement  go to state 116
+
+
+State 115
+
+   50 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement .
+
+    $default  reduce using rule 50 (loop_statement_for)
+
+
+State 116
+
+   46 conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON bool_expressions compound_statement .
+
+    $default  reduce using rule 46 (conditional_statement_else_if)

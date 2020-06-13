@@ -42,6 +42,20 @@ else {
     int b:=(3+4)*2;
 }
 
+/* if elif else */
+if : 3>2 {
+    int ax:= 3 +4;
+}
+elif : 3 != 4 {
+    int b:=(3+4)*2;
+}
+elif : 4 != 3 {
+    int sec:= 99;
+}
+else {
+    bool af3:=true;
+}
+
 /* for loop */
 for : i in 1:3 {
     int a:= 11;
@@ -70,7 +84,4 @@ while : 4 < 5 {
     for : jh in 4 : 9 {
         bool nm := true;
     }
-}
-
-int add_as : int a, int e, bool k {
 }

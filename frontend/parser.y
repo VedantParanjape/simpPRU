@@ -189,17 +189,21 @@ logical_expression: OPR_LGL_NOT bool_expressions {
           }
           ;
 
-conditional_statement: KW_IF COLON bool_expressions compound_statement {
+conditional_statement: KW_IF COLON bool_expressions compound_statement conditional_statement_else_if conditional_statement_else {
                           printf("inside if\n");
                      }
-                     | KW_IF COLON bool_expressions compound_statement conditional_statement_else {
-                          printf("inside if else\n");
-                     }
-                     ;
+                     ;  
+
+conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON bool_expressions compound_statement {
+                                 printf("inside else if\n");
+                             }
+                             | /* empty */    
+                             ;
 
 conditional_statement_else: KW_ELSE compound_statement {
                               printf("inside else\n");
                           }
+                          | /* empty */
                           ;
 
 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement {
