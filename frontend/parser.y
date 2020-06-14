@@ -50,7 +50,7 @@ extern int assignment_flag;
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
 
-%token <symbol_handle> IDENTIFIER
+%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER
 
 %type <integer> arithmetic_expression
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions
@@ -86,6 +86,9 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                {
                    yyerror("variable already defined");
                }
+
+               $2->data_type = DT_INTEGER;
+
                printf ("int %s ;\n", $2->identifier);
            }
            | DT_BOOL IDENTIFIER SEMICOLON {
@@ -93,6 +96,9 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                {
                    yyerror("variable already defined");
                }
+
+               $2->data_type = DT_BOOLEAN;
+               
                printf ("bool %s ;\n", $2->identifier);
            }
            ;
@@ -121,7 +127,7 @@ declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression S
             }
             ;
 
-assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($1 == NULL)
                {
                    yyerror("variable already defined");
@@ -132,7 +138,7 @@ assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
             
                printf("%s := %d\n", $1->identifier, $1->value);
             }
-            | IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
+            | BOOL_IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
                 if ($1 == NULL)
                 {
                     yyerror("variable already defined");
@@ -142,7 +148,6 @@ assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                 $1->value = $3;
             
                printf("%s := %d\n", $1->identifier, $1->value);
-
             }
             ;
             
@@ -154,7 +159,7 @@ bool_expressions: boolean_expression
 arithmetic_expression: CONST_INT {
               $$ = $1;
           }
-          | IDENTIFIER {
+          | INT_IDENTIFIER {
               printf("inside id int ");
               if ($1 != NULL)
               {
@@ -196,7 +201,7 @@ arithmetic_expression: CONST_INT {
 boolean_expression: CONST_BOOL {
               $$ = $1;  
           }
-          | IDENTIFIER {
+          | BOOL_IDENTIFIER {
               printf("inside id bool ");
               if ($1 != NULL)
               {

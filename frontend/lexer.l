@@ -220,6 +220,15 @@ comma                ([,])
   else if (assignment_flag == 0)
   {
     yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
+
+    if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_INTEGER)
+    {
+      return INT_IDENTIFIER;
+    }
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_BOOLEAN)
+    {
+      return BOOL_IDENTIFIER;
+    }
   }
 
   return IDENTIFIER;
