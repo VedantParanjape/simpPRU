@@ -21,6 +21,11 @@ test:= ((1+4) > 3) and  (false or true);
 bool adf;
 adf:=test;
 
+/* self assignment */
+int a_cou := 1;
+int sum := 4;
+sum := sum + a_cou;
+
 /* if else */
 if : 3>2 {
     int a:= 3 +4;
