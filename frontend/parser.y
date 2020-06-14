@@ -1,11 +1,14 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
+#include "symbol_table.h"
 
 void yyerror(const char* s);
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
+extern int linenumber;
+extern int assignment_flag;
 
 #define YYDEBUG 1
 %}
@@ -16,7 +19,7 @@ extern FILE* yyin;
 %union{
     int integer;
     int boolean;
-    char* identifier;
+    struct symbol* symbol_handle;
 }
 
 %left LBRACE RBRACE
@@ -47,7 +50,7 @@ extern FILE* yyin;
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
 
-%token <identifier> IDENTIFIER
+%token <symbol_handle> IDENTIFIER
 
 %type <integer> arithmetic_expression
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions
@@ -63,7 +66,8 @@ statement_list: statement
               | statement_list statement
               ;
 
-statement: empty_statement
+statement: compound_statement
+         | empty_statement
          | declaration
          | declaration_assignment
          | assignment
@@ -78,34 +82,70 @@ empty_statement: SEMICOLON {
             ;
 
 declaration: DT_INT IDENTIFIER SEMICOLON { 
-               printf ("int %s ;\n", $2);
-               free($2);
+               if ($2 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+               printf ("int %s ;\n", $2->identifier);
            }
            | DT_BOOL IDENTIFIER SEMICOLON {
-               printf ("bool %s ;\n", $2);
-               free($2);
+               if ($2 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+               printf ("bool %s ;\n", $2->identifier);
            }
            ;
 
 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
-               printf ("%s := %d\n", $2, $4);
-               free($2);
+               if ($2 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+
+               $2->data_type = DT_INTEGER;
+               $2->value = $4;
+
+               printf ("%s := %d\n", $2->identifier, $2->value);
             }
             | DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
-               printf ("%s := %d\n", $2, $4);
-               free($2);
+               if ($2 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+
+               $2->data_type = DT_BOOLEAN;
+               $2->value = $4;
+
+               printf ("%s := %d\n", $2->identifier, $2->value);
             }
             ;
 
 assignment: IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
-               printf("%s := %d\n", $1, $3);
-               free($1);
+               if ($1 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+
+               $1->data_type = DT_INTEGER;
+               $1->value = $3;
+            
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
-                printf("%s := %d\n", $1, $3);
-                free($1);
-            }
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+                
+                $1->data_type = DT_BOOLEAN;  
+                $1->value = $3;
+            
+               printf("%s := %d\n", $1->identifier, $1->value);
 
+            }
+            ;
+            
 bool_expressions: boolean_expression 
                 | relational_expression 
                 | logical_expression
@@ -113,6 +153,25 @@ bool_expressions: boolean_expression
 
 arithmetic_expression: CONST_INT {
               $$ = $1;
+          }
+          | IDENTIFIER {
+              printf("inside id int ");
+              if ($1 != NULL)
+              {
+                  if ($1->data_type == DT_INTEGER)
+                  {
+                      $$ = $1->value;
+                      printf("id: %d", $1->value);
+                  }
+                  else if ($1->data_type == DT_UNDEF)
+                  {
+                      yyerror("variable undefined");
+                  }
+                  else
+                  {
+                      yyerror("bool variable not allowed with int");
+                  }
+              }
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = $1 + $3;
@@ -136,6 +195,25 @@ arithmetic_expression: CONST_INT {
 
 boolean_expression: CONST_BOOL {
               $$ = $1;  
+          }
+          | IDENTIFIER {
+              printf("inside id bool ");
+              if ($1 != NULL)
+              {
+                  if ($1->data_type == DT_BOOLEAN)
+                  {
+                      $$ = $1->value;
+                      printf("id: %d", $1->value);
+                  }
+                  else if ($1->data_type == DT_UNDEF)
+                  {
+                      yyerror("variable undefined");
+                  }
+                  else
+                  {
+                      yyerror("int variable not allowed with bool");
+                  }
+              }
           }
           | OPR_BW_NOT boolean_expression {
               $$ = $2 ? 0 : 1;
@@ -207,7 +285,7 @@ conditional_statement_else: KW_ELSE compound_statement {
                           ;
 
 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement {
-                      printf("inside for => %s => %d : %d\n", $3, $5, $7);
+                      printf("inside for => %s => %d : %d\n", $3->identifier, $5, $7);
                   }
                   ;
 
@@ -221,12 +299,13 @@ int main()
 {
     FILE* fhandle = fopen("test.sim", "r");
     yyin = fhandle;
+    init_symbol_table();
 
     while(yyparse());
 }
 
 void yyerror (const char *s) 
 {
-    fprintf (stderr, "error: %s\n", s);
+    fprintf (stderr, "%d : error: %s\n", linenumber, s);
     exit(0);
 } 

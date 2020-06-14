@@ -6,6 +6,7 @@
 
 typedef struct symbol
 {
+    char* identifier;
     int data_type;
     int value;
     int scope; 
@@ -19,4 +20,5 @@ int insert_symbol_table(char* id, int dt_type, int val);
 sym_ptr lookup_symbol_table(char* id, int scope);
 void increment_scope();
 void decrement_scope();
+int get_scope();
 void close_symbol_table();

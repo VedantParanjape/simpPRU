@@ -1,5 +1,5 @@
 compile: bison flex
-	gcc lex.yy.c parser.tab.c -o compile
+	gcc lex.yy.c parser.tab.c symbol_table.c -o compile
 
 bison: parser.y
 	bison -d parser.y

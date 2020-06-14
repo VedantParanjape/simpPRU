@@ -16,8 +16,8 @@ int insert_symbol_table(char* id, int dt_type, int val)
 
     if (temp == kh_end(handle))
     {
-        printf("new\n");
         sym_ptr new = (sym_ptr) malloc(sizeof(sym));
+        new->identifier = strdup(id);
         new->data_type = dt_type;
         new->value = val;
         new->scope = scope;
@@ -31,7 +31,6 @@ int insert_symbol_table(char* id, int dt_type, int val)
     }
     else
     {
-        printf("old\n");
         sym_ptr base = kh_value(handle, kh_get(symbol_table, handle, id));
         sym_ptr temp = NULL;
 
@@ -48,6 +47,7 @@ int insert_symbol_table(char* id, int dt_type, int val)
         base = (sym_ptr) malloc(sizeof(sym));
         temp->next = base;
         
+        base->identifier = strdup(id);
         base->data_type = dt_type;
         base->value = val;
         base->scope = scope;
@@ -95,6 +95,11 @@ void decrement_scope()
     scope = scope - 1;
 }
 
+int get_scope()
+{
+    return scope;
+}
+
 void close_symbol_table()
 {
     for (khint_t k = kh_begin(handle); k != kh_end(handle); ++k)
@@ -120,23 +125,23 @@ void close_symbol_table()
     }
 }
 
-int main()
-{
-    init_symbol_table();
-    printf("inserting in table: %d\n", insert_symbol_table("test", DT_INTEGER, 1));
-    increment_scope();
-    decrement_scope();
-    printf("inserting in table: %d\n", insert_symbol_table("test", DT_INTEGER, 3));
-    insert_symbol_table("ea", DT_BOOLEAN, 1);
+// int main()
+// {
+//     init_symbol_table();
+//     printf("inserting in table: %d\n", insert_symbol_table("test", DT_INTEGER, 1));
+//     increment_scope();
+//     decrement_scope();
+//     printf("inserting in table: %d\n", insert_symbol_table("test", DT_INTEGER, 3));
+//     insert_symbol_table("ea", DT_BOOLEAN, 1);
 
-    if (lookup_symbol_table("ea", 0) == NULL)
-    {
-        printf("not found\n");
-    }
-    else
-    {
-        printf("lookup: %d\n", lookup_symbol_table("ea", 0)->value);
-    }
+//     if (lookup_symbol_table("ea", 0) == NULL)
+//     {
+//         printf("not found\n");
+//     }
+//     else
+//     {
+//         printf("lookup: %d\n", lookup_symbol_table("ea", 0)->value);
+//     }
 
-    close_symbol_table();
-}
+//     close_symbol_table();
+// }

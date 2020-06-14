@@ -1,9 +1,11 @@
 %{
   #include <stdio.h>
   #include "parser.tab.h"
+  #include "symbol_table.h"
 
   int linenumber = 0;
-  
+  int assignment_flag = 0;
+
   void yyerror(char* s);
   int yylex();
 %}
@@ -42,10 +44,14 @@ comma                ([,])
 {braces}                {
   if (!strcmp(yytext, "{"))
   {
+    increment_scope();
+
     return LBRACE;
   }
   else if (!strcmp(yytext, "}"))
   {
+    decrement_scope();
+
     return RBRACE;
   }
 }
@@ -80,6 +86,8 @@ comma                ([,])
 }
 
 {datatype}              {
+  assignment_flag = 1;
+
   if (!strcmp(yytext, "int"))
   {
     return DT_INT;
@@ -201,7 +209,19 @@ comma                ([,])
 }
 
 {identifier}            {
-  yylval.identifier = strdup(yytext);
+  yylval.symbol_handle = NULL;
+
+  if (insert_symbol_table(strdup(yytext), DT_UNDEF, 0) == 1 && assignment_flag == 1)
+  {
+    printf("valid %d ", get_scope());
+    yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
+    assignment_flag = 0;
+  }
+  else if (assignment_flag == 0)
+  {
+    yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
+  }
+
   return IDENTIFIER;
 }
 
