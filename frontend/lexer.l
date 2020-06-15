@@ -5,6 +5,7 @@
 
   int linenumber = 0;
   int assignment_flag = 0;
+  int for_loop_flag = 0;
 
   void yyerror(char* s);
   int yylex();
@@ -44,8 +45,15 @@ comma                ([,])
 {braces}                {
   if (!strcmp(yytext, "{"))
   {
-    increment_scope();
-
+    if (for_loop_flag == 1)
+    {
+      for_loop_flag = 0;
+    }
+    else if (for_loop_flag == 0)
+    {
+      increment_scope();
+    }
+  
     return LBRACE;
   }
   else if (!strcmp(yytext, "}"))
@@ -116,6 +124,9 @@ comma                ([,])
 {loops}            {
   if (!strcmp(yytext, "for"))
   {
+    for_loop_flag = 1;
+    increment_scope();
+
     return KW_FOR;
   }
   else if (!strcmp(yytext, "in"))
@@ -211,9 +222,8 @@ comma                ([,])
 {identifier}            {
   yylval.symbol_handle = NULL;
 
-  if (insert_symbol_table(strdup(yytext), DT_UNDEF, 0) == 1 && assignment_flag == 1)
+  if (insert_symbol_table(yytext, DT_UNDEF, 0) == 1 && (assignment_flag == 1 || for_loop_flag == 1))
   {
-    printf("valid %d ", get_scope());
     yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
     assignment_flag = 0;
   }

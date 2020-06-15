@@ -160,13 +160,11 @@ arithmetic_expression: CONST_INT {
               $$ = $1;
           }
           | INT_IDENTIFIER {
-              printf("inside id int ");
               if ($1 != NULL)
               {
                   if ($1->data_type == DT_INTEGER)
                   {
                       $$ = $1->value;
-                      printf("id: %d", $1->value);
                   }
                   else if ($1->data_type == DT_UNDEF)
                   {
@@ -202,13 +200,11 @@ boolean_expression: CONST_BOOL {
               $$ = $1;  
           }
           | BOOL_IDENTIFIER {
-              printf("inside id bool ");
               if ($1 != NULL)
               {
                   if ($1->data_type == DT_BOOLEAN)
                   {
                       $$ = $1->value;
-                      printf("id: %d", $1->value);
                   }
                   else if ($1->data_type == DT_UNDEF)
                   {
@@ -290,6 +286,9 @@ conditional_statement_else: KW_ELSE compound_statement {
                           ;
 
 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement {
+                      $3->data_type = DT_INTEGER;
+                      $3->value = $5;
+                    
                       printf("inside for => %s => %d : %d\n", $3->identifier, $5, $7);
                   }
                   ;
@@ -307,6 +306,8 @@ int main()
     init_symbol_table();
 
     while(yyparse());
+
+    dump_symbol_table();
 }
 
 void yyerror (const char *s) 

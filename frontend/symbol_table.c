@@ -22,9 +22,10 @@ int insert_symbol_table(char* id, int dt_type, int val)
         new->value = val;
         new->scope = scope;
         new->next = NULL;
-        
+        new->hidden = 0;
+
         int err;
-        temp = kh_put(symbol_table, handle, id, &err);
+        temp = kh_put(symbol_table, handle, strdup(id), &err);
         kh_value(handle, temp) = new;
         
         return 1;
@@ -36,7 +37,7 @@ int insert_symbol_table(char* id, int dt_type, int val)
 
         while (base != NULL)
         {
-            if (base->scope == scope)
+            if (base->scope == scope && base->hidden == 0)
             {
                 return -1;
             }
@@ -52,6 +53,7 @@ int insert_symbol_table(char* id, int dt_type, int val)
         base->value = val;
         base->scope = scope;
         base->next = NULL;
+        base->hidden = 0;
 
         return 1;
     }
@@ -65,7 +67,7 @@ sym_ptr lookup_symbol_table(char* id, int scope)
     {
         return NULL;
     }
-    else if (kh_value(handle, temp)->next == NULL && kh_value(handle, temp)->scope == scope)
+    else if (kh_value(handle, temp)->next == NULL && kh_value(handle, temp)->scope == scope && kh_value(handle, temp)->hidden == 0)
     {   
         return kh_value(handle, temp);
     }
@@ -74,7 +76,7 @@ sym_ptr lookup_symbol_table(char* id, int scope)
         sym_ptr temp2 = kh_value(handle, temp);
         while (temp2 != NULL)
         {
-            if (temp2->scope == scope)
+            if (temp2->scope == scope && temp2->hidden == 0)
             {
                 return temp2;
             }
@@ -92,6 +94,30 @@ void increment_scope()
 
 void decrement_scope()
 {
+    for (khint_t i = kh_begin(handle); i != kh_end(handle); ++i)
+    {
+        if (kh_exist(handle, i))
+        {
+            sym_ptr temp = kh_value(handle, i);
+
+            if (temp->next == NULL && temp->scope == scope && temp->hidden == 0)
+            {
+                temp->hidden = 1;
+            }
+            else if (temp->next != NULL)
+            {
+                while (temp != NULL)
+                {
+                    if (temp->scope == scope)
+                    {
+                        temp->hidden = 1;
+                    }
+                    temp = temp->next;
+                }
+            }
+        }
+    }
+    
     scope = scope - 1;
 }
 
@@ -100,6 +126,34 @@ int get_scope()
     return scope;
 }
 
+void dump_symbol_table()
+{
+    printf("|%-10s |%-10s |%-10s |%-10s\n", "id", "scope", "value", "hidden");
+
+    for (khint_t k = kh_begin(handle); k != kh_end(handle); ++k)
+    {
+        if (kh_exist(handle, k))
+        {
+            sym_ptr temp = kh_value(handle, k);
+
+            if (temp->next == NULL)
+            {
+                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->hidden);
+            }
+            else 
+            {
+                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->hidden);
+                temp = temp->next;
+
+                while (temp != NULL)
+                {
+                    printf("--> %-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->hidden);    
+                    temp = temp->next;
+                }
+            }
+        }
+    }
+}
 void close_symbol_table()
 {
     for (khint_t k = kh_begin(handle); k != kh_end(handle); ++k)

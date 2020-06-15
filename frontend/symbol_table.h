@@ -11,6 +11,7 @@ typedef struct symbol
     int value;
     int scope; 
     struct symbol* next;
+    int hidden;
 }*sym_ptr, sym;
 
 KHASH_MAP_INIT_STR(symbol_table, sym_ptr);
@@ -21,4 +22,5 @@ sym_ptr lookup_symbol_table(char* id, int scope);
 void increment_scope();
 void decrement_scope();
 int get_scope();
+void dump_symbol_table();
 void close_symbol_table();
