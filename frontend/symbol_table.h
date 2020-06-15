@@ -3,6 +3,7 @@
 #define DT_UNDEF 0
 #define DT_INTEGER 1
 #define DT_BOOLEAN 2
+#define DT_VOID_ 3
 
 typedef struct symbol
 {

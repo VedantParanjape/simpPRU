@@ -27,6 +27,7 @@ arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
 bitwise_operators    ("~"|"&"|"|")
 logical_operators    ("not"|"and"|"or")
+function             ("return"|"void")
 assignment_operator  ([:][=])
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
@@ -215,6 +216,17 @@ comma                ([,])
   }
 }
 
+{function}              {
+  if (!strcmp(yytext, "return"))
+  {
+    return KW_RETURN;
+  }
+  else if (!strcmp(yytext, "void"))
+  {
+    return DT_VOID;
+  }
+}
+
 {assignment_operator}   {
   return OPR_ASSIGNMENT;  
 }
@@ -255,6 +267,7 @@ comma                ([,])
 {comma}                 {
   return COMMA;
 }
+
 "/*"            {BEGIN(comment);                              }
 <comment>"*/"   {BEGIN(INITIAL);                              }
 <comment>\n     {linenumber++;                                }

@@ -7,6 +7,7 @@ void yyerror(const char* s);
 extern int yylex();
 extern int yyparse();
 extern FILE* yyin;
+
 extern int linenumber;
 extern int assignment_flag;
 
@@ -42,10 +43,13 @@ extern int assignment_flag;
 
 %token DT_INT
 %token DT_BOOL
+%token DT_VOID
 
 %token KW_IF KW_ELIF KW_ELSE
 
 %token KW_FOR KW_IN KW_WHILE
+
+%token KW_RETURN
 
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
