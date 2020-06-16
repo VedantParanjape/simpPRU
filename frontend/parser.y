@@ -60,8 +60,13 @@ extern int assignment_flag;
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions
 %%
 
-translational_unit: statement_list
-                  ;
+translation_unit: program
+	            | translation_unit program
+	            ;
+
+program: statement
+       | function_definition
+       ;
 
 compound_statement: LBRACE statement_list RBRACE
                   ;
@@ -78,6 +83,7 @@ statement: compound_statement
          | conditional_statement
          | loop_statement_for
          | loop_statement_while
+         | return_statement
          ;
 
 empty_statement: SEMICOLON {
@@ -301,6 +307,44 @@ loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
                       printf("inside while\n");
                     }
                     ;
+
+function_definition: DT_INT IDENTIFIER COLON parameters compound_statement {
+                       printf("func\n");
+                   }
+                   | DT_BOOL IDENTIFIER COLON parameters compound_statement {
+                       printf("func\n");
+                   }
+                   | DT_VOID IDENTIFIER COLON parameters compound_statement {
+                       printf("func\n");
+                   }
+                   ;
+
+parameters: parameter_list_def
+         | /* empty */
+         ;
+
+parameter_list_def: parameter_list_def COMMA parameter
+                  | parameter     
+                  ;
+
+parameter: function_parameter_types IDENTIFIER
+         ;
+
+function_parameter_types: DT_INT
+                        | DT_BOOL
+                        ;
+
+return_statement: KW_RETURN bool_expressions SEMICOLON
+                | KW_RETURN arithmetic_expression SEMICOLON
+                | KW_RETURN SEMICOLON
+                ;
+
+/* function_call: IDENTIFIER LBRACE function_call_parameters RBRACE
+             | IDENTIFIER LBRACE function_call_parameters RBRACE SEMICOLON 
+
+function_call_parameters: function_call_parameters COMMA IDENTIFIER
+                        | IDENTIFIER
+                        ; */
 %%
 
 int main()

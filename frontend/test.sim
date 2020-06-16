@@ -96,3 +96,18 @@ while : 4 < 5 {
         bool nm := true;
     }
 }
+
+/* function definitions */
+int test_func : int rtpo , bool rty, int yy{
+    int we := 44;
+
+    while : 4 > 5 {
+        bool inr := true;
+    }
+    
+    for : count in 3:4 {
+        int for_inside := 44;
+    }
+
+    return we;
+}
