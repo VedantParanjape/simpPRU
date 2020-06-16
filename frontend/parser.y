@@ -61,6 +61,7 @@ extern int assignment_flag;
 %%
 
 translational_unit: statement_list
+                  | function_definitions
                   ;
 
 compound_statement: LBRACE statement_list RBRACE
@@ -78,6 +79,7 @@ statement: compound_statement
          | conditional_statement
          | loop_statement_for
          | loop_statement_while
+         | return_statement
          ;
 
 empty_statement: SEMICOLON {
@@ -88,8 +90,8 @@ empty_statement: SEMICOLON {
 declaration: DT_INT IDENTIFIER SEMICOLON { 
                if ($2 == NULL)
                {
-                   yyerror("variable already defined");
                }
+                   yyerror("variable already defined");
 
                $2->data_type = DT_INTEGER;
 
@@ -301,6 +303,29 @@ loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
                       printf("inside while\n");
                     }
                     ;
+
+return_statement: KW_RETURN bool_expressions
+                | KW_RETURN arithmetic_expression
+                ;
+
+function_definitions: function_definition
+                    | function_definitions function_definition
+                    ;
+
+function_definition: DT_INT IDENTIFIER COLON parameter_list_def compound_statement
+                   | DT_BOOL IDENTIFIER COLON parameter_list_def compound_statement
+                   | DT_VOID IDENTIFIER COLON parameter_list_def compound_statement
+                   ;
+
+parameter_list_def: parameter_list_def COMMA function_parameter_types IDENTIFIER
+                  | function_parameter_types IDENTIFIER
+                  | /* empty */ 
+                  ;
+
+function_parameter_types: DT_INT
+                        | DT_BOOL
+                        ;
+
 %%
 
 int main()
