@@ -58,6 +58,7 @@ extern int assignment_flag;
 
 %type <integer> arithmetic_expression
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions
+%type <symbol_handle> function_call
 %%
 
 translation_unit: program
@@ -84,6 +85,7 @@ statement: compound_statement
          | loop_statement_for
          | loop_statement_while
          | return_statement
+         | function_call SEMICOLON
          ;
 
 empty_statement: SEMICOLON {
@@ -186,6 +188,9 @@ arithmetic_expression: CONST_INT {
                   }
               }
           }
+          | function_call {
+              $$ = $1->value;
+          }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = $1 + $3;
           } 
@@ -225,6 +230,9 @@ boolean_expression: CONST_BOOL {
                       yyerror("int variable not allowed with bool");
                   }
               }
+          }
+          | function_call {
+              $$ = $1->value;
           }
           | OPR_BW_NOT boolean_expression {
               $$ = $2 ? 0 : 1;
@@ -339,12 +347,16 @@ return_statement: KW_RETURN bool_expressions SEMICOLON
                 | KW_RETURN SEMICOLON
                 ;
 
-/* function_call: IDENTIFIER LBRACE function_call_parameters RBRACE
-             | IDENTIFIER LBRACE function_call_parameters RBRACE SEMICOLON 
+function_call: IDENTIFIER LPAREN function_call_parameters RPAREN
+             ;
 
 function_call_parameters: function_call_parameters COMMA IDENTIFIER
+                        | function_call_parameters COMMA CONST_INT
+                        | function_call_parameters COMMA CONST_BOOL
+                        | CONST_INT
+                        | CONST_BOOL
                         | IDENTIFIER
-                        ; */
+                        ;
 %%
 
 int main()

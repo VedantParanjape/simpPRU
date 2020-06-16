@@ -111,3 +111,5 @@ int test_func : int rtpo , bool rty, int yy{
 
     return we;
 }
+
+int fun_defff := test_func(1, true, 99);
