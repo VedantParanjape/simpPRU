@@ -1,4 +1,5 @@
 #include "klib/khash.h"
+#include "klib/kvec.h"
 
 #define DT_UNDEF 0
 #define DT_INTEGER 1
@@ -12,13 +13,15 @@ typedef struct symbol
     int value;
     int scope; 
     struct symbol* next;
-    int hidden;
+    int is_hidden;
+    int is_function;
+    kvec_t(struct symbol*) params;
 }*sym_ptr, sym;
 
 KHASH_MAP_INIT_STR(symbol_table, sym_ptr);
 
 void init_symbol_table();
-int insert_symbol_table(char* id, int dt_type, int val);
+int insert_symbol_table(char* id, int dt_type, int val, int is_function);
 sym_ptr lookup_symbol_table(char* id, int scope);
 void increment_scope();
 void decrement_scope();

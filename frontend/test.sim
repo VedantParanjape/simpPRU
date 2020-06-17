@@ -98,7 +98,7 @@ while : 4 < 5 {
 }
 
 /* function definitions */
-int test_func : int rtpo , bool rty, int yy{
+def test_func : int : int rtpo , bool rty, int yy{
     int we := 44;
 
     while : 4 > 5 {
@@ -112,4 +112,10 @@ int test_func : int rtpo , bool rty, int yy{
     return we;
 }
 
-int fun_defff := test_func(1, true, 99);
+def tt : bool : int r {
+    ;
+}
+
+def tt_ : void : int r {
+    ;
+}

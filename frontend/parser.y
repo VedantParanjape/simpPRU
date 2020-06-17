@@ -10,6 +10,7 @@ extern FILE* yyin;
 
 extern int linenumber;
 extern int assignment_flag;
+sym_ptr temp = NULL;
 
 #define YYDEBUG 1
 %}
@@ -49,16 +50,16 @@ extern int assignment_flag;
 
 %token KW_FOR KW_IN KW_WHILE
 
-%token KW_RETURN
+%token KW_RETURN KW_DEF
 
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
 
-%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER
+%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER
 
-%type <integer> arithmetic_expression
-%type <boolean> boolean_expression relational_expression logical_expression bool_expressions
-%type <symbol_handle> function_call
+%type <integer> arithmetic_expression 
+%type <boolean> boolean_expression relational_expression logical_expression bool_expressions 
+%type <symbol_handle> function_call int_function_call bool_function_call void_function_call
 %%
 
 translation_unit: program
@@ -188,7 +189,7 @@ arithmetic_expression: CONST_INT {
                   }
               }
           }
-          | function_call {
+          | int_function_call {
               $$ = $1->value;
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
@@ -231,7 +232,7 @@ boolean_expression: CONST_BOOL {
                   }
               }
           }
-          | function_call {
+          | bool_function_call {
               $$ = $1->value;
           }
           | OPR_BW_NOT boolean_expression {
@@ -316,13 +317,25 @@ loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
                     }
                     ;
 
-function_definition: DT_INT IDENTIFIER COLON parameters compound_statement {
+function_definition: KW_DEF IDENTIFIER COLON DT_INT {
+                       if ($2 == NULL){yyerror("function name already defined");}
+                       temp = $2; temp->data_type = DT_INT;} 
+                   COLON parameters compound_statement {
+                       temp = NULL;
                        printf("func\n");
                    }
-                   | DT_BOOL IDENTIFIER COLON parameters compound_statement {
+                   | KW_DEF IDENTIFIER COLON DT_BOOL {
+                       if ($2 == NULL){yyerror("function name already defined");}
+                       temp = $2; temp->data_type = DT_BOOL;} 
+                   COLON parameters compound_statement {
+                       temp = NULL;
                        printf("func\n");
                    }
-                   | DT_VOID IDENTIFIER COLON parameters compound_statement {
+                   | KW_DEF IDENTIFIER COLON DT_VOID {
+                       if ($2 == NULL){yyerror("function name already defined");}
+                       temp = $2; temp->data_type = DT_VOID;} 
+                   COLON parameters compound_statement {
+                       temp = NULL;
                        printf("func\n");
                    }
                    ;
@@ -335,20 +348,34 @@ parameter_list_def: parameter_list_def COMMA parameter
                   | parameter     
                   ;
 
-parameter: function_parameter_types IDENTIFIER
+parameter: DT_INT IDENTIFIER {
+            $2->data_type = DT_INT;
+            kv_push(sym_ptr, temp->params, $2);
+         }
+         | DT_BOOL IDENTIFIER {
+            $2->data_type = DT_BOOL;
+            kv_push(sym_ptr, temp->params, $2);
+         }
          ;
-
-function_parameter_types: DT_INT
-                        | DT_BOOL
-                        ;
 
 return_statement: KW_RETURN bool_expressions SEMICOLON
                 | KW_RETURN arithmetic_expression SEMICOLON
                 | KW_RETURN SEMICOLON
                 ;
 
-function_call: IDENTIFIER LPAREN function_call_parameters RPAREN
+function_call: int_function_call 
+             | bool_function_call
+             | void_function_call
              ;
+
+int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN
+                 ;
+
+bool_function_call: BOOL_IDENTIFIER LPAREN function_call_parameters RPAREN
+                  ;
+
+void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN
+                  ;
 
 function_call_parameters: function_call_parameters COMMA IDENTIFIER
                         | function_call_parameters COMMA CONST_INT

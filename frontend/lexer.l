@@ -6,6 +6,7 @@
   int linenumber = 0;
   int assignment_flag = 0;
   int for_loop_flag = 0;
+  int function_flag = 0;
 
   void yyerror(char* s);
   int yylex();
@@ -27,7 +28,7 @@ arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
 bitwise_operators    ("~"|"&"|"|")
 logical_operators    ("not"|"and"|"or")
-function             ("return"|"void")
+function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
@@ -49,6 +50,10 @@ comma                ([,])
     if (for_loop_flag == 1)
     {
       for_loop_flag = 0;
+    }
+    else if (function_flag == -1)
+    {
+      function_flag = 0;
     }
     else if (for_loop_flag == 0)
     {
@@ -225,6 +230,12 @@ comma                ([,])
   {
     return DT_VOID;
   }
+  else if (!strcmp(yytext, "def"))
+  {
+    function_flag = 1;
+
+    return KW_DEF;
+  }
 }
 
 {assignment_operator}   {
@@ -234,7 +245,20 @@ comma                ([,])
 {identifier}            {
   yylval.symbol_handle = NULL;
 
-  if (insert_symbol_table(yytext, DT_UNDEF, 0) == 1 && (assignment_flag == 1 || for_loop_flag == 1))
+  if (function_flag == 1)
+  {
+    if (insert_symbol_table(yytext, DT_UNDEF, 0, 1) == 1)
+    {
+      yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
+      kv_init(yylval.symbol_handle->params);
+    }
+    function_flag = -1;
+    increment_scope();
+
+    return IDENTIFIER;
+  }
+
+  if (insert_symbol_table(yytext, DT_UNDEF, 0, 0) == 1 && (assignment_flag == 1 || for_loop_flag == 1))
   {
     yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
     assignment_flag = 0;

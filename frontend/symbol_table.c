@@ -10,7 +10,7 @@ void init_symbol_table()
     scope = 0;
 }
 
-int insert_symbol_table(char* id, int dt_type, int val)
+int insert_symbol_table(char* id, int dt_type, int val, int is_function)
 {    
     khint_t temp = kh_get(symbol_table, handle, id);
 
@@ -22,40 +22,51 @@ int insert_symbol_table(char* id, int dt_type, int val)
         new->value = val;
         new->scope = scope;
         new->next = NULL;
-        new->hidden = 0;
+        new->is_hidden = 0;
+        new->is_function = is_function;
 
         int err;
         temp = kh_put(symbol_table, handle, strdup(id), &err);
+        if (temp == -1)
+        {
+            return -1;
+        }
         kh_value(handle, temp) = new;
-        
+
         return 1;
     }
     else
     {
-        sym_ptr base = kh_value(handle, kh_get(symbol_table, handle, id));
-        sym_ptr temp = NULL;
-
-        while (base != NULL)
+        if (is_function == 0)
         {
-            if (base->scope == scope && base->hidden == 0)
+            sym_ptr base = kh_value(handle, kh_get(symbol_table, handle, id));
+            sym_ptr temp = NULL;
+
+            while (base != NULL)
             {
-                return -1;
+                if (base->scope == scope && base->is_hidden == 0)
+                {
+                    return -1;
+                }
+                temp = base;
+                base = base->next;
             }
-            temp = base;
-            base = base->next;
+
+            base = (sym_ptr) malloc(sizeof(sym));
+            temp->next = base;
+
+            base->identifier = strdup(id);
+            base->data_type = dt_type;
+            base->value = val;
+            base->scope = scope;
+            base->next = NULL;
+            base->is_hidden = 0;
+            base->is_function = 0;
+            
+            return 1;
         }
 
-        base = (sym_ptr) malloc(sizeof(sym));
-        temp->next = base;
-        
-        base->identifier = strdup(id);
-        base->data_type = dt_type;
-        base->value = val;
-        base->scope = scope;
-        base->next = NULL;
-        base->hidden = 0;
-
-        return 1;
+        return -1;
     }
 }
 
@@ -67,7 +78,7 @@ sym_ptr lookup_symbol_table(char* id, int scope)
     {
         return NULL;
     }
-    else if (kh_value(handle, temp)->next == NULL && kh_value(handle, temp)->scope == scope && kh_value(handle, temp)->hidden == 0)
+    else if (kh_value(handle, temp)->next == NULL && kh_value(handle, temp)->scope == scope && kh_value(handle, temp)->is_hidden == 0)
     {   
         return kh_value(handle, temp);
     }
@@ -76,7 +87,7 @@ sym_ptr lookup_symbol_table(char* id, int scope)
         sym_ptr temp2 = kh_value(handle, temp);
         while (temp2 != NULL)
         {
-            if (temp2->scope == scope && temp2->hidden == 0)
+            if (temp2->scope == scope && temp2->is_hidden == 0)
             {
                 return temp2;
             }
@@ -100,9 +111,9 @@ void decrement_scope()
         {
             sym_ptr temp = kh_value(handle, i);
 
-            if (temp->next == NULL && temp->scope == scope && temp->hidden == 0)
+            if (temp->next == NULL && temp->scope == scope && temp->is_hidden == 0)
             {
-                temp->hidden = 1;
+                temp->is_hidden = 1;
             }
             else if (temp->next != NULL)
             {
@@ -110,7 +121,7 @@ void decrement_scope()
                 {
                     if (temp->scope == scope)
                     {
-                        temp->hidden = 1;
+                        temp->is_hidden = 1;
                     }
                     temp = temp->next;
                 }
@@ -128,7 +139,7 @@ int get_scope()
 
 void dump_symbol_table()
 {
-    printf("|%-10s |%-10s |%-10s |%-10s\n", "id", "scope", "value", "hidden");
+    printf("|%-10s |%-10s |%-10s |%-10s |%-10s\n", "id", "scope", "value", "hidden", "function");
 
     for (khint_t k = kh_begin(handle); k != kh_end(handle); ++k)
     {
@@ -138,16 +149,16 @@ void dump_symbol_table()
 
             if (temp->next == NULL)
             {
-                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->hidden);
+                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden);
             }
             else 
             {
-                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->hidden);
+                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden);
                 temp = temp->next;
 
                 while (temp != NULL)
                 {
-                    printf("--> %-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->hidden);    
+                    printf("--> %-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden);    
                     temp = temp->next;
                 }
             }
