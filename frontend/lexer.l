@@ -250,7 +250,7 @@ comma                ([,])
     if (insert_symbol_table(yytext, DT_UNDEF, 0, 1) == 1)
     {
       yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
-      kv_init(yylval.symbol_handle->params);
+      vec_init(&yylval.symbol_handle->params);
     }
     function_flag = -1;
     increment_scope();

@@ -350,11 +350,11 @@ parameter_list_def: parameter_list_def COMMA parameter
 
 parameter: DT_INT IDENTIFIER {
             $2->data_type = DT_INT;
-            kv_push(sym_ptr, temp->params, $2);
+            vec_push(&temp->params, $2);
          }
          | DT_BOOL IDENTIFIER {
             $2->data_type = DT_BOOL;
-            kv_push(sym_ptr, temp->params, $2);
+            vec_push(&temp->params, $2);
          }
          ;
 

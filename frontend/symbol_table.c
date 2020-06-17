@@ -149,16 +149,27 @@ void dump_symbol_table()
 
             if (temp->next == NULL)
             {
-                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden);
+                printf("%-10s %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function);
+                
+                if (temp->is_function == 1)
+                {
+                    int i = 0;
+                    sym_ptr tmp = NULL;
+
+                    vec_foreach(&temp->params, tmp, i)
+                    {
+                        printf("--> %-10s %-10d %-10d %-10d %-10d\n", tmp->identifier, tmp->scope, tmp->value, tmp->is_hidden, tmp->is_function);
+                    }
+                }
             }
             else 
             {
-                printf("%-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden);
+                printf("%-10s %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function);
                 temp = temp->next;
 
                 while (temp != NULL)
                 {
-                    printf("--> %-10s %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden);    
+                    printf("--> %-10s %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function);    
                     temp = temp->next;
                 }
             }
@@ -173,6 +184,10 @@ void close_symbol_table()
         {
             if (kh_value(handle, k)->next == NULL)
             {
+                if (kh_value(handle, k)->is_function == 1)
+                {
+                    vec_deinit(&kh_value(handle, k)->params);
+                }
                 free((sym_ptr)kh_value(handle, k));
             }
             else 

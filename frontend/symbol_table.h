@@ -1,11 +1,12 @@
 #include "klib/khash.h"
-#include "klib/kvec.h"
+#include "vec/vec.h"
 
 #define DT_UNDEF 0
 #define DT_INTEGER 1
 #define DT_BOOLEAN 2
 #define DT_VOID_ 3
 
+typedef vec_t(struct symbol*) param;
 typedef struct symbol
 {
     char* identifier;
@@ -15,7 +16,7 @@ typedef struct symbol
     struct symbol* next;
     int is_hidden;
     int is_function;
-    kvec_t(struct symbol*) params;
+    param params;
 }*sym_ptr, sym;
 
 KHASH_MAP_INIT_STR(symbol_table, sym_ptr);
