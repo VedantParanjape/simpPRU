@@ -59,7 +59,7 @@ sym_ptr temp = NULL;
 
 %type <integer> arithmetic_expression 
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions 
-%type <symbol_handle> function_call int_function_call bool_function_call void_function_call
+%type <symbol_handle> function_call
 %%
 
 translation_unit: program
@@ -189,9 +189,6 @@ arithmetic_expression: CONST_INT {
                   }
               }
           }
-          | int_function_call {
-              $$ = $1->value;
-          }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = $1 + $3;
           } 
@@ -231,9 +228,6 @@ boolean_expression: CONST_BOOL {
                       yyerror("int variable not allowed with bool");
                   }
               }
-          }
-          | bool_function_call {
-              $$ = $1->value;
           }
           | OPR_BW_NOT boolean_expression {
               $$ = $2 ? 0 : 1;
@@ -363,27 +357,32 @@ return_statement: KW_RETURN bool_expressions SEMICOLON
                 | KW_RETURN SEMICOLON
                 ;
 
-function_call: int_function_call 
-             | bool_function_call
-             | void_function_call
-             ;
+function_call: IDENTIFIER LPAREN function_call_parameters RPAREN {
+                if ($1 != NULL)
+                {
+                    if ($1->is_function != 1)
+                    {
+                        yyerror("not a function");
+                    }
+                }
+                else 
+                {
+                    yyerror("function not defined");
+                }
+                printf("function call\n");
+             }
 
-int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN
-                 ;
-
-bool_function_call: BOOL_IDENTIFIER LPAREN function_call_parameters RPAREN
-                  ;
-
-void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN
-                  ;
-
-function_call_parameters: function_call_parameters COMMA IDENTIFIER
-                        | function_call_parameters COMMA CONST_INT
-                        | function_call_parameters COMMA CONST_BOOL
-                        | CONST_INT
-                        | CONST_BOOL
-                        | IDENTIFIER
+function_call_parameters: function_call_parameters COMMA function_call_datatypes
+                        | function_call_datatypes
+                        | /* empty */
                         ;
+                        
+function_call_datatypes: IDENTIFIER
+                       | INT_IDENTIFIER
+                       | BOOL_IDENTIFIER
+                       | CONST_INT
+                       | CONST_BOOL
+                       ;
 %%
 
 int main()

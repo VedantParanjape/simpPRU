@@ -37,11 +37,11 @@ int insert_symbol_table(char* id, int dt_type, int val, int is_function)
     }
     else
     {
-        if (is_function == 0)
-        {
-            sym_ptr base = kh_value(handle, kh_get(symbol_table, handle, id));
-            sym_ptr temp = NULL;
+        sym_ptr base = kh_value(handle, kh_get(symbol_table, handle, id));            
+        sym_ptr temp = NULL;
 
+        if (is_function == 0 && base->is_function == 0)
+        {
             while (base != NULL)
             {
                 if (base->scope == scope && base->is_hidden == 0)

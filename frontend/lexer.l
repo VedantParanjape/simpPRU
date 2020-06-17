@@ -254,7 +254,7 @@ comma                ([,])
     }
     function_flag = -1;
     increment_scope();
-
+    
     return IDENTIFIER;
   }
 
@@ -274,6 +274,10 @@ comma                ([,])
     else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_BOOLEAN)
     {
       return BOOL_IDENTIFIER;
+    }
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_VOID)
+    {
+      return VOID_IDENTIFIER;
     }
   }
 

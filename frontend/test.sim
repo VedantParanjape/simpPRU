@@ -112,10 +112,12 @@ def test_func : int : int rtpo , bool rty, int yy{
     return we;
 }
 
-def tt : bool : int r {
+def tt : int : int r {
     ;
 }
 
 def tt_ : void : int r {
     ;
 }
+
+tt(1);
