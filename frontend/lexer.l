@@ -275,7 +275,7 @@ comma                ([,])
     {
       return BOOL_IDENTIFIER;
     }
-    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_VOID)
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_VOID_)
     {
       return VOID_IDENTIFIER;
     }
