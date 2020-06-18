@@ -121,3 +121,5 @@ def tt_ : void : int r {
 }
 
 tt(1);
+
+int assss := tt();

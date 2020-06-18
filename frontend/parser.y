@@ -59,7 +59,7 @@ sym_ptr temp = NULL;
 
 %type <integer> arithmetic_expression 
 %type <boolean> boolean_expression relational_expression logical_expression bool_expressions 
-%type <symbol_handle> function_call
+%type <symbol_handle> int_function_call bool_function_call
 %%
 
 translation_unit: program
@@ -86,7 +86,9 @@ statement: compound_statement
          | loop_statement_for
          | loop_statement_while
          | return_statement
-         | function_call SEMICOLON
+         | int_function_call SEMICOLON
+         | bool_function_call SEMICOLON
+         | void_function_call SEMICOLON
          ;
 
 empty_statement: SEMICOLON {
@@ -188,6 +190,9 @@ arithmetic_expression: CONST_INT {
                       yyerror("bool variable not allowed with int");
                   }
               }
+          } 
+          | int_function_call {
+              $$ = $1->value;
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = $1 + $3;
@@ -228,6 +233,9 @@ boolean_expression: CONST_BOOL {
                       yyerror("int variable not allowed with bool");
                   }
               }
+          }
+          | bool_function_call {
+              $$ = $1->value;
           }
           | OPR_BW_NOT boolean_expression {
               $$ = $2 ? 0 : 1;
@@ -313,21 +321,21 @@ loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
 
 function_definition: KW_DEF IDENTIFIER COLON DT_INT {
                        if ($2 == NULL){yyerror("function name already defined");}
-                       temp = $2; temp->data_type = DT_INT;} 
+                       temp = $2; temp->data_type = DT_INTEGER;} 
                    COLON parameters compound_statement {
                        temp = NULL;
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_BOOL {
                        if ($2 == NULL){yyerror("function name already defined");}
-                       temp = $2; temp->data_type = DT_BOOL;} 
+                       temp = $2; temp->data_type = DT_BOOLEAN;} 
                    COLON parameters compound_statement {
                        temp = NULL;
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_VOID {
                        if ($2 == NULL){yyerror("function name already defined");}
-                       temp = $2; temp->data_type = DT_VOID;} 
+                       temp = $2; temp->data_type = DT_VOID_;} 
                    COLON parameters compound_statement {
                        temp = NULL;
                        printf("func\n");
@@ -357,7 +365,7 @@ return_statement: KW_RETURN bool_expressions SEMICOLON
                 | KW_RETURN SEMICOLON
                 ;
 
-function_call: IDENTIFIER LPAREN function_call_parameters RPAREN {
+/* function_call: IDENTIFIER LPAREN function_call_parameters RPAREN {
                 if ($1 != NULL)
                 {
                     if ($1->is_function != 1)
@@ -371,6 +379,55 @@ function_call: IDENTIFIER LPAREN function_call_parameters RPAREN {
                 }
                 printf("function call\n");
              }
+             ; */
+
+int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN {
+                if ($1 != NULL)
+                {
+                    if ($1->is_function != 1)
+                    {
+                        yyerror("not a function");
+                    }
+                }
+                else 
+                {
+                    yyerror("function not defined");
+                }
+                printf("function call\n");
+             }
+             ;
+
+bool_function_call: BOOL_IDENTIFIER LPAREN function_call_parameters RPAREN {
+                if ($1 != NULL)
+                {
+                    if ($1->is_function != 1)
+                    {
+                        yyerror("not a function");
+                    }
+                }
+                else 
+                {
+                    yyerror("function not defined");
+                }
+                printf("function call\n");
+             }
+             ;
+
+void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
+                if ($1 != NULL)
+                {
+                    if ($1->is_function != 1)
+                    {
+                        yyerror("not a function");
+                    }
+                }
+                else 
+                {
+                    yyerror("function not defined");
+                }
+                printf("function call\n");
+             }
+             ;
 
 function_call_parameters: function_call_parameters COMMA function_call_datatypes
                         | function_call_datatypes
