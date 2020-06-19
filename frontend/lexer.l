@@ -23,7 +23,7 @@ integer              ([0-9]+)
 bool                 ("true"|"false")
 datatype             ("int"|"bool")
 conditional          ("if"|"elif"|"else")
-loops                ("for"|"in"|"while")
+loops                ("for"|"in"|"while"|"break"|"continue")
 arithmetic_operators ("+"|"-"|"*"|"/")
 relational_operators (">"|">="|"<"|"<="|"="|"!=")
 bitwise_operators    ("~"|"&"|"|")
@@ -142,6 +142,14 @@ comma                ([,])
   else if (!strcmp(yytext, "while"))
   {
     return KW_WHILE;
+  }
+  else if (!strcmp(yytext, "break"))
+  {
+    return KW_BREAK;
+  }
+  else if (!strcmp(yytext, "continue"))
+  {
+    return KW_CONTINUE;
   }
 }
 

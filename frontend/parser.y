@@ -48,7 +48,7 @@ sym_ptr temp = NULL;
 
 %token KW_IF KW_ELIF KW_ELSE
 
-%token KW_FOR KW_IN KW_WHILE
+%token KW_FOR KW_IN KW_WHILE KW_BREAK KW_CONTINUE
 
 %token KW_RETURN KW_DEF
 
@@ -89,6 +89,8 @@ statement: compound_statement
          | int_function_call SEMICOLON
          | bool_function_call SEMICOLON
          | void_function_call SEMICOLON
+         | KW_BREAK SEMICOLON
+         | KW_CONTINUE SEMICOLON
          ;
 
 empty_statement: SEMICOLON {
@@ -365,22 +367,6 @@ return_statement: KW_RETURN bool_expressions SEMICOLON
                 | KW_RETURN SEMICOLON
                 ;
 
-/* function_call: IDENTIFIER LPAREN function_call_parameters RPAREN {
-                if ($1 != NULL)
-                {
-                    if ($1->is_function != 1)
-                    {
-                        yyerror("not a function");
-                    }
-                }
-                else 
-                {
-                    yyerror("function not defined");
-                }
-                printf("function call\n");
-             }
-             ; */
-
 int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN {
                 if ($1 != NULL)
                 {
@@ -434,11 +420,8 @@ function_call_parameters: function_call_parameters COMMA function_call_datatypes
                         | /* empty */
                         ;
                         
-function_call_datatypes: IDENTIFIER
-                       | INT_IDENTIFIER
-                       | BOOL_IDENTIFIER
-                       | CONST_INT
-                       | CONST_BOOL
+function_call_datatypes: arithmetic_expression
+                       | boolean_expression
                        ;
 %%
 
