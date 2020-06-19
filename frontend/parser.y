@@ -30,7 +30,6 @@ sym_ptr temp = NULL;
 
 %left OPR_ADD OPR_SUB
 %left OPR_MUL OPR_DIV
-%left NEG
 
 %left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_GE OPR_LE
 
@@ -208,7 +207,7 @@ arithmetic_expression: CONST_INT {
           | arithmetic_expression OPR_DIV arithmetic_expression {
               $$ = $1 / $3;
           }
-          | OPR_SUB arithmetic_expression %prec NEG {
+          | OPR_SUB arithmetic_expression {
               $$ = -$2;
           } 
           | LPAREN arithmetic_expression RPAREN {

@@ -15,7 +15,7 @@ bool rel := af != abc;
 
 /* variable assignment */
 af := (32*(3+4));
-abc:= -3 - (3-9);
+abc:= -3 -(3-9);
 a:= true and 1 > 3 or (false & true);
 test:= ((1+4) > 3) and  (false or true);
 bool adf;

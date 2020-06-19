@@ -33,5 +33,5 @@ GSoC 2020 project under BeagleBoard.org
 * [x] Implementing if else elif
 * [x] Implementing for loop
 * [x] Implementing while loop
-* [ ] Implementing functions
+* [x] Implementing functions
 * [ ] Implementing Register access
