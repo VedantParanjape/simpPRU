@@ -1,6 +1,9 @@
 #ifndef AST_H
 #define AST_H
 
+#include "vec/vec.h"
+#include "symbol_table.h"
+
 #define AST_NODE                     0
 #define AST_NODE_TRANSLATIONAL_UNIT  1
 #define AST_NODE_STATEMENTS          2
@@ -50,5 +53,96 @@
 #define DT_BOOL 2 // DATA TYPE BOOL
 #define DT_VOID 3 // DATA TYPE VOID
 
+typedef vec_t(struct ast_node*) ast_nodes;
+typedef vec_t(struct ast_node_statments*) ast_nodes_statements;
+typedef vec_t(struct ast_node_conditional_if*) ast_nodes_else_if;
+
+typedef struct ast_node 
+{
+    int node_type;
+    ast_nodes child_nodes;
+}ast_node;
+
+typedef struct ast_node_statements 
+{
+    int node_type;
+
+    union child_nodes
+    {
+        ast_node_compound_statement *compount_statement;
+        ast_node_declaration *declaration;
+        ast_node_assignment *assignment;
+        ast_node_conditional_if *if_else;
+    };
+}ast_node_statements;
+
+typedef struct ast_node_compound_statement 
+{
+    int node_type;
+    
+    ast_nodes_statements child_nodes;
+}ast_node_compound_statement;
+
+typedef struct ast_node_declaration
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *expression;
+}ast_node_declaration;
+
+typedef struct ast_node_assignment
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *expression;
+}ast_node_assignment;
+
+typedef struct ast_node_expression
+{
+    int node_type;
+    int opt;
+
+    ast_node *left;
+    ast_node *right;
+}ast_node_expression;
+
+typedef struct ast_node_constant
+{
+    int node_type;
+    int data_type;
+
+    int value;
+}ast_node_constant;
+
+typedef struct ast_node_variable
+{
+    int node_type;
+    int data_type;
+
+    sym_ptr symbol_entry;
+}ast_node_variable;
+
+typedef struct ast_node_conditional_if
+{
+    int node_type;
+
+    ast_node_expression *condition;
+    ast_node_compound_statement *body;
+    ast_nodes_else_if *else_if;
+    ast_node_compound_statement *else_part;
+}ast_node_conditional_if;
+
+typedef struct ast_node_loop_for
+{
+    int node_type;
+
+    ast_node_variable *init;
+    ast_node_expression *start_condition;
+    ast_node_expression *end_condition;
+}
+
+typedef struct ast_node_function_def;
 
 #endif

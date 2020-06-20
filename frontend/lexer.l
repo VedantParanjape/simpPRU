@@ -47,7 +47,7 @@ comma                ([,])
 {braces}                {
   if (!strcmp(yytext, "{"))
   {
-    if (for_loop_flag == 1)
+    if (for_loop_flag == -1)
     {
       for_loop_flag = 0;
     }
@@ -270,11 +270,17 @@ comma                ([,])
   {
     yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
     assignment_flag = 0;
+
+    if (for_loop_flag == 1)
+    {
+      for_loop_flag = -1;
+    }
   }
   else if (assignment_flag == 0)
   {
-    yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
-
+    int temp = for_loop_flag == -1 ? -1 : 0;
+    yylval.symbol_handle = lookup_symbol_table(yytext, get_scope() + temp);
+    
     if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_INTEGER)
     {
       return INT_IDENTIFIER;
@@ -288,6 +294,8 @@ comma                ([,])
       return VOID_IDENTIFIER;
     }
   }
+    printf("%s %d %d %d\n", yytext, function_flag, assignment_flag, yylval.symbol_handle->data_type);
+
 
   return IDENTIFIER;
 }

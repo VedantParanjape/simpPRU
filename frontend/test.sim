@@ -105,7 +105,7 @@ def test_func : int : int rtpo , bool rty, int yy{
         bool inr := true;
     }
     
-    for : count in 3:4 {
+    for : count in 1 :4 {
         int for_inside := 44;
     }
 
@@ -125,3 +125,7 @@ tt(tt());
 tt_();
 int f_c := -3 - (3-9) + test_func(1) + num1;
 bool f_c_b := true and 1 > 3 or (~tt(1) & true);
+
+for : rff in sum:1 {
+    ;
+}

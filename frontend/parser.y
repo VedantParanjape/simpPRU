@@ -307,7 +307,7 @@ conditional_statement_else: KW_ELSE compound_statement {
                           | /* empty */
                           ;
 
-loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN CONST_INT COLON CONST_INT compound_statement {
+loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN arithmetic_expression COLON arithmetic_expression compound_statement {
                       $3->data_type = DT_INTEGER;
                       $3->value = $5;
                     
