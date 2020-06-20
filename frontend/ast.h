@@ -73,6 +73,9 @@ typedef struct ast_node_statements
         ast_node_declaration *declaration;
         ast_node_assignment *assignment;
         ast_node_conditional_if *if_else;
+        ast_node_loop_for *loop_for;
+        ast_node_loop_while *loop_while;
+        ast_node_loop_control *loop_control;
     };
 }ast_node_statements;
 
@@ -141,8 +144,28 @@ typedef struct ast_node_loop_for
     ast_node_variable *init;
     ast_node_expression *start_condition;
     ast_node_expression *end_condition;
-}
+    ast_node_compound_statement *body;
+}ast_node_loop_for;
 
-typedef struct ast_node_function_def;
+typedef struct ast_node_loop_while
+{
+    int node_type;
+
+    ast_node_expression *condition;
+    ast_node_compound_statement *body;
+}ast_node_loop_while;
+
+typedef struct ast_node_loop_control
+{
+    int node_type;
+}ast_node_loop_control;
+
+// typedef struct ast_node_function_def
+// {
+//     int node_type;
+
+//     sym_ptr symbol_entry;
+//     ast_node_compound_statement *body;
+// }ast_node_function_def;
 
 #endif
