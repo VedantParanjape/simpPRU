@@ -15,12 +15,14 @@
 #define AST_NODE_ARITHMETIC_EXP      8
 #define AST_NODE_BOOLEAN_EXP         9
 #define AST_NODE_LOGICAL_EXP         10
-#define AST_NODE_CONDITIONAL_IF      11
-#define AST_NODE_CONDITIONAL_ELSE_IF 12
-#define AST_NODE_LOOP_FOR            13
-#define AST_NODE_LOOP_WHILE          14
-#define AST_NODE_LOOP_CONTROL        15
-#define AST_NODE_FUNC_CALL           16
+#define AST_NODE_CONSTANT            11
+#define AST_NODE_VARIABLE            12
+#define AST_NODE_CONDITIONAL_IF      13
+#define AST_NODE_CONDITIONAL_ELSE_IF 14
+#define AST_NODE_LOOP_FOR            15
+#define AST_NODE_LOOP_WHILE          16
+#define AST_NODE_LOOP_CONTROL        17
+#define AST_NODE_FUNC_CALL           18
 
 
 #define AST_OPR_ADD        1 // + 
@@ -53,7 +55,7 @@
 #define DT_VOID 3 // DATA TYPE VOID
 
 typedef vec_t(struct ast_node*) ast_nodes;
-typedef vec_t(struct ast_node_statments*) ast_nodes_statements;
+typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
 typedef vec_t(struct ast_node_conditional_if*) ast_nodes_else_if;
 
 typedef struct ast_node 
@@ -133,7 +135,7 @@ typedef struct ast_node_conditional_if
 
     ast_node_expression *condition;
     ast_node_compound_statement *body;
-    ast_nodes_else_if *else_if;
+    ast_nodes_else_if else_if;
     ast_node_compound_statement *else_part;
 }ast_node_conditional_if;
 
@@ -178,4 +180,15 @@ typedef struct ast_node_function_call
     ast_nodes params;
 }ast_node_function_call;
 
+ast_node *create_translation_unit();
+ast_node *add_program_unit(ast_node *parent, ast_node *child);
+ast_node_statements *create_statement_node(int node_type, void *child);
+ast_node_compound_statement *create_compound_statement_node(ast_node_statements *child);
+ast_node_compound_statement *add_compound_statement_node(ast_node_statements *parent, ast_node_statements *child);
+ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expression *exp);
+ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
+ast_node_expression *create_expression_node(int opt, ast_node *left, ast_node *right);
+ast_node *create_constant_node(int data_type, int value);
+ast_node *create_variable_node(int data_type, sym_ptr symbol);
+// ast_node_conditional_if *create_conditional_if_node(ast_node_expression *condition, ast_node_compound_statement *body, ast_nodes_else_if)
 #endif
