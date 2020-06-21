@@ -20,8 +20,7 @@
 #define AST_NODE_LOOP_FOR            13
 #define AST_NODE_LOOP_WHILE          14
 #define AST_NODE_LOOP_CONTROL        15
-#define AST_NODE_FUNC_RETURN         16
-#define AST_NODE_FUNC_CALL           17
+#define AST_NODE_FUNC_CALL           16
 
 
 #define AST_OPR_ADD        1 // + 
@@ -76,6 +75,7 @@ typedef struct ast_node_statements
         ast_node_loop_for *loop_for;
         ast_node_loop_while *loop_while;
         ast_node_loop_control *loop_control;
+        ast_node_function_call *function_call;
     };
 }ast_node_statements;
 
@@ -160,12 +160,22 @@ typedef struct ast_node_loop_control
     int node_type;
 }ast_node_loop_control;
 
-// typedef struct ast_node_function_def
-// {
-//     int node_type;
+typedef struct ast_node_function_def
+{
+    int node_type;
 
-//     sym_ptr symbol_entry;
-//     ast_node_compound_statement *body;
-// }ast_node_function_def;
+    sym_ptr symbol_entry;
+    ast_nodes params;
+    ast_node_compound_statement *body;
+    ast_node *return_statment;
+}ast_node_function_def;
+
+typedef struct ast_node_function_call
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_nodes params;
+}ast_node_function_call;
 
 #endif
