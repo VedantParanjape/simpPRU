@@ -294,8 +294,6 @@ comma                ([,])
       return VOID_IDENTIFIER;
     }
   }
-    printf("%s %d %d %d\n", yytext, function_flag, assignment_flag, yylval.symbol_handle->data_type);
-
 
   return IDENTIFIER;
 }

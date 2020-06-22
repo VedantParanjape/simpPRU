@@ -99,19 +99,20 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
     return assgn;
 }
 
-ast_node_expression *create_expression_node(int node_type, int opt, ast_node *left, ast_node *right)
+ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right)
 {
     ast_node_expression *exp = (ast_node_expression*)malloc(sizeof(ast_node_expression));
 
     exp->node_type = node_type;
     exp->opt = opt;
+    exp->value = value;
     exp->left = left;
     exp->right = right;
 
     return exp;
 }
 
-ast_node *create_constant_node(int data_type, int value)
+ast_node_constant *create_constant_node(int data_type, int value)
 {
     ast_node_constant *cnst = (ast_node_constant*)malloc(sizeof(ast_node_constant)); 
 
@@ -119,10 +120,10 @@ ast_node *create_constant_node(int data_type, int value)
     cnst->data_type = data_type;
     cnst->value = value;
 
-    return (ast_node*)cnst;
+    return cnst;
 }
 
-ast_node *create_variable_node(int data_type, sym_ptr symbol)
+ast_node_variable *create_variable_node(int data_type, sym_ptr symbol)
 {
     ast_node_variable *var = (ast_node_variable*)malloc(sizeof(ast_node_variable));
 
@@ -130,8 +131,9 @@ ast_node *create_variable_node(int data_type, sym_ptr symbol)
     var->data_type = data_type;
     var->symbol_entry = symbol;
 
-    return (ast_node*)var;
+    return var;
 }
+
 ast_node_conditional_if *create_conditional_if_node(ast_node_expression *condition, ast_node_compound_statement *body, ast_node_conditional_else_if *else_if, ast_node_compound_statement *else_node)
 {
     ast_node_conditional_if *cond_if = (ast_node_conditional_if*)malloc(sizeof(ast_node_conditional_if));

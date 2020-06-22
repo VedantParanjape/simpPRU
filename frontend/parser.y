@@ -70,40 +70,84 @@ sym_ptr temp = NULL;
 
 %token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER
 
-%type <integer> arithmetic_expression 
-%type <boolean> boolean_expression relational_expression logical_expression bool_expressions 
 %type <symbol_handle> int_function_call bool_function_call
+%type <node> translation_unit program
+%type <statements> statement
+%type <compound_statement> statement_list compound_statement conditional_statement_else
+%type <declaration> declaration declaration_assignment
+%type <assignment> assignment
+%type <expression> bool_expressions arithmetic_expression boolean_expression relational_expression logical_expression
+%type <conditional_if> conditional_statement
+%type <conditional_else_if> conditional_statement_else_if
+%type <loop_for> loop_statement_for
+%type <loop_while> loop_statement_while
 %%
 
-translation_unit: program 
-	            | translation_unit program
+translation_unit: program {
+                    $$ = create_translation_unit();
+                    $$ = add_program_unit($$, $1);
+                }
+	            | translation_unit program {
+                    $$ = add_program_unit($1, $2);
+                }
 	            ;
 
-program: statement
-       | function_definition
+program: statement {
+        $$ = (ast_node*)$1;     
+       }
+       | function_definition {
+        ;
+       }
        ;
 
-compound_statement: LBRACE statement_list RBRACE
+compound_statement: LBRACE statement_list RBRACE {
+                    $$ = $2;
+                  }
                   ;
 
-statement_list: statement
-              | statement_list statement
+statement_list: statement {
+                $$ = create_compound_statement_node();
+                $$ = add_compound_statement_node($$, $1);
+              }
+              | statement_list statement {
+                  $$  = add_compound_statement_node($1, $2);
+              }
               ;
 
-statement: compound_statement
-         | empty_statement
-         | declaration
-         | declaration_assignment
-         | assignment
-         | conditional_statement
-         | loop_statement_for
-         | loop_statement_while
+statement: compound_statement {
+            $$ = create_statement_node(AST_NODE_COMPOUND_STATEMENT, (void*)$1);
+         }
+         | empty_statement {
+            $$ = create_statement_node(AST_NODE_EMPTY_STATEMENT, NULL); 
+         }
+         | declaration {
+             $$ = create_statement_node(AST_NODE_DECLARATION, (void*)$1);
+         }
+         | declaration_assignment {
+             $$ = create_statement_node(AST_NODE_DECLARATION, (void*)$1);
+         }
+         | assignment {
+             $$ = create_statement_node(AST_NODE_ASSIGNMENT, (void*)$1);
+         }
+         | conditional_statement {
+             $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);
+         }
+         | loop_statement_for {
+             $$ = create_statement_node(AST_NODE_LOOP_FOR, (void*)$1);
+         }
+         | loop_statement_while {
+             $$ = create_statement_node(AST_NODE_LOOP_WHILE, (void*)$1);
+         }
          | return_statement
          | int_function_call SEMICOLON
          | bool_function_call SEMICOLON
          | void_function_call SEMICOLON
-         | KW_BREAK SEMICOLON
-         | KW_CONTINUE SEMICOLON
+         | KW_BREAK SEMICOLON {
+             $$ = create_statement_node(AST_NODE_LOOP_BREAK, (void*)create_loop_control_node(AST_NODE_LOOP_BREAK));
+         }
+         | KW_CONTINUE SEMICOLON {
+             $$ = create_statement_node(AST_NODE_LOOP_CONTINUE, (void*)create_loop_control_node(AST_NODE_LOOP_BREAK));
+         }
          ;
 
 empty_statement: SEMICOLON {
@@ -118,6 +162,7 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                }
 
                $2->data_type = DT_INTEGER;
+               $$ = create_declaration_node($2, NULL);
 
                printf ("int %s ;\n", $2->identifier);
            }
@@ -128,7 +173,8 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                }
 
                $2->data_type = DT_BOOLEAN;
-               
+               $$ = create_declaration_node($2, NULL);
+
                printf ("bool %s ;\n", $2->identifier);
            }
            ;
@@ -140,7 +186,8 @@ declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression S
                }
 
                $2->data_type = DT_INTEGER;
-               $2->value = $4;
+               $2->value = $4->value;
+               $$ = create_declaration_node($2, $4);
 
                printf ("%s := %d\n", $2->identifier, $2->value);
             }
@@ -151,7 +198,8 @@ declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression S
                }
 
                $2->data_type = DT_BOOLEAN;
-               $2->value = $4;
+               $2->value = $4->value;
+               $$ = create_declaration_node($2, $4);
 
                printf ("%s := %d\n", $2->identifier, $2->value);
             }
@@ -164,8 +212,9 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                }
 
                $1->data_type = DT_INTEGER;
-               $1->value = $3;
-            
+               $1->value = $3->value;
+               $$ = create_assignment_node($1, $3);
+
                printf("%s := %d\n", $1->identifier, $1->value);
             }
             | BOOL_IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
@@ -175,8 +224,9 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                 }
                 
                 $1->data_type = DT_BOOLEAN;  
-                $1->value = $3;
-            
+                $1->value = $3->value;
+                $$ = create_assignment_node($1, $3);
+
                printf("%s := %d\n", $1->identifier, $1->value);
             }
             ;
@@ -187,14 +237,14 @@ bool_expressions: boolean_expression
                 ;
 
 arithmetic_expression: CONST_INT {
-              $$ = $1;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, $1, NULL, NULL);
           }
           | INT_IDENTIFIER {
               if ($1 != NULL)
               {
                   if ($1->data_type == DT_INTEGER)
                   {
-                      $$ = $1->value;
+                      $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_VARIABLE, $1->value, NULL, NULL);
                   }
                   else if ($1->data_type == DT_UNDEF)
                   {
@@ -207,22 +257,22 @@ arithmetic_expression: CONST_INT {
               }
           } 
           | int_function_call {
-              $$ = $1->value;
+            //   $$ = $1->value;
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
-              $$ = $1 + $3;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
           } 
           | arithmetic_expression OPR_SUB arithmetic_expression {
-              $$ = $1 - $3;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, $1->value - $3->value, (ast_node*)$1, (ast_node*)$3);
           } 
           | arithmetic_expression OPR_MUL arithmetic_expression {
-              $$ = $1 * $3;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_MUL, $1->value * $3->value, (ast_node*)$1, (ast_node*)$3);
           } 
           | arithmetic_expression OPR_DIV arithmetic_expression {
-              $$ = $1 / $3;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_DIV, $1->value / $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | OPR_SUB arithmetic_expression {
-              $$ = -$2;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, -1*$2->value, (ast_node*)$2, NULL);
           } 
           | LPAREN arithmetic_expression RPAREN {
               $$ = $2;
@@ -230,14 +280,14 @@ arithmetic_expression: CONST_INT {
           ;
 
 boolean_expression: CONST_BOOL {
-              $$ = $1;  
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_CONSTANT, $1, NULL, NULL);
           }
           | BOOL_IDENTIFIER {
               if ($1 != NULL)
               {
                   if ($1->data_type == DT_BOOLEAN)
                   {
-                      $$ = $1->value;
+                      $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_VARIABLE, $1->value, NULL, NULL);
                   }
                   else if ($1->data_type == DT_UNDEF)
                   {
@@ -250,16 +300,17 @@ boolean_expression: CONST_BOOL {
               }
           }
           | bool_function_call {
-              $$ = $1->value;
+            //   $$ = $1->value;
           }
           | OPR_BW_NOT boolean_expression {
-              $$ = $2 ? 0 : 1;
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_NOT, $2->value ? 0 : 1, (ast_node*)$2, NULL);
+
           }
           | boolean_expression OPR_BW_AND boolean_expression {
-              $$ = $1 & $3;
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
           } 
           | boolean_expression OPR_BW_OR boolean_expression {
-              $$ = $1 | $3;
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_OR, $1->value | $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | LPAREN boolean_expression RPAREN {
               $$ = $2;
@@ -267,22 +318,22 @@ boolean_expression: CONST_BOOL {
           ;
 
 relational_expression: arithmetic_expression OPR_GT arithmetic_expression {
-              $$ = $1 > $3;
+              $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_GT, $1->value > $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | arithmetic_expression OPR_LT arithmetic_expression {
-              $$ = $1 < $3;
+              $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_LT, $1->value < $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | arithmetic_expression OPR_EQ arithmetic_expression {
-              $$ = $1 == $3;
+              $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_EQ, $1->value == $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | arithmetic_expression OPR_NE arithmetic_expression {
-              $$ = $1 != $3;
+              $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_NE, $1->value != $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | arithmetic_expression OPR_GE arithmetic_expression {
-              $$ = $1 >= $3;
+              $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_GE, $1->value >= $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | arithmetic_expression OPR_LE arithmetic_expression {
-              $$ = $1 <= $3;
+              $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_LE, $1->value <= $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | LPAREN relational_expression RPAREN {
               $$ = $2;
@@ -291,13 +342,13 @@ relational_expression: arithmetic_expression OPR_GT arithmetic_expression {
 
 
 logical_expression: OPR_LGL_NOT bool_expressions {
-              $$ = $2 ? 0 : 1;
+              $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_NOT, $2->value ? 0 : 1, (ast_node*)$2, NULL);
           } 
           | bool_expressions OPR_LGL_AND bool_expressions {
-              $$ = $1 & $3;
+              $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | bool_expressions OPR_LGL_OR bool_expressions {
-              $$ = $1 | $3;
+              $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_OR, $1->value | $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | LPAREN logical_expression RPAREN {
               $$ = $2;
@@ -306,31 +357,38 @@ logical_expression: OPR_LGL_NOT bool_expressions {
 
 conditional_statement: KW_IF COLON bool_expressions compound_statement conditional_statement_else_if conditional_statement_else {
                           printf("inside if\n");
+                          $$ = create_conditional_if_node($3, $4, $5, $6);
                      }
                      ;  
 
 conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON bool_expressions compound_statement {
                                  printf("inside else if\n");
+                                 $$ = add_else_if_node($1, $4, $5);
                              }
-                             | /* empty */    
+                             | /* empty */    {
+                                 $$ = create_else_if_node();
+                             }
                              ;
 
 conditional_statement_else: KW_ELSE compound_statement {
                               printf("inside else\n");
+                              $$ = $2;
                           }
                           | /* empty */
                           ;
 
 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN arithmetic_expression COLON arithmetic_expression compound_statement {
                       $3->data_type = DT_INTEGER;
-                      $3->value = $5;
-                    
-                      printf("inside for => %s => %d : %d\n", $3->identifier, $5, $7);
+                      $3->value = $5->value;
+                      $$ = create_loop_for_node(create_variable_node(AST_DT_INT, $3), $5, $7, $8);
+                      
+                      printf("inside for => %s => %d : %d\n", $3->identifier, $5->value, $7->value);
                   }
                   ;
 
 loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
                       printf("inside while\n");
+                      $$ = create_loop_while_node($3, $4);
                     }
                     ;
 
