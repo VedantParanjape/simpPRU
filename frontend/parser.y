@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "symbol_table.h"
+#include "ast.h"
 
 void yyerror(const char* s);
 extern int yylex();
@@ -22,6 +23,19 @@ sym_ptr temp = NULL;
     int integer;
     int boolean;
     struct symbol* symbol_handle;
+    struct ast_node *node;
+    struct ast_node_statements *statements;
+    struct ast_node_compound_statement *compound_statement;
+    struct ast_node_declaration *declaration;
+    struct ast_node_assignment *assignment;
+    struct ast_node_expression *expression;
+    struct ast_node_constant *constant;
+    struct ast_node_variable *variable;
+    struct ast_node_conditional_if *conditional_if;
+    struct ast_node_conditional_else_if *conditional_else_if;
+    struct ast_node_loop_for *loop_for;
+    struct ast_node_loop_while *loop_while;
+    struct ast_node_loop_control *loop_control;
 }
 
 %left LBRACE RBRACE
@@ -61,7 +75,7 @@ sym_ptr temp = NULL;
 %type <symbol_handle> int_function_call bool_function_call
 %%
 
-translation_unit: program
+translation_unit: program 
 	            | translation_unit program
 	            ;
 

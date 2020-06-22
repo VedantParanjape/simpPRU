@@ -1,3 +1,6 @@
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
+
 #include "klib/khash.h"
 #include "vec/vec.h"
 
@@ -29,3 +32,5 @@ void decrement_scope();
 int get_scope();
 void dump_symbol_table();
 void close_symbol_table();
+
+#endif
