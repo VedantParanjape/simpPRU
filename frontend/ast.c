@@ -52,6 +52,10 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.loop_control = child;
             break;
         
+        case AST_NODE_FUNC_RETURN:
+            stmt->child_nodes.return_statement = child;
+            break;
+            
         case AST_NODE_FUNC_CALL:
             stmt->child_nodes.function_call = child;
             break;
@@ -203,4 +207,152 @@ ast_node_loop_control *create_loop_control_node(int node_type)
     loop_control->node_type = node_type;
 
     return loop_control;
+}
+
+ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_param *params, ast_node_compound_statement *body, ast_node_expression *return_stmt)
+{
+    ast_node_function_def *function_def = (ast_node_function_def*)malloc(sizeof(ast_node_function_def));
+
+    function_def->node_type = AST_NODE_FUNCTION_DEFS;
+    function_def->symbol_entry = symbol_entry;
+    function_def->params = params;
+    function_def->body = body;
+    function_def->return_statment = return_stmt;
+
+    return function_def;
+}
+
+ast_node_param *create_parameter_node()
+{
+    ast_node_param *params = (ast_node_param*)malloc(sizeof(ast_node_param));
+
+    params->node_type = AST_NODE_FUNC_PARAM;
+    vec_init(&params->variable);
+
+    return params;
+}
+
+ast_node_param *add_parameter_node(ast_node_param *parent, ast_node_variable *var)
+{
+    vec_push(&parent->variable, var);
+
+    return parent;
+}
+
+void ast_node_dump(ast_node* ast)
+{
+    ast_node_type(ast->node_type);
+
+    int i = 0;
+    ast_node *temp;
+
+    vec_foreach(&ast->child_nodes, temp, i)
+    {
+        ast_node_type(temp->node_type);
+        
+    }
+
+}
+
+void ast_node_type(int node_type)
+{
+    switch (node_type)
+    {
+        case AST_NODE:
+            printf("ast node");
+            break;
+
+        case AST_NODE_TRANSLATIONAL_UNIT:
+            printf("ast translational unit");
+            break;
+
+        case AST_NODE_STATEMENTS:
+            printf("ast statements");
+            break;
+
+        case AST_NODE_FUNCTION_DEFS:
+            printf("ast function definition");
+            break;
+
+        case AST_NODE_COMPOUND_STATEMENT:
+            printf("ast compound statement");
+            break;
+
+        case AST_NODE_EMPTY_STATEMENT:
+            printf("ast empty statement");
+            break;
+
+        case AST_NODE_DECLARATION:
+            printf("ast declaration");
+            break;
+
+        case AST_NODE_ASSIGNMENT:
+            printf("ast assignment");
+            break;
+
+        case AST_NODE_ARITHMETIC_EXP:
+            printf("ast arithmetic expression");
+            break;
+
+        case AST_NODE_BOOLEAN_EXP:
+            printf("ast boolean expression");
+            break;
+
+        case AST_NODE_RELATIONAL_EXP:
+            printf("ast relational expression");
+            break;
+
+        case AST_NODE_LOGICAL_EXP:
+            printf("ast logical expression");
+            break;
+
+        case AST_NODE_CONSTANT:
+            printf("ast constant");
+            break;
+
+        case AST_NODE_VARIABLE:
+            printf("ast variable");
+            break;
+
+        case AST_NODE_CONDITIONAL_IF:
+            printf("ast if statement");
+            break;
+
+        case AST_NODE_CONDITIONAL_ELSE_IF:
+            printf("ast elseif statement");
+            break;
+
+        case AST_NODE_LOOP_FOR:
+            printf("ast for statement");
+            break;
+
+        case AST_NODE_LOOP_WHILE:
+            printf("ast while statement");
+            break;
+
+        case AST_NODE_LOOP_CONTROL:
+            printf("ast control statement");
+            break;
+
+        case AST_NODE_LOOP_BREAK:
+            printf("ast break statement");
+            break;
+
+        case AST_NODE_LOOP_CONTINUE:
+            printf("ast continue statement");
+            break;
+
+        case AST_NODE_FUNC_CALL:
+            printf("ast function call");
+            break;
+        
+        case AST_NODE_FUNC_PARAM:
+            printf("ast parameters");
+            break;
+            
+        default:
+            printf("ast invalid");
+            break;
+    }
+    printf("\n");
 }

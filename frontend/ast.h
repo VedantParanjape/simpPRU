@@ -3,6 +3,7 @@
 
 #include "vec/vec.h"
 #include "symbol_table.h"
+#include <stdio.h>
 
 #define AST_NODE                     0
 #define AST_NODE_TRANSLATIONAL_UNIT  1
@@ -26,7 +27,8 @@
 #define AST_NODE_LOOP_BREAK          19
 #define AST_NODE_LOOP_CONTINUE       20
 #define AST_NODE_FUNC_CALL           21
-
+#define AST_NODE_FUNC_PARAM          22
+#define AST_NODE_FUNC_RETURN         23
 
 #define AST_OPR_ADD        1 // + 
 #define AST_OPR_SUB        2 // -
@@ -60,6 +62,7 @@
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
 typedef vec_t(struct ast_node_conditional_if*) ast_nodes_else_if;
+typedef vec_t(struct ast_node_variable*) ast_nodes_variables;
 
 struct ast_node;
 struct ast_node_statements;
@@ -75,6 +78,7 @@ struct ast_node_loop_for;
 struct ast_node_loop_while;
 struct ast_node_loop_control;
 struct ast_node_function_def;
+struct ast_node_param;
 struct ast_node_function_call;
 
 typedef struct ast_node ast_node;
@@ -91,6 +95,7 @@ typedef struct ast_node_loop_for ast_node_loop_for;
 typedef struct ast_node_loop_while ast_node_loop_while;
 typedef struct ast_node_loop_control ast_node_loop_control;
 typedef struct ast_node_function_def ast_node_function_def;
+typedef struct ast_node_param ast_node_param;
 typedef struct ast_node_function_call ast_node_function_call;
 
 
@@ -113,6 +118,7 @@ struct ast_node
         ast_node_loop_for *loop_for;
         ast_node_loop_while *loop_while;
         ast_node_loop_control *loop_control;
+        ast_node_expression *return_statement;
         ast_node_function_call *function_call;
     }child_nodes;
 };
@@ -211,9 +217,16 @@ struct ast_node
     int node_type;
 
     sym_ptr symbol_entry;
-    ast_nodes params;
+    ast_node_param *params;
     ast_node_compound_statement *body;
-    ast_node *return_statment;
+    ast_node_expression *return_statment;
+};
+
+ struct ast_node_param 
+{
+    int node_type;
+
+    ast_nodes_variables variable;
 };
 
  struct ast_node_function_call
@@ -240,6 +253,12 @@ ast_node_conditional_else_if *add_else_if_node(ast_node_conditional_else_if *par
 ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_expression *start, ast_node_expression *end, ast_node_compound_statement *body);
 ast_node_loop_while *create_loop_while_node(ast_node_expression *condition, ast_node_compound_statement *body);
 ast_node_loop_control *create_loop_control_node(int node_type);
+ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_param *params, ast_node_compound_statement *body, ast_node_expression *return_stmt);
+ast_node_param *create_parameter_node();
+ast_node_param *add_parameter_node(ast_node_param *parent, ast_node_variable *var);
 // ast_node_function_call *create_function_call_node(sym_ptr symbol, ast_node *child);
-// ast_node_function_call *add_function_call_node()
+// ast_node_function_call *add_function_call_node();
+void ast_node_dump(ast_node* ast);
+void ast_node_type(int node_type);
+
 #endif

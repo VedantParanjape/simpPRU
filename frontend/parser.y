@@ -12,6 +12,7 @@ extern FILE* yyin;
 extern int linenumber;
 extern int assignment_flag;
 sym_ptr temp = NULL;
+ast_node *ast = NULL;
 
 #define YYDEBUG 1
 %}
@@ -36,6 +37,8 @@ sym_ptr temp = NULL;
     struct ast_node_loop_for *loop_for;
     struct ast_node_loop_while *loop_while;
     struct ast_node_loop_control *loop_control;
+    struct ast_node_function_def *function_def;
+    struct ast_node_param *param;
 }
 
 %left LBRACE RBRACE
@@ -76,12 +79,21 @@ sym_ptr temp = NULL;
 %type <compound_statement> statement_list compound_statement conditional_statement_else
 %type <declaration> declaration declaration_assignment
 %type <assignment> assignment
-%type <expression> bool_expressions arithmetic_expression boolean_expression relational_expression logical_expression
+%type <expression> bool_expressions arithmetic_expression boolean_expression relational_expression logical_expression return_statement
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
 %type <loop_while> loop_statement_while
+%type <function_def> function_definition 
+%type <param> parameter_list_def parameters
+%type <variable> parameter
+%start start
 %%
+
+start: translation_unit {
+        ast = $1;
+     }
+     ;
 
 translation_unit: program {
                     $$ = create_translation_unit();
@@ -96,7 +108,7 @@ program: statement {
         $$ = (ast_node*)$1;     
        }
        | function_definition {
-        ;
+        $$ = (ast_node*)$1;
        }
        ;
 
@@ -138,7 +150,9 @@ statement: compound_statement {
          | loop_statement_while {
              $$ = create_statement_node(AST_NODE_LOOP_WHILE, (void*)$1);
          }
-         | return_statement
+         | return_statement {
+             $$ = create_statement_node(AST_NODE_FUNC_RETURN, (void*)$1);
+         }
          | int_function_call SEMICOLON
          | bool_function_call SEMICOLON
          | void_function_call SEMICOLON
@@ -178,7 +192,7 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                printf ("bool %s ;\n", $2->identifier);
            }
            ;
-
+        
 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($2 == NULL)
                {
@@ -231,9 +245,15 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
             }
             ;
             
-bool_expressions: boolean_expression 
-                | relational_expression 
-                | logical_expression
+bool_expressions: boolean_expression {
+                    $$ = $1;
+                }
+                | relational_expression {
+                    $$ = $1;
+                }
+                | logical_expression {
+                    $$ = $1;
+                }
                 ;
 
 arithmetic_expression: CONST_INT {
@@ -374,7 +394,9 @@ conditional_statement_else: KW_ELSE compound_statement {
                               printf("inside else\n");
                               $$ = $2;
                           }
-                          | /* empty */
+                          | /* empty */ {
+                              $$ = NULL;
+                          }
                           ;
 
 loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN arithmetic_expression COLON arithmetic_expression compound_statement {
@@ -396,46 +418,71 @@ function_definition: KW_DEF IDENTIFIER COLON DT_INT {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_INTEGER;} 
                    COLON parameters compound_statement {
+                       $$ = create_function_def_node(temp, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
                        temp = NULL;
+
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_BOOL {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_BOOLEAN;} 
                    COLON parameters compound_statement {
+                       $$ = create_function_def_node(temp, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
                        temp = NULL;
+
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_VOID {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_VOID_;} 
                    COLON parameters compound_statement {
+                       $$ = create_function_def_node(temp, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
                        temp = NULL;
+
                        printf("func\n");
                    }
                    ;
 
-parameters: parameter_list_def
-         | /* empty */
+parameters: parameter_list_def {
+             $$ = $1; 
+         }
+         | /* empty */ {
+             $$ = NULL;
+         }
          ;
 
-parameter_list_def: parameter_list_def COMMA parameter
-                  | parameter     
+parameter_list_def: parameter_list_def COMMA parameter {
+                    $$ = add_parameter_node($1, $3);
+                  }
+                  | parameter {
+                      $$ = create_parameter_node();
+                      $$ = add_parameter_node($$, $1);
+                  }  
                   ;
 
 parameter: DT_INT IDENTIFIER {
             $2->data_type = DT_INT;
             vec_push(&temp->params, $2);
+
+            $$ = create_variable_node(AST_DT_INT, $2);
          }
          | DT_BOOL IDENTIFIER {
             $2->data_type = DT_BOOL;
             vec_push(&temp->params, $2);
+
+            $$ = create_variable_node(AST_DT_BOOL, $2);
          }
          ;
 
-return_statement: KW_RETURN bool_expressions SEMICOLON
-                | KW_RETURN arithmetic_expression SEMICOLON
-                | KW_RETURN SEMICOLON
+return_statement: KW_RETURN bool_expressions SEMICOLON {
+                    $$ = $2;
+                }
+                | KW_RETURN arithmetic_expression SEMICOLON {
+                    $$ = $2;
+                }
+                | KW_RETURN SEMICOLON {
+                    $$ = NULL;
+                }
                 ;
 
 int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN {
@@ -505,6 +552,9 @@ int main()
     while(yyparse());
 
     dump_symbol_table();
+    /* printf("%d",ast->node_type); */
+
+    ast_node_dump(ast);
 }
 
 void yyerror (const char *s) 

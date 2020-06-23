@@ -113,11 +113,11 @@ def test_func : int : int rtpo , bool rty, int yy{
 }
 
 def tt : bool : int r {
-    ;
+    return;
 }
 
 def tt_ : void : int r {
-    ;
+    return;
 }
 
 /* function call */
