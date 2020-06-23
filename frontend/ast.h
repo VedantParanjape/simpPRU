@@ -29,6 +29,7 @@
 #define AST_NODE_FUNC_CALL           21
 #define AST_NODE_FUNC_PARAM          22
 #define AST_NODE_FUNC_RETURN         23
+#define AST_NODE_FUNC_ARGS           24
 
 #define AST_OPR_ADD        1 // + 
 #define AST_OPR_SUB        2 // -
@@ -63,6 +64,7 @@ typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
 typedef vec_t(struct ast_node_conditional_if*) ast_nodes_else_if;
 typedef vec_t(struct ast_node_variable*) ast_nodes_variables;
+typedef vec_t(struct ast_node_expression*) ast_nodes_expressions;
 
 struct ast_node;
 struct ast_node_statements;
@@ -80,6 +82,7 @@ struct ast_node_loop_control;
 struct ast_node_function_def;
 struct ast_node_param;
 struct ast_node_function_call;
+struct ast_node_arguments;
 
 typedef struct ast_node ast_node;
 typedef struct ast_node_statements ast_node_statements;
@@ -97,6 +100,7 @@ typedef struct ast_node_loop_control ast_node_loop_control;
 typedef struct ast_node_function_def ast_node_function_def;
 typedef struct ast_node_param ast_node_param;
 typedef struct ast_node_function_call ast_node_function_call;
+typedef struct ast_node_arguments ast_node_arguments;
 
 
 struct ast_node 
@@ -234,7 +238,14 @@ struct ast_node
     int node_type;
 
     sym_ptr symbol_entry;
-    ast_nodes params;
+    ast_node_arguments *args;
+};
+
+struct ast_node_arguments
+{
+    int node_type;
+
+    ast_nodes_expressions arguments;
 };
 
 ast_node *create_translation_unit();
@@ -256,8 +267,10 @@ ast_node_loop_control *create_loop_control_node(int node_type);
 ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_param *params, ast_node_compound_statement *body, ast_node_expression *return_stmt);
 ast_node_param *create_parameter_node();
 ast_node_param *add_parameter_node(ast_node_param *parent, ast_node_variable *var);
-// ast_node_function_call *create_function_call_node(sym_ptr symbol, ast_node *child);
-// ast_node_function_call *add_function_call_node();
+ast_node_function_call *create_function_call_node(sym_ptr symbol, ast_node_arguments *arguments);
+ast_node_arguments *create_argument_node();
+ast_node_arguments *add_argument_node(ast_node_arguments *parent, ast_node_expression *argument);
+
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);
 

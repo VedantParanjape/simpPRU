@@ -39,6 +39,8 @@ ast_node *ast = NULL;
     struct ast_node_loop_control *loop_control;
     struct ast_node_function_def *function_def;
     struct ast_node_param *param;
+    struct ast_node_function_call *function_call;
+    struct ast_node_arguments *arguments;
 }
 
 %left LBRACE RBRACE
@@ -73,13 +75,12 @@ ast_node *ast = NULL;
 
 %token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER
 
-%type <symbol_handle> int_function_call bool_function_call
 %type <node> translation_unit program
 %type <statements> statement
 %type <compound_statement> statement_list compound_statement conditional_statement_else
 %type <declaration> declaration declaration_assignment
 %type <assignment> assignment
-%type <expression> bool_expressions arithmetic_expression boolean_expression relational_expression logical_expression return_statement
+%type <expression> bool_expressions arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -87,6 +88,8 @@ ast_node *ast = NULL;
 %type <function_def> function_definition 
 %type <param> parameter_list_def parameters
 %type <variable> parameter
+%type <function_call> int_function_call bool_function_call void_function_call
+%type <arguments> function_call_parameters
 %start start
 %%
 
@@ -153,9 +156,15 @@ statement: compound_statement {
          | return_statement {
              $$ = create_statement_node(AST_NODE_FUNC_RETURN, (void*)$1);
          }
-         | int_function_call SEMICOLON
-         | bool_function_call SEMICOLON
-         | void_function_call SEMICOLON
+         | int_function_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_FUNC_CALL, (void*)$1);
+         }
+         | bool_function_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_FUNC_CALL, (void*)$1);
+         }
+         | void_function_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_FUNC_CALL, (void*)$1);
+         }
          | KW_BREAK SEMICOLON {
              $$ = create_statement_node(AST_NODE_LOOP_BREAK, (void*)create_loop_control_node(AST_NODE_LOOP_BREAK));
          }
@@ -277,7 +286,7 @@ arithmetic_expression: CONST_INT {
               }
           } 
           | int_function_call {
-            //   $$ = $1->value;
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, NULL, NULL);
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
@@ -320,7 +329,7 @@ boolean_expression: CONST_BOOL {
               }
           }
           | bool_function_call {
-            //   $$ = $1->value;
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, NULL, NULL);
           }
           | OPR_BW_NOT boolean_expression {
               $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_NOT, $2->value ? 0 : 1, (ast_node*)$2, NULL);
@@ -492,6 +501,7 @@ int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN {
                     {
                         yyerror("not a function");
                     }
+                    $$ = create_function_call_node($1, $3);
                 }
                 else 
                 {
@@ -508,6 +518,7 @@ bool_function_call: BOOL_IDENTIFIER LPAREN function_call_parameters RPAREN {
                     {
                         yyerror("not a function");
                     }
+                    $$ = create_function_call_node($1, $3);
                 }
                 else 
                 {
@@ -524,6 +535,7 @@ void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
                     {
                         yyerror("not a function");
                     }
+                    $$ = create_function_call_node($1, $3);
                 }
                 else 
                 {
@@ -533,13 +545,24 @@ void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
              }
              ;
 
-function_call_parameters: function_call_parameters COMMA function_call_datatypes
-                        | function_call_datatypes
-                        | /* empty */
+function_call_parameters: function_call_parameters COMMA function_call_datatypes {
+                            $$ = add_argument_node($1, $3);
+                        }
+                        | function_call_datatypes {
+                            $$ = create_argument_node();
+                            $$ = add_argument_node($$, $1);
+                        }
+                        | /* empty */ {
+                            $$ = NULL;
+                        }
                         ;
                         
-function_call_datatypes: arithmetic_expression
-                       | boolean_expression
+function_call_datatypes: arithmetic_expression {
+                           $$ = $1;
+                       }
+                       | boolean_expression {
+                           $$ = $1;
+                       }
                        ;
 %%
 

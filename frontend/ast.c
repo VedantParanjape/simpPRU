@@ -239,6 +239,34 @@ ast_node_param *add_parameter_node(ast_node_param *parent, ast_node_variable *va
     return parent;
 }
 
+ast_node_function_call *create_function_call_node(sym_ptr symbol, ast_node_arguments *arguments)
+{
+    ast_node_function_call *function_call = (ast_node_function_call*)malloc(sizeof(ast_node_function_call));
+
+    function_call->node_type = AST_NODE_FUNC_CALL;
+    function_call->symbol_entry = symbol;
+    function_call->args = arguments;
+
+    return function_call;
+}
+
+ast_node_arguments *create_argument_node()
+{
+    ast_node_arguments *arguments = (ast_node_arguments*)malloc(sizeof(ast_node_arguments));
+
+    arguments->node_type = AST_NODE_FUNC_ARGS;
+    vec_init(&arguments->arguments);
+
+    return arguments;
+}
+
+ast_node_arguments *add_argument_node(ast_node_arguments *parent, ast_node_expression *argument)
+{
+    vec_push(&parent->arguments, argument);
+
+    return parent;
+}
+
 void ast_node_dump(ast_node* ast)
 {
     ast_node_type(ast->node_type);
@@ -248,8 +276,7 @@ void ast_node_dump(ast_node* ast)
 
     vec_foreach(&ast->child_nodes, temp, i)
     {
-        ast_node_type(temp->node_type);
-        
+        ast_node_type(temp->node_type);   
     }
 
 }
@@ -349,7 +376,11 @@ void ast_node_type(int node_type)
         case AST_NODE_FUNC_PARAM:
             printf("ast parameters");
             break;
-            
+        
+        case AST_NODE_FUNC_ARGS:
+            printf("ast arguments");
+            break;
+
         default:
             printf("ast invalid");
             break;
