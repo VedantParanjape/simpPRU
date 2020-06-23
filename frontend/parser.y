@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "symbol_table.h"
 #include "ast.h"
+#include "semantic.h"
 
 void yyerror(const char* s);
 extern int yylex();
@@ -501,7 +502,12 @@ int_function_call: INT_IDENTIFIER LPAREN function_call_parameters RPAREN {
                     {
                         yyerror("not a function");
                     }
+
                     $$ = create_function_call_node($1, $3);
+                    if(check_function_call($$) == -1)
+                    {
+                        yyerror("wrong paramters for the function");
+                    }
                 }
                 else 
                 {
@@ -518,7 +524,12 @@ bool_function_call: BOOL_IDENTIFIER LPAREN function_call_parameters RPAREN {
                     {
                         yyerror("not a function");
                     }
+                    
                     $$ = create_function_call_node($1, $3);
+                    if(check_function_call($$) == -1)
+                    {
+                        yyerror("wrong paramters for the function");
+                    }
                 }
                 else 
                 {
@@ -535,7 +546,12 @@ void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
                     {
                         yyerror("not a function");
                     }
+
                     $$ = create_function_call_node($1, $3);
+                    if(check_function_call($$) == -1)
+                    {
+                        yyerror("wrong paramters for the function");
+                    }
                 }
                 else 
                 {

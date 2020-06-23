@@ -3,7 +3,7 @@
   #include "parser.tab.h"
   #include "symbol_table.h"
 
-  int linenumber = 0;
+  int linenumber = 1;
   int assignment_flag = 0;
   int for_loop_flag = 0;
   int function_flag = 0;
