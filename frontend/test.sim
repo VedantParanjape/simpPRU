@@ -113,18 +113,19 @@ def test_func : int : int rtpo , bool rty, int yy{
 }
 
 def tt : int : int r {
-    return;
+    return 1;
 }
 
 def tt_b : bool : int e {
-    return ;
+    return true;
 }
 
 def tt_ : void : int r {
-    return;
+    return ;
 }
 
 def blamk : void : {
+    int a;
     return ;
 }
 
