@@ -4,6 +4,7 @@
 #include "symbol_table.h"
 #include "ast.h"
 #include "semantic.h"
+#include "code_printer.h"
 
 void yyerror(const char* s);
 extern int yylex();
@@ -639,6 +640,7 @@ int main()
     /* printf("%d",ast->node_type); */
 
     ast_node_dump(ast);
+    code_printer(ast);
 }
 
 void yyerror (const char *s) 
