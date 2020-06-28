@@ -31,34 +31,34 @@
 #define AST_NODE_FUNC_RETURN         23
 #define AST_NODE_FUNC_ARGS           24
 
-#define AST_OPR_ADD        1 // + 
-#define AST_OPR_SUB        2 // -
-#define AST_OPR_MUL        3 // *
-#define AST_OPR_DIV        4 // /
+#define AST_OPR_ADD        25 // + 
+#define AST_OPR_SUB        26 // -
+#define AST_OPR_MUL        27 // *
+#define AST_OPR_DIV        28 // /
 
-#define AST_OPR_GT         5 // > 
-#define AST_OPR_LT         6 // <
-#define AST_OPR_EQ         7 // =
-#define AST_OPR_NE         8 // !=
-#define AST_OPR_GE         9 // >=
-#define AST_OPR_LE         10 // <=
+#define AST_OPR_GT         29 // > 
+#define AST_OPR_LT         30 // <
+#define AST_OPR_EQ         31 // =
+#define AST_OPR_NE         32 // !=
+#define AST_OPR_GE         33 // >=
+#define AST_OPR_LE         34 // <=
 
-#define AST_OPR_BW_NOT     11 // ~
-#define AST_OPR_BW_AND     12 // &
-#define AST_OPR_BW_OR      13 // |
-#define AST_OPR_LGL_NOT    14 // not
-#define AST_OPR_LGL_AND    15 // and
-#define AST_OPR_LGL_OR     16 // or
+#define AST_OPR_BW_NOT     35 // ~
+#define AST_OPR_BW_AND     36 // &
+#define AST_OPR_BW_OR      37 // |
+#define AST_OPR_LGL_NOT    38 // not
+#define AST_OPR_LGL_AND    39 // and
+#define AST_OPR_LGL_OR     40 // or
 
-#define AST_OPR_ASSIGNMENT 17 // :=
+#define AST_OPR_ASSIGNMENT 41 // :=
 
-#define AST_CONST_INT 1 // INT CONSTANT
-#define AST_CONST_BOOL 2 // BOOL CONSTANT
-#define AST_IDENTIFIER 3 // IDENTIFIER
+#define AST_CONST_INT  42 // INT CONSTANT
+#define AST_CONST_BOOL 43 // BOOL CONSTANT
+#define AST_IDENTIFIER 44 // IDENTIFIER
 
-#define AST_DT_INT  1 // DATA TYPE INT
-#define AST_DT_BOOL 2 // DATA TYPE BOOL
-#define AST_DT_VOID 3 // DATA TYPE VOID
+#define AST_DT_INT  45 // DATA TYPE INT
+#define AST_DT_BOOL 46 // DATA TYPE BOOL
+#define AST_DT_VOID 47 // DATA TYPE VOID
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;

@@ -288,7 +288,7 @@ arithmetic_expression: CONST_INT {
               }
           } 
           | int_function_call {
-              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, NULL, NULL);
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
@@ -303,7 +303,7 @@ arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_DIV, $1->value / $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | OPR_SUB arithmetic_expression {
-              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, -1*$2->value, (ast_node*)$2, NULL);
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, -1*$2->value, NULL, (ast_node*)$2);
           } 
           | LPAREN arithmetic_expression RPAREN {
               $$ = $2;
@@ -331,10 +331,10 @@ boolean_expression: CONST_BOOL {
               }
           }
           | bool_function_call {
-              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, NULL, NULL);
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
           }
           | OPR_BW_NOT boolean_expression {
-              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_NOT, $2->value ? 0 : 1, (ast_node*)$2, NULL);
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_NOT, $2->value ? 0 : 1, NULL, (ast_node*)$2);
 
           }
           | boolean_expression OPR_BW_AND boolean_expression {
@@ -373,7 +373,7 @@ relational_expression: arithmetic_expression OPR_GT arithmetic_expression {
 
 
 logical_expression: OPR_LGL_NOT bool_expressions {
-              $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_NOT, $2->value ? 0 : 1, (ast_node*)$2, NULL);
+              $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_NOT, $2->value ? 0 : 1, NULL, (ast_node*)$2);
           } 
           | bool_expressions OPR_LGL_AND bool_expressions {
               $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
@@ -628,9 +628,9 @@ function_call_datatypes: arithmetic_expression {
                        ;
 %%
 
-int main()
+int main(int argc, char** argv)
 {
-    FILE* fhandle = fopen("test.sim", "r");
+    FILE* fhandle = fopen(argv[1], "r");
     yyin = fhandle;
     init_symbol_table();
 
@@ -641,6 +641,8 @@ int main()
 
     ast_node_dump(ast);
     code_printer(ast);
+
+    system("pru-gcc ../generated_code/temp.c -o out.pru -mmcu=am335x.pru0");
 }
 
 void yyerror (const char *s) 
