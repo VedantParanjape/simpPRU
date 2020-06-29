@@ -25,7 +25,7 @@ ast_node_statements *create_statement_node(int node_type, void *child)
     switch (node_type)
     {
         case AST_NODE_COMPOUND_STATEMENT:
-            stmt->child_nodes.compount_statement = child;
+            stmt->child_nodes.compound_statement = child;
             break;
 
         case AST_NODE_DECLARATION:

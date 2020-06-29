@@ -121,7 +121,7 @@ struct ast_node
 
     union child_nodes
     {
-        ast_node_compound_statement *compount_statement;
+        ast_node_compound_statement *compound_statement;
         ast_node_declaration *declaration;
         ast_node_assignment *assignment;
         ast_node_conditional_if *if_else;

@@ -1,0 +1,6 @@
+while : 1 = 1 {
+    digital_write(4, true);
+    delay(1000);
+    digital_write(4, false);
+    delay(1000);
+}

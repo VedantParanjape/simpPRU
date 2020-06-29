@@ -1,5 +1,57 @@
 #include "code_printer.h"
 
+void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle)
+{
+    int i = 0;
+    ast_node_statements *temp;
+
+    fprintf(handle, "%s", "{\n");
+    vec_foreach(&cmpd_stmt->child_nodes, temp, i)
+    {   
+        switch(temp->node_type)
+        {
+            case AST_NODE_COMPOUND_STATEMENT:
+                ast_compound_statement_printer(((ast_node_statements*)temp)->child_nodes.compound_statement, handle);
+                break;
+            
+            case AST_NODE_DECLARATION:
+                ast_declaration_printer(((ast_node_statements*)temp)->child_nodes.declaration, handle);
+                break;
+            
+            case AST_NODE_ASSIGNMENT:
+                ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
+                break;
+            
+            case AST_NODE_CONDITIONAL_IF:
+                ast_conditional_if_printer(((ast_node_statements*)temp)->child_nodes.if_else, handle); 
+                break;
+        
+            case AST_NODE_LOOP_FOR:
+                ast_loop_for_printer(((ast_node_statements*)temp)->child_nodes.loop_for, handle);
+                break;
+            
+            case AST_NODE_LOOP_WHILE:
+                ast_loop_while_printer(((ast_node_statements*)temp)->child_nodes.loop_while, handle);
+                break;
+            
+            case AST_NODE_FUNC_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_function_call_printer(((ast_node_statements*)temp)->child_nodes.function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+            
+            case AST_NODE_DIGITAL_READ_CALL:
+            case AST_NODE_DIGITAL_WRITE_CALL:
+            case AST_NODE_DELAY_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+        }
+    }
+    fprintf(handle, "%s", "}\n");
+}
+
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
 {
     if (decl != NULL && handle != NULL)
@@ -133,6 +185,19 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
     }
 }
 
+void ast_conditional_if_printer(ast_node_conditional_if *node, FILE* handle){;}
+void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle){;}
+void ast_loop_while_printer(ast_node_loop_while *node, FILE* handle)
+{
+    if (node != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s", "while(");
+        ast_expression_printer(node->condition, handle);
+        fprintf(handle, "%s", ")\n");
+        ast_compound_statement_printer(node->body, handle);
+    }
+}
+
 void ast_function_call_printer(ast_node_function_call* fc, FILE* handle)
 {
     if (fc != NULL && handle != NULL)
@@ -182,6 +247,9 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
         }
     }
 }
+
+void ast_function_definition(ast_node_function_def *def, FILE* handle){;}
+
 void code_printer(ast_node* ast)
 {
     FILE* handle = fopen("../generated_code/temp.c", "w");
@@ -196,12 +264,28 @@ void code_printer(ast_node* ast)
     {   
         switch(temp->node_type)
         {
+            case AST_NODE_COMPOUND_STATEMENT:
+                ast_compound_statement_printer(((ast_node_statements*)temp)->child_nodes.compound_statement, handle);
+                break;
+            
             case AST_NODE_DECLARATION:
                 ast_declaration_printer(((ast_node_statements*)temp)->child_nodes.declaration, handle);
                 break;
             
             case AST_NODE_ASSIGNMENT:
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
+                break;
+            
+            case AST_NODE_CONDITIONAL_IF:
+                ast_conditional_if_printer(((ast_node_statements*)temp)->child_nodes.if_else, handle); 
+                break;
+        
+            case AST_NODE_LOOP_FOR:
+                ast_loop_for_printer(((ast_node_statements*)temp)->child_nodes.loop_for, handle);
+                break;
+            
+            case AST_NODE_LOOP_WHILE:
+                ast_loop_while_printer(((ast_node_statements*)temp)->child_nodes.loop_while, handle);
                 break;
             
             case AST_NODE_FUNC_CALL:
@@ -217,7 +301,10 @@ void code_printer(ast_node* ast)
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");
                 break;
-    
+            
+            case AST_NODE_FUNCTION_DEFS:
+                ast_function_definition((ast_node_function_def*)temp, handle);
+                break;
         }
     }
     fprintf(handle, "%s", END);
