@@ -1,3 +1,6 @@
 int a := 3;
 
+digital_read(a + 3);
+digital_write(a + 6, ~false);
+delay(90);
 

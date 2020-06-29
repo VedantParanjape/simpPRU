@@ -125,6 +125,11 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
         {
             ast_function_call_printer((ast_node_function_call*)node->left, handle);
         }
+
+        if (node->opt == AST_NODE_DIGITAL_READ_CALL || node->opt == AST_NODE_DIGITAL_WRITE_CALL || node->opt == AST_NODE_DELAY_CALL)
+        {
+            ast_utility_function_call_printer((ast_node_utility_function_call*)node->left, handle);
+        }
     }
 }
 
@@ -149,6 +154,34 @@ void ast_function_call_printer(ast_node_function_call* fc, FILE* handle)
     }
 }
 
+void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE* handle)
+{
+    if (ufc != NULL && handle != NULL)
+    {
+        switch(ufc->node_type)
+        {
+            case AST_NODE_DIGITAL_READ_CALL:
+                fprintf(handle, "%s(", "digital_read");
+                ast_expression_printer(ufc->pin_number, handle);
+                fprintf(handle, "%s", ")");
+                break;
+
+            case AST_NODE_DIGITAL_WRITE_CALL:
+                fprintf(handle, "%s(", "digital_write");
+                ast_expression_printer(ufc->pin_number, handle);
+                fprintf(handle, "%s", ",");
+                ast_expression_printer(ufc->value, handle);
+                fprintf(handle, "%s", ")");
+                break;
+
+            case AST_NODE_DELAY_CALL:
+                fprintf(handle, "%s((", "__delay_cycles");
+                ast_expression_printer(ufc->time_ms, handle);
+                fprintf(handle, "%s", ")*200000)");
+                break;
+        }
+    }
+}
 void code_printer(ast_node* ast)
 {
     FILE* handle = fopen("../generated_code/temp.c", "w");
@@ -157,9 +190,10 @@ void code_printer(ast_node* ast)
     ast_node *temp;
 
     fprintf(handle, "%s", BEGIN);
+    fprintf(handle, "%s", DIGITAL_WRITE);
+    fprintf(handle, "%s", DIGITAL_READ);
     vec_foreach(&ast->child_nodes, temp, i)
     {   
-        
         switch(temp->node_type)
         {
             case AST_NODE_DECLARATION:
@@ -175,6 +209,15 @@ void code_printer(ast_node* ast)
                 ast_function_call_printer(((ast_node_statements*)temp)->child_nodes.function_call, handle);
                 fprintf(handle, "%s", ";\n");
                 break;
+            
+            case AST_NODE_DIGITAL_READ_CALL:
+            case AST_NODE_DIGITAL_WRITE_CALL:
+            case AST_NODE_DELAY_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+    
         }
     }
     fprintf(handle, "%s", END);

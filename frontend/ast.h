@@ -60,6 +60,10 @@
 #define AST_DT_BOOL 46 // DATA TYPE BOOL
 #define AST_DT_VOID 47 // DATA TYPE VOID
 
+#define AST_NODE_DIGITAL_READ_CALL  48 
+#define AST_NODE_DIGITAL_WRITE_CALL 49
+#define AST_NODE_DELAY_CALL         50
+
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
 typedef vec_t(struct ast_node_conditional_if*) ast_nodes_else_if;
@@ -83,6 +87,7 @@ struct ast_node_function_def;
 struct ast_node_param;
 struct ast_node_function_call;
 struct ast_node_arguments;
+struct ast_node_utility_function_call;
 
 typedef struct ast_node ast_node;
 typedef struct ast_node_statements ast_node_statements;
@@ -101,6 +106,7 @@ typedef struct ast_node_function_def ast_node_function_def;
 typedef struct ast_node_param ast_node_param;
 typedef struct ast_node_function_call ast_node_function_call;
 typedef struct ast_node_arguments ast_node_arguments;
+typedef struct ast_node_utility_function_call ast_node_utility_function_call;
 
 
 struct ast_node 
@@ -124,6 +130,7 @@ struct ast_node
         ast_node_loop_control *loop_control;
         ast_node_expression *return_statement;
         ast_node_function_call *function_call;
+        ast_node_utility_function_call *utility_function_call;
     }child_nodes;
 };
 
@@ -248,6 +255,15 @@ struct ast_node_arguments
     ast_nodes_expressions arguments;
 };
 
+struct ast_node_utility_function_call
+{
+    int node_type;
+
+    ast_node_expression *pin_number;
+    ast_node_expression *value;
+    ast_node_expression *time_ms;
+};
+
 ast_node *create_translation_unit();
 ast_node *add_program_unit(ast_node *parent, ast_node *child);
 ast_node_statements *create_statement_node(int node_type, void *child);
@@ -270,6 +286,9 @@ ast_node_param *add_parameter_node(ast_node_param *parent, ast_node_variable *va
 ast_node_function_call *create_function_call_node(sym_ptr symbol, ast_node_arguments *arguments);
 ast_node_arguments *create_argument_node();
 ast_node_arguments *add_argument_node(ast_node_arguments *parent, ast_node_expression *argument);
+ast_node_utility_function_call *create_digital_read_call_node(ast_node_expression *pin_number);
+ast_node_utility_function_call *create_digital_write_call_node(ast_node_expression *pin_number, ast_node_expression *value);
+ast_node_utility_function_call *create_delay_call_node(ast_node_expression *time_ms);
 
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);

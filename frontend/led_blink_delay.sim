@@ -1,0 +1,5 @@
+digital_write(4, true);
+delay(2000);
+digital_write(4, false);
+delay(5000);
+digital_write(4, true);

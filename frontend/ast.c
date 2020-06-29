@@ -59,6 +59,13 @@ ast_node_statements *create_statement_node(int node_type, void *child)
         case AST_NODE_FUNC_CALL:
             stmt->child_nodes.function_call = child;
             break;
+        
+        case AST_NODE_DIGITAL_READ_CALL:
+        case AST_NODE_DIGITAL_WRITE_CALL:
+        case AST_NODE_DELAY_CALL:
+            stmt->child_nodes.utility_function_call = child;
+            break;
+
     }
 
     return stmt;
@@ -267,6 +274,42 @@ ast_node_arguments *add_argument_node(ast_node_arguments *parent, ast_node_expre
     return parent;
 }
 
+ast_node_utility_function_call *create_digital_read_call_node(ast_node_expression *pin_number)
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_DIGITAL_READ_CALL;
+    utility_function_call->pin_number = pin_number;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_digital_write_call_node(ast_node_expression *pin_number, ast_node_expression *value)
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_DIGITAL_WRITE_CALL;
+    utility_function_call->pin_number = pin_number;
+    utility_function_call->value = value;
+    utility_function_call->time_ms = NULL;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_delay_call_node(ast_node_expression *time_ms)
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_DELAY_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = time_ms;
+
+    return utility_function_call;
+}
+
 void ast_node_dump(ast_node* ast)
 {
     ast_node_type(ast->node_type);
@@ -379,6 +422,18 @@ void ast_node_type(int node_type)
         
         case AST_NODE_FUNC_ARGS:
             printf("ast arguments");
+            break;
+
+        case AST_NODE_DIGITAL_READ_CALL:
+            printf("ast digital read");
+            break;
+
+        case AST_NODE_DIGITAL_WRITE_CALL:
+            printf("ast digital write");
+            break;
+
+        case AST_NODE_DELAY_CALL:
+            printf("ast delay");
             break;
 
         default:

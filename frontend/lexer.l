@@ -30,6 +30,7 @@ bitwise_operators    ("~"|"&"|"|")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
+io                   ("digital_read"|"digital_write"|"delay")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
 separator            ([:])
@@ -248,6 +249,21 @@ comma                ([,])
 
 {assignment_operator}   {
   return OPR_ASSIGNMENT;  
+}
+
+{io}                    {
+  if (!strcmp(yytext, "digital_write"))
+  {
+    return KW_DIGITAL_WRITE;
+  }
+  else if (!strcmp(yytext, "digital_read"))
+  {
+    return KW_DIGITAL_READ;
+  }
+  else if (!strcmp(yytext, "delay"))
+  {
+    return KW_DELAY;
+  }
 }
 
 {identifier}            {

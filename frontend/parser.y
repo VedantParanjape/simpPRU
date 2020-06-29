@@ -43,6 +43,7 @@ ast_node *ast = NULL;
     struct ast_node_param *param;
     struct ast_node_function_call *function_call;
     struct ast_node_arguments *arguments;
+    struct ast_node_utility_function_call *util_function_call;
 }
 
 %left LBRACE RBRACE
@@ -72,6 +73,8 @@ ast_node *ast = NULL;
 
 %token KW_RETURN KW_DEF
 
+%token KW_DIGITAL_READ KW_DIGITAL_WRITE KW_DELAY
+
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
 
@@ -90,7 +93,8 @@ ast_node *ast = NULL;
 %type <function_def> function_definition 
 %type <param> parameter_list_def parameters
 %type <variable> parameter
-%type <function_call> int_function_call bool_function_call void_function_call
+%type <function_call> int_function_call bool_function_call void_function_call 
+%type <util_function_call> digital_read_call digital_write_call delay_call
 %type <arguments> function_call_parameters
 %start start
 %%
@@ -172,6 +176,15 @@ statement: compound_statement {
          }
          | KW_CONTINUE SEMICOLON {
              $$ = create_statement_node(AST_NODE_LOOP_CONTINUE, (void*)create_loop_control_node(AST_NODE_LOOP_BREAK));
+         }
+         | digital_read_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_DIGITAL_READ_CALL, (void*)$1);
+         }
+         | digital_write_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_DIGITAL_WRITE_CALL, (void*)$1);
+         }
+         | delay_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_DELAY_CALL, (void*)$1);
          }
          ;
 
@@ -332,6 +345,9 @@ boolean_expression: CONST_BOOL {
           }
           | bool_function_call {
               $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
+          }
+          | digital_read_call {
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_DIGITAL_READ_CALL, 0, (ast_node*)$1, NULL);
           }
           | OPR_BW_NOT boolean_expression {
               $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_NOT, $2->value ? 0 : 1, NULL, (ast_node*)$2);
@@ -606,6 +622,21 @@ void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
                 printf("function call\n");
              }
              ;
+
+digital_read_call: KW_DIGITAL_READ LPAREN arithmetic_expression RPAREN {
+                        $$ = create_digital_read_call_node($3);
+                     }
+                     ;
+
+digital_write_call: KW_DIGITAL_WRITE LPAREN arithmetic_expression COMMA bool_expressions RPAREN {
+                    $$ = create_digital_write_call_node($3, $5);
+                  }
+                  ;
+
+delay_call: KW_DELAY LPAREN arithmetic_expression RPAREN {
+            $$ = create_delay_call_node($3);
+          }
+          ;
 
 function_call_parameters: function_call_parameters COMMA function_call_datatypes {
                             $$ = add_argument_node($1, $3);
