@@ -1,5 +1,7 @@
 #include "code_printer.h"
 
+static int for_loop_counter = 0;
+
 void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle)
 {
     int i = 0;
@@ -49,7 +51,7 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 break;
         }
     }
-    fprintf(handle, "%s", "}\n");
+    fprintf(handle, "%s", "}\n\n");
 }
 
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
@@ -186,7 +188,22 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
 }
 
 void ast_conditional_if_printer(ast_node_conditional_if *node, FILE* handle){;}
-void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle){;}
+void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle)
+{
+    if (node != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s %s%d;\n", "int", node->init->symbol_entry->identifier, for_loop_counter);
+        fprintf(handle, "\t%s(%s%d =","for", node->init->symbol_entry->identifier, for_loop_counter);
+        ast_expression_printer(node->start_condition, handle);
+        fprintf(handle, ";%s%d <", node->init->symbol_entry->identifier, for_loop_counter);
+        ast_expression_printer(node->end_condition, handle);
+        fprintf(handle, ";%s%d++)\n", node->init->symbol_entry->identifier, for_loop_counter);
+        for_loop_counter++;
+
+        ast_compound_statement_printer(node->body, handle);
+    }
+}
+
 void ast_loop_while_printer(ast_node_loop_while *node, FILE* handle)
 {
     if (node != NULL && handle != NULL)

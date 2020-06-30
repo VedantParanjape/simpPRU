@@ -1,0 +1,6 @@
+for : l in 0:10 {
+    digital_write(4, true);
+    delay(1000);
+    digital_write(4, false);
+    delay(1000);
+}
