@@ -28,12 +28,16 @@
 
 #define _OPR_ASSIGNMENT " = " 
 
+#define _DT_INT_ "int"
+#define _DT_BOOL_ "bool"
+#define _DT_VOID_ "void"
+
 #define BEGIN "#include \"resource_table.h\"\n#include <pru/io.h>\n\n"
 #define END "\n\treturn 0;\n}\n"
 #define DIGITAL_WRITE "void digital_write(int pin, int value)\n{\n\tif(value == 0) write_r30(read_r31()|0);\n\telse write_r30(read_r31()|((uint32_t) 1 << (pin%32)));\n}\n\n"
 #define DIGITAL_READ "int digital_read(int pin)\n{\n\tif (read_r31() & ((uint32_t) 1 << (pin%32))) return 1;\n\telse return 0;\n}\n\nint main(void)\n{\n"
 
-void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle);
+void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle, int is_func_def);
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle);
 void ast_expression_printer(ast_node_expression *node, FILE* handle);

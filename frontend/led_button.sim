@@ -1,0 +1,8 @@
+while : 1 = 1 {
+    if : digital_read(16) {
+        digital_write(7, false);
+    }
+    else {
+        digital_write(7, true);
+    }
+}
