@@ -63,6 +63,10 @@
 #define AST_NODE_DIGITAL_READ_CALL  48 
 #define AST_NODE_DIGITAL_WRITE_CALL 49
 #define AST_NODE_DELAY_CALL         50
+#define AST_NODE_PWM_CALL           51
+#define AST_NODE_START_COUNTER_CALL 52
+#define AST_NODE_STOP_COUNTER_CALL  53
+#define AST_NODE_READ_COUNTER_CALL  54
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
@@ -262,6 +266,8 @@ struct ast_node_utility_function_call
     ast_node_expression *pin_number;
     ast_node_expression *value;
     ast_node_expression *time_ms;
+    ast_node_expression *frequency;
+    ast_node_expression *duty_cycle;
 };
 
 ast_node *create_translation_unit();
@@ -289,6 +295,10 @@ ast_node_arguments *add_argument_node(ast_node_arguments *parent, ast_node_expre
 ast_node_utility_function_call *create_digital_read_call_node(ast_node_expression *pin_number);
 ast_node_utility_function_call *create_digital_write_call_node(ast_node_expression *pin_number, ast_node_expression *value);
 ast_node_utility_function_call *create_delay_call_node(ast_node_expression *time_ms);
+ast_node_utility_function_call *create_pwm_call_node(ast_node_expression *freq, ast_node_expression *duty);
+ast_node_utility_function_call *create_start_counter_call_node();
+ast_node_utility_function_call *create_stop_counter_call_node();
+ast_node_utility_function_call *create_read_counter_call_node();
 
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);

@@ -63,6 +63,10 @@ ast_node_statements *create_statement_node(int node_type, void *child)
         case AST_NODE_DIGITAL_READ_CALL:
         case AST_NODE_DIGITAL_WRITE_CALL:
         case AST_NODE_DELAY_CALL:
+        case AST_NODE_PWM_CALL:
+        case AST_NODE_START_COUNTER_CALL:
+        case AST_NODE_STOP_COUNTER_CALL:
+        case AST_NODE_READ_COUNTER_CALL:
             stmt->child_nodes.utility_function_call = child;
             break;
 
@@ -282,6 +286,8 @@ ast_node_utility_function_call *create_digital_read_call_node(ast_node_expressio
     utility_function_call->pin_number = pin_number;
     utility_function_call->value = NULL;
     utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
 
     return utility_function_call;
 }
@@ -294,7 +300,9 @@ ast_node_utility_function_call *create_digital_write_call_node(ast_node_expressi
     utility_function_call->pin_number = pin_number;
     utility_function_call->value = value;
     utility_function_call->time_ms = NULL;
-
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+    
     return utility_function_call;
 }
 
@@ -306,9 +314,68 @@ ast_node_utility_function_call *create_delay_call_node(ast_node_expression *time
     utility_function_call->pin_number = NULL;
     utility_function_call->value = NULL;
     utility_function_call->time_ms = time_ms;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
 
     return utility_function_call;
 }
+
+ast_node_utility_function_call *create_pwm_call_node(ast_node_expression *freq, ast_node_expression *duty)
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_PWM_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = freq;
+    utility_function_call->duty_cycle = duty;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_start_counter_call_node()
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_START_COUNTER_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_stop_counter_call_node()
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_STOP_COUNTER_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_read_counter_call_node()
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_READ_COUNTER_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+
+    return utility_function_call;
+}
+
 
 void ast_node_dump(ast_node* ast)
 {
@@ -436,6 +503,22 @@ void ast_node_type(int node_type)
             printf("ast delay");
             break;
 
+        case AST_NODE_PWM_CALL:
+            printf("pwm call");
+            break;
+
+        case AST_NODE_START_COUNTER_CALL:
+            printf("start counter call");
+            break;
+
+        case AST_NODE_STOP_COUNTER_CALL:
+            printf("stop counter call");
+            break;
+
+        case AST_NODE_READ_COUNTER_CALL:
+            printf("read counter call");
+            break;
+            
         default:
             printf("ast invalid");
             break;

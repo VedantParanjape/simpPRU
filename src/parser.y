@@ -73,7 +73,7 @@ ast_node *ast = NULL;
 
 %token KW_RETURN KW_DEF
 
-%token KW_DIGITAL_READ KW_DIGITAL_WRITE KW_DELAY
+%token KW_DIGITAL_READ KW_DIGITAL_WRITE KW_DELAY KW_PWM KW_START_COUNTER KW_STOP_COUNTER KW_READ_COUNTER
 
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
@@ -94,7 +94,7 @@ ast_node *ast = NULL;
 %type <param> parameter_list_def parameters
 %type <variable> parameter
 %type <function_call> int_function_call bool_function_call void_function_call 
-%type <util_function_call> digital_read_call digital_write_call delay_call
+%type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call
 %type <arguments> function_call_parameters
 %start start
 %%
@@ -185,6 +185,18 @@ statement: compound_statement {
          }
          | delay_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_DELAY_CALL, (void*)$1);
+         }
+         | pwm_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_PWM_CALL, (void*)$1);
+         }
+         | start_counter_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_START_COUNTER_CALL, (void*)$1);
+         }
+         | stop_counter_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_STOP_COUNTER_CALL, (void*)$1);
+         }
+         | read_counter_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_READ_COUNTER_CALL, (void*)$1);
          }
          ;
 
@@ -302,6 +314,9 @@ arithmetic_expression: CONST_INT {
           } 
           | int_function_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
+          }
+          | read_counter_call {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_READ_COUNTER_CALL, 0, (ast_node*)$1, NULL);
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
@@ -637,6 +652,25 @@ delay_call: KW_DELAY LPAREN arithmetic_expression RPAREN {
             $$ = create_delay_call_node($3);
           }
           ;
+
+pwm_call: KW_PWM LPAREN arithmetic_expression COMMA arithmetic_expression RPAREN {
+            $$ = create_pwm_call_node($3, $5);
+        }
+        ;
+
+start_counter_call: KW_START_COUNTER LPAREN RPAREN {
+                    $$ = create_start_counter_call_node();
+                  }
+                  ;
+
+stop_counter_call: KW_STOP_COUNTER LPAREN RPAREN {
+                    $$ = create_stop_counter_call_node();
+                 }
+                 ;
+
+read_counter_call: KW_READ_COUNTER LPAREN RPAREN {
+                    $$ = create_read_counter_call_node();
+                 }
 
 function_call_parameters: function_call_parameters COMMA function_call_datatypes {
                             $$ = add_argument_node($1, $3);

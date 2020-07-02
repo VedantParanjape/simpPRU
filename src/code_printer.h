@@ -36,6 +36,9 @@
 #define END "\n\treturn 0;\n}\n"
 #define DIGITAL_WRITE "void digital_write(int pin, int value)\n{\n\tif(value == 0) write_r30(read_r31()|0);\n\telse write_r30(read_r31()|((uint32_t) 1 << (pin%32)));\n}\n\n"
 #define DIGITAL_READ "int digital_read(int pin)\n{\n\tif (read_r31() & ((uint32_t) 1 << (pin%32))) return 1;\n\telse return 0;\n}\n\nint main(void)\n{\n"
+#define START_COUNTER "void start_counter()\n{\n\tPRU_CTRL.CYCLE = 0;\n\tPRU_CTRL.CONTROL_bit.COUNTER_ENABLE = 1;\n}\n\n"
+#define STOP_COUNTER "void stop_counter()\n{\n\tPRU_CTRL.CONTROL_bit.COUNTER_ENABLE = 0;\n}\n\n"
+#define READ_COUNTER "int read_counter()\n{\n\treturn PRU_CTRL.CYCLE;\n}\n\n"
 
 void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle, int is_func_def);
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);

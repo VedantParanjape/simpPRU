@@ -1,0 +1,13 @@
+while : 1=1 {
+    start_counter();
+    while : read_counter() < 200000000 {
+        digital_write(4, true);
+    }
+    stop_counter();
+
+    start_counter();
+    while : read_counter() < 200000000 {
+        digital_write(4, false);
+    }
+    stop_counter();
+}

@@ -43,6 +43,10 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
             case AST_NODE_DIGITAL_READ_CALL:
             case AST_NODE_DIGITAL_WRITE_CALL:
             case AST_NODE_DELAY_CALL:
+            case AST_NODE_PWM_CALL:
+            case AST_NODE_START_COUNTER_CALL:
+            case AST_NODE_STOP_COUNTER_CALL:
+            case AST_NODE_READ_COUNTER_CALL:
                 fprintf(handle, "%s", "\t");
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");
@@ -181,7 +185,12 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
             ast_function_call_printer((ast_node_function_call*)node->left, handle);
         }
 
-        if (node->opt == AST_NODE_DIGITAL_READ_CALL || node->opt == AST_NODE_DIGITAL_WRITE_CALL || node->opt == AST_NODE_DELAY_CALL)
+        if (node->opt == AST_NODE_DIGITAL_READ_CALL)
+        {
+            ast_utility_function_call_printer((ast_node_utility_function_call*)node->left, handle);
+        }
+
+        if (node->opt == AST_NODE_READ_COUNTER_CALL)
         {
             ast_utility_function_call_printer((ast_node_utility_function_call*)node->left, handle);
         }
@@ -291,6 +300,26 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 ast_expression_printer(ufc->time_ms, handle);
                 fprintf(handle, "%s", ")*200000)");
                 break;
+
+            case AST_NODE_PWM_CALL:
+                fprintf(handle, "%s(", "pwm_write");
+                ast_expression_printer(ufc->frequency, handle);
+                fprintf(handle, "%s", ",");
+                ast_expression_printer(ufc->duty_cycle, handle);
+                fprintf(handle, "%s", ")");
+                break;
+            
+            case AST_NODE_START_COUNTER_CALL:
+                fprintf(handle, "%s()", "start_counter");
+                break;
+
+            case AST_NODE_STOP_COUNTER_CALL:
+                fprintf(handle, "%s()", "stop_counter");
+                break;
+
+            case AST_NODE_READ_COUNTER_CALL:
+                fprintf(handle, "%s()", "read_counter");
+                break;
         }
     }
 }
@@ -318,7 +347,6 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
             ast_node_variable *temp;
             vec_foreach(&def->params->variable, temp, i)
             {
-                printf("%d\n", temp->symbol_entry->data_type);
                 switch(temp->symbol_entry->data_type)
                 {
                     case DT_INTEGER:
@@ -364,6 +392,9 @@ void code_printer(ast_node* ast)
     temp = NULL;
     i = 0;
 
+    fprintf(handle, "%s", START_COUNTER);
+    fprintf(handle, "%s", STOP_COUNTER);
+    fprintf(handle, "%s", READ_COUNTER);
     fprintf(handle, "%s", DIGITAL_WRITE);
     fprintf(handle, "%s", DIGITAL_READ);
 
@@ -404,6 +435,10 @@ void code_printer(ast_node* ast)
             case AST_NODE_DIGITAL_READ_CALL:
             case AST_NODE_DIGITAL_WRITE_CALL:
             case AST_NODE_DELAY_CALL:
+            case AST_NODE_PWM_CALL:
+            case AST_NODE_START_COUNTER_CALL:
+            case AST_NODE_STOP_COUNTER_CALL:
+            case AST_NODE_READ_COUNTER_CALL:
                 fprintf(handle, "%s", "\t");
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");

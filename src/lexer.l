@@ -30,7 +30,7 @@ bitwise_operators    ("~"|"&"|"|")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
-io                   ("digital_read"|"digital_write"|"delay")
+io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
 separator            ([:])
@@ -263,6 +263,22 @@ comma                ([,])
   else if (!strcmp(yytext, "delay"))
   {
     return KW_DELAY;
+  }
+  else if (!strcmp(yytext, "pwm"))
+  {
+    return KW_PWM;
+  }
+  else if (!strcmp(yytext, "start_counter"))
+  {
+    return KW_START_COUNTER;
+  }
+  else if (!strcmp(yytext, "stop_counter"))
+  {
+    return KW_STOP_COUNTER;
+  }
+  else if (!strcmp(yytext, "read_counter"))
+  {
+    return KW_READ_COUNTER;
   }
 }
 
