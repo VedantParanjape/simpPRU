@@ -298,14 +298,17 @@ comma                ([,])
     return IDENTIFIER;
   }
 
-  if (insert_symbol_table(yytext, DT_UNDEF, 0, 0) == 1 && (assignment_flag == 1 || for_loop_flag == 1))
+  if (assignment_flag == 1 || for_loop_flag == 1)
   {
-    yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
-    assignment_flag = 0;
-
-    if (for_loop_flag == 1)
+    if (insert_symbol_table(yytext, DT_UNDEF, 0, 0) == 1)
     {
-      for_loop_flag = -1;
+      yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
+      assignment_flag = 0;
+  
+      if (for_loop_flag == 1)
+      {
+        for_loop_flag = -1;
+      }
     }
   }
   else if (assignment_flag == 0)

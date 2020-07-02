@@ -78,20 +78,31 @@ sym_ptr lookup_symbol_table(char* id, int scope)
     {
         return NULL;
     }
-    else if (kh_value(handle, temp)->next == NULL && kh_value(handle, temp)->scope == scope && kh_value(handle, temp)->is_hidden == 0)
+    else if (kh_value(handle, temp)->next == NULL && kh_value(handle, temp)->scope <= scope && kh_value(handle, temp)->is_hidden == 0)
     {   
         return kh_value(handle, temp);
     }
     else if (kh_value(handle, temp)->next != NULL)
     {
         sym_ptr temp2 = kh_value(handle, temp);
+        sym_ptr temp3 = NULL;
+
         while (temp2 != NULL)
         {
             if (temp2->scope == scope && temp2->is_hidden == 0)
             {
                 return temp2;
             }
+            temp3 = temp2;
             temp2 = temp2->next;
+        }
+
+        if (temp3 != NULL)
+        {
+            if (temp3->scope < scope)
+            {
+                return temp3;
+            }
         }
 
         return NULL;

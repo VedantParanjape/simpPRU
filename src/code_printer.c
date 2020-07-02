@@ -39,7 +39,17 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_function_call_printer(((ast_node_statements*)temp)->child_nodes.function_call, handle);
                 fprintf(handle, "%s", ";\n");
                 break;
-            
+            case AST_NODE_LOOP_CONTROL:
+                if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_BREAK)
+                {
+                    fprintf(handle, "\t%s;\n", "break");
+                }
+                else if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_CONTINUE)
+                {
+                    fprintf(handle, "\t%s;\n", "continue");
+                }
+                break;
+                
             case AST_NODE_DIGITAL_READ_CALL:
             case AST_NODE_DIGITAL_WRITE_CALL:
             case AST_NODE_DELAY_CALL:
