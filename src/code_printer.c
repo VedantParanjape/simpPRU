@@ -7,7 +7,7 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
 
     fprintf(handle, "%s", "{\n");
     vec_foreach(&cmpd_stmt->child_nodes, temp, i)
-    {   
+    {           
         switch(temp->node_type)
         {
             case AST_NODE_COMPOUND_STATEMENT:
@@ -39,6 +39,7 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_function_call_printer(((ast_node_statements*)temp)->child_nodes.function_call, handle);
                 fprintf(handle, "%s", ";\n");
                 break;
+
             case AST_NODE_LOOP_CONTROL:
                 if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_BREAK)
                 {
@@ -264,7 +265,7 @@ void ast_loop_while_printer(ast_node_loop_while *node, FILE* handle)
     }
 }
 
-void ast_function_call_printer(ast_node_function_call* fc, FILE* handle)
+void ast_function_call_printer(ast_node_function_call *fc, FILE* handle)
 {
     if (fc != NULL && handle != NULL)
     {   
@@ -272,15 +273,17 @@ void ast_function_call_printer(ast_node_function_call* fc, FILE* handle)
 
         int iter;
         ast_node_expression *exp;
-        vec_foreach(&fc->args->arguments, exp, iter)
+        if (fc->args != NULL)
         {
-            ast_expression_printer(exp, handle);
-            if (fc->args->arguments.length != iter+1)
+            vec_foreach(&fc->args->arguments, exp, iter)
             {
-                fprintf(handle, "%s", ",");
+                ast_expression_printer(exp, handle);
+                if (fc->args->arguments.length != iter+1)
+                {
+                    fprintf(handle, "%s", ",");
+                }
             }
         }
-
         fprintf(handle, "%s", ")");
     }
 }
@@ -391,7 +394,13 @@ void code_printer(ast_node* ast)
     int i = 0;
     ast_node *temp;
 
-    fprintf(handle, "%s", BEGIN);       
+    fprintf(handle, "%s", BEGIN);
+    fprintf(handle, "%s", START_COUNTER);
+    fprintf(handle, "%s", STOP_COUNTER);
+    fprintf(handle, "%s", READ_COUNTER);
+    fprintf(handle, "%s", DIGITAL_WRITE);
+    fprintf(handle, "%s", DIGITAL_READ);
+       
     vec_foreach(&ast->child_nodes, temp, i)
     {
         if (temp->node_type == AST_NODE_FUNCTION_DEFS)
@@ -401,12 +410,6 @@ void code_printer(ast_node* ast)
     }
     temp = NULL;
     i = 0;
-
-    fprintf(handle, "%s", START_COUNTER);
-    fprintf(handle, "%s", STOP_COUNTER);
-    fprintf(handle, "%s", READ_COUNTER);
-    fprintf(handle, "%s", DIGITAL_WRITE);
-    fprintf(handle, "%s", DIGITAL_READ);
 
     vec_foreach(&ast->child_nodes, temp, i)
     {   

@@ -48,7 +48,8 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.loop_while = child;
             break;
         
-        case AST_NODE_LOOP_CONTROL:
+        case AST_NODE_LOOP_BREAK:
+        case AST_NODE_LOOP_CONTINUE:
             stmt->child_nodes.loop_control = child;
             break;
         
@@ -69,7 +70,6 @@ ast_node_statements *create_statement_node(int node_type, void *child)
         case AST_NODE_READ_COUNTER_CALL:
             stmt->child_nodes.utility_function_call = child;
             break;
-
     }
 
     return stmt;
@@ -383,12 +383,11 @@ void ast_node_dump(ast_node* ast)
 
     int i = 0;
     ast_node *temp;
-
+    
     vec_foreach(&ast->child_nodes, temp, i)
     {
         ast_node_type(temp->node_type);   
     }
-
 }
 
 void ast_node_type(int node_type)
