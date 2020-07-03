@@ -215,24 +215,3 @@ void close_symbol_table()
         }
     }
 }
-
-// int main()
-// {
-//     init_symbol_table();
-//     printf("inserting in table: %d\n", insert_symbol_table("test", DT_INTEGER, 1));
-//     increment_scope();
-//     decrement_scope();
-//     printf("inserting in table: %d\n", insert_symbol_table("test", DT_INTEGER, 3));
-//     insert_symbol_table("ea", DT_BOOLEAN, 1);
-
-//     if (lookup_symbol_table("ea", 0) == NULL)
-//     {
-//         printf("not found\n");
-//     }
-//     else
-//     {
-//         printf("lookup: %d\n", lookup_symbol_table("ea", 0)->value);
-//     }
-
-//     close_symbol_table();
-// }

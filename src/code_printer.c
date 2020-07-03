@@ -53,8 +53,8 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 
             case AST_NODE_DIGITAL_READ_CALL:
             case AST_NODE_DIGITAL_WRITE_CALL:
-            case AST_NODE_DELAY_CALL:
             case AST_NODE_PWM_CALL:
+            case AST_NODE_DELAY_CALL:
             case AST_NODE_START_COUNTER_CALL:
             case AST_NODE_STOP_COUNTER_CALL:
             case AST_NODE_READ_COUNTER_CALL:
@@ -298,6 +298,11 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 fprintf(handle, "%s(", "digital_read");
                 ast_expression_printer(ufc->pin_number, handle);
                 fprintf(handle, "%s", ")");
+
+                if (config_pins(ufc->pin_number->value, IN, "pru0") == -1)
+                {
+                    printf("(%d) : incorrect pin used in digital read call\n", ufc->pin_number->value);
+                }
                 break;
 
             case AST_NODE_DIGITAL_WRITE_CALL:
@@ -306,6 +311,11 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 fprintf(handle, "%s", ",");
                 ast_expression_printer(ufc->value, handle);
                 fprintf(handle, "%s", ")");
+
+                if (config_pins(ufc->pin_number->value, OUT, "pru0") == -1)
+                {
+                    printf("(%d) : incorrect pin used in digital write call\n", ufc->pin_number->value);
+                }
                 break;
 
             case AST_NODE_DELAY_CALL:
@@ -320,6 +330,11 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 fprintf(handle, "%s", ",");
                 ast_expression_printer(ufc->duty_cycle, handle);
                 fprintf(handle, "%s", ")");
+
+                if (config_pins(ufc->pin_number->value, OUT, "pru0") == -1)
+                {
+                    printf("(%d) : incorrect pin used in pwm call\n", ufc->pin_number->value);
+                }
                 break;
             
             case AST_NODE_START_COUNTER_CALL:
@@ -393,7 +408,7 @@ void code_printer(ast_node* ast)
 
     int i = 0;
     ast_node *temp;
-
+    
     fprintf(handle, "%s", BEGIN);
     fprintf(handle, "%s", START_COUNTER);
     fprintf(handle, "%s", STOP_COUNTER);

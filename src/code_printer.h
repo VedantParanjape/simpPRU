@@ -3,7 +3,9 @@
 
 #include "ast.h"
 #include "symbol_table.h"
+#include "pin_config.h"
 #include "vec/vec.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
