@@ -28,8 +28,9 @@ def measure : int : {
             }
             echo := read_counter();
         }
+        stop_counter();
     }
-
+    
     if : timeout and true {
         echo := 0;
     } 
@@ -37,6 +38,15 @@ def measure : int : {
     return echo;
 }
 
-while : 1 = 1 {
-    measure();
+while : true {
+    int ping:= measure()*1000;
+
+    if : ping > 292200 {
+        digital_write(4, false);
+    }
+    else
+    {
+        digital_write(4, true);
+    }
+    delay(1000);
 }

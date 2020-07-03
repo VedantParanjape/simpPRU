@@ -188,7 +188,7 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
 
         if (node->opt == AST_NODE_VARIABLE)
         {
-            fprintf(handle, " %d ", node->value);
+            fprintf(handle, " %s ", ((ast_node_variable*)node->left)->symbol_entry->identifier);
         }
 
         if (node->opt == AST_NODE_FUNC_CALL)
@@ -408,6 +408,7 @@ void code_printer(ast_node* ast)
             ast_function_definition((ast_node_function_def*)temp, handle);
         }
     }
+    fprintf(handle, "%s", MAIN);
     temp = NULL;
     i = 0;
 

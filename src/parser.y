@@ -300,7 +300,7 @@ arithmetic_expression: CONST_INT {
               {
                   if ($1->data_type == DT_INTEGER)
                   {
-                      $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_VARIABLE, $1->value, NULL, NULL);
+                      $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_VARIABLE, $1->value, (ast_node*)create_variable_node(DT_INTEGER, $1), NULL);
                   }
                   else if ($1->data_type == DT_UNDEF)
                   {
@@ -346,7 +346,7 @@ boolean_expression: CONST_BOOL {
               {
                   if ($1->data_type == DT_BOOLEAN)
                   {
-                      $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_VARIABLE, $1->value, NULL, NULL);
+                      $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_VARIABLE, $1->value, (ast_node*)create_variable_node(DT_BOOLEAN, $1), NULL);
                   }
                   else if ($1->data_type == DT_UNDEF)
                   {
