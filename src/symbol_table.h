@@ -3,6 +3,7 @@
 
 #include "klib/khash.h"
 #include "vec/vec.h"
+#include "pin_config.h"
 
 #define DT_UNDEF 0
 #define DT_INTEGER 1
@@ -19,6 +20,7 @@ typedef struct symbol
     struct symbol* next;
     int is_hidden;
     int is_function;
+    int is_constant;
     param params;
 }*sym_ptr, sym;
 

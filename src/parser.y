@@ -260,6 +260,16 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                {
                    yyerror("variable already defined");
                }
+               
+               if ($1->is_function == 1)
+               {
+                   yyerror("identifier is a function, cannot assign value");
+               }
+               
+               if ($1->is_constant == 1)
+               {
+                   yyerror("identifer is a pin number constant, cannot assign value");
+               }
 
                $1->data_type = DT_INTEGER;
                $1->value = $3->value;
@@ -271,6 +281,16 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                 if ($1 == NULL)
                 {
                     yyerror("variable already defined");
+                }
+                
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+                
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifer is a pin number constant, cannot assign value");
                 }
                 
                 $1->data_type = DT_BOOLEAN;  

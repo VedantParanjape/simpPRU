@@ -8,6 +8,77 @@ void init_symbol_table()
 {
     handle = kh_init(symbol_table);
     scope = 0;
+
+    cJSON *json_head = cJSON_Parse(POCKETBEAGLE_PINOUT);
+    if (json_head != NULL)
+    {
+        cJSON *pru_head_0 = cJSON_GetObjectItemCaseSensitive(json_head, "pru0");
+        cJSON *pru_head_1 = cJSON_GetObjectItemCaseSensitive(json_head, "pru1");
+        
+        if (pru_head_0 != NULL && pru_head_1 != NULL)
+        {
+            cJSON *pru_0_pins = NULL;
+            char *key_0 = NULL;
+            cJSON_ArrayForEach(pru_0_pins, pru_head_0)
+            {
+                key_0 = pru_0_pins->string;
+                for (int i = 0; i < cJSON_GetArraySize(pru_0_pins); i++)
+                {
+                    cJSON* elem = cJSON_GetArrayItem(pru_0_pins, i);
+                    if (elem != NULL)
+                    {
+                        sym_ptr pin = (sym_ptr) malloc(sizeof(sym));
+                        pin->identifier = strdup(cJSON_GetArrayItem(elem, 0)->valuestring);
+                        pin->data_type = DT_INTEGER;
+                        pin->value = atoi(key_0);
+                        pin->scope = 0;
+                        pin->next = NULL;
+                        pin->is_hidden = 0;
+                        pin->is_function = 0;
+                        pin->is_constant = 1;
+
+                        int err;
+                        khint_t temp = kh_put(symbol_table, handle, strdup(pin->identifier), &err);
+                        if (temp != -1)
+                        {
+                            kh_value(handle, temp) = pin;
+                        }
+                    }
+                }
+            }
+
+            cJSON *pru_1_pins = NULL;
+            char *key_1 = NULL;
+
+            cJSON_ArrayForEach(pru_1_pins, pru_head_1)
+            {
+                key_1 = pru_1_pins->string;
+                for (int i = 0; i < cJSON_GetArraySize(pru_1_pins); i++)
+                {
+                    cJSON* elem = cJSON_GetArrayItem(pru_1_pins, i);
+                    if (elem != NULL)
+                    {
+                        sym_ptr pin = (sym_ptr) malloc(sizeof(sym));
+                        pin->identifier = strdup(cJSON_GetArrayItem(elem, 0)->valuestring);
+                        pin->data_type = DT_INTEGER;
+                        pin->value = atoi(key_1);
+                        pin->scope = 0;
+                        pin->next = NULL;
+                        pin->is_hidden = 0;
+                        pin->is_function = 0;
+                        pin->is_constant = 1;
+
+                        int err;
+                        khint_t temp = kh_put(symbol_table, handle, strdup(pin->identifier), &err);
+                        if (temp != -1)
+                        {
+                            kh_value(handle, temp) = pin;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 int insert_symbol_table(char* id, int dt_type, int val, int is_function)
@@ -24,6 +95,7 @@ int insert_symbol_table(char* id, int dt_type, int val, int is_function)
         new->next = NULL;
         new->is_hidden = 0;
         new->is_function = is_function;
+        new->is_constant = 0;
 
         int err;
         temp = kh_put(symbol_table, handle, strdup(id), &err);
@@ -62,7 +134,8 @@ int insert_symbol_table(char* id, int dt_type, int val, int is_function)
             base->next = NULL;
             base->is_hidden = 0;
             base->is_function = 0;
-            
+            base->is_constant = 0;
+
             return 1;
         }
 
@@ -150,7 +223,7 @@ int get_scope()
 
 void dump_symbol_table()
 {
-    printf("|%-10s |%-10s |%-10s |%-10s |%-10s\n", "id", "scope", "value", "hidden", "function");
+    printf("|%-10s |%-10s |%-10s |%-10s |%-10s |%-10s\n", "id", "scope", "value", "hidden", "function", "constant");
 
     for (khint_t k = kh_begin(handle); k != kh_end(handle); ++k)
     {
@@ -160,7 +233,7 @@ void dump_symbol_table()
 
             if (temp->next == NULL)
             {
-                printf("%-10s %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function);
+                printf("%-10s %-10d %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function, temp->is_constant);
                 
                 if (temp->is_function == 1)
                 {
@@ -169,18 +242,18 @@ void dump_symbol_table()
 
                     vec_foreach(&temp->params, tmp, i)
                     {
-                        printf("--> %-10s %-10d %-10d %-10d %-10d\n", tmp->identifier, tmp->scope, tmp->value, tmp->is_hidden, tmp->is_function);
+                        printf("--> %-10s %-10d %-10d %-10d %-10d %-10d\n", tmp->identifier, tmp->scope, tmp->value, tmp->is_hidden, tmp->is_function, tmp->is_constant);
                     }
                 }
             }
             else 
             {
-                printf("%-10s %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function);
+                printf("%-10s %-10d %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function, temp->is_constant);
                 temp = temp->next;
 
                 while (temp != NULL)
                 {
-                    printf("--> %-10s %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function);    
+                    printf("--> %-10s %-10d %-10d %-10d %-10d %-10d\n", temp->identifier, temp->scope, temp->value, temp->is_hidden, temp->is_function, temp->is_constant);    
                     temp = temp->next;
                 }
             }
