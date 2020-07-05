@@ -188,7 +188,15 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
 
         if (node->opt == AST_NODE_VARIABLE)
         {
-            fprintf(handle, " %s ", ((ast_node_variable*)node->left)->symbol_entry->identifier);
+            if (((ast_node_variable*)node->left)->symbol_entry->is_constant == 1)
+            {
+                fprintf(handle, " %d ", ((ast_node_variable*)node->left)->symbol_entry->value);
+            }
+            else if (((ast_node_variable*)node->left)->symbol_entry->is_constant == 0)
+            {
+                fprintf(handle, " %s ", ((ast_node_variable*)node->left)->symbol_entry->identifier);
+            }
+            
         }
 
         if (node->opt == AST_NODE_FUNC_CALL)

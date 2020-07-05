@@ -1,5 +1,5 @@
 while : 1 = 1 {
-    if : digital_read(16) {
+    if : digital_read(P1_20) {
         digital_write(7, false);
     }
     else {
