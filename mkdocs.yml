@@ -1,21 +1,25 @@
 site_name: simpPRU
+site_author: Vedant Paranjape
+site_description: "Documentation for simPRU language used to program TI's PRU found on BeagleBoards"
+site_url: https://simppru.readthedocs.io/
+repo_url: https://github.com/VedantParanjape/simpPRU
 nav:
     - Home: index.md
     - "Language Reference": language.md
     - Examples: 
-        - "Digital Read": digital_read.md
-        - "Digital Write": digital_write.md
-        - "Delay": delay.md
-        - "LED Blink": led_blink.md
-        - "Hardware Counter": read_counter.md
-        - "LED Blink using while loop": led_blink_while.md
-        - "LED Blink using for loop": led_blink_for.md
-        - "LED Blink using hardware counter as delay": led_blink_counter.md
-        - "HCSR04 Distance Sensor example": hcsr04_sensor.md
-        - "LED Blink with button control": led_blink_button.md
+        - "Digital Read": examples/digital_read.md
+        - "Digital Write": examples/digital_write.md
+        - "Delay": examples/delay.md
+        - "LED Blink": examples/led_blink.md
+        - "Hardware Counter": examples/read_counter.md
+        - "LED Blink using while loop": examples/led_blink_while.md
+        - "LED Blink using for loop": examples/led_blink_for.md
+        - "LED Blink using hardware counter as delay": examples/led_blink_counter.md
+        - "HCSR04 Distance Sensor example": examples/hcsr04_sensor.md
+        - "LED Blink with button control": examples/led_blink_button.md
     - Installation: 
-        - "Build from source": build.md
-        - "Install": install.md
+        - "Build from source": install/build.md
+        - "Install": install/install.md
     - About: 
-        - "About Me": about.md
-        - "License": license.md
+        - "About Me": about/about.md
+        - "License": about/license.md

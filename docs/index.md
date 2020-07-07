@@ -1,17 +1,32 @@
-# Welcome to MkDocs
+# Welcome to simpPRU Docs
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+The PRU is a dual core micro-controller system present on the AM335x SoC which powers the BeagleBone. It is meant to be used for high speed jitter free IO control. Being independent from the linux scheduler and having direct access to the IO pins of the BeagleBone Bhilack, the PRU is ideal for offloading IO intensive tasks.
 
-## Commands
+Programming the PRU is a uphill task for a beginner, since it involves several steps, writing the firmware for the PRU, writing a loader program. This can be a easy task for a experienced developer, but it keeps many creative developers away. So, I propose to implement a easy to understand language for the PRU, hiding away all the low level stuff and providing a clean interface to program PRU.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+This can be achieved by implementing a language on top of PRU C. It will directly compile down to PRU C. This could also be solved by implementing a bytecode engine on the PRU, but this will result in waste of already limited resources on PRU. With this approach, both PRU cores can be run independent of each other.
 
-## Project layout
+## What is simpPRU
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+* simpPRU is a procedural programming language.
+* It is a statically typed language. Variables and functions must be assigned data types during compilation.
+* It is typesafe, and data types of variables are decided during compilation.
+* simPRU codes have a `.sim` extension.
+
+## Requirements
+
+Currently this only supports am335x systems: PocketBeagle, BeagleBone Black and BeagleBone Black Wireless:
+
+* `pru-gcc`
+* beaglebone image with official support for remoteproc: `ti-4.19+ kernel`
+* `config-pin` utility
+
+## Usage
+
+* `./simppru <filename>.sim` - Compile a program
+* `./simppru -h` Display help info
+
+## Issues
+
+* For full source code of simPRU [visit](https://github.com/VedantParanjape/simppru)
+* To report a bug or start a issue [visit](https://github.com/VedantParanjape/simppru/issues)
