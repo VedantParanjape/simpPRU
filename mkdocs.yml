@@ -1,1 +1,21 @@
-site_name: My Docs
+site_name: simpPRU
+nav:
+    - Home: index.md
+    - "Language Reference": language.md
+    - Examples: 
+        - "Digital Read": digital_read.md
+        - "Digital Write": digital_write.md
+        - "Delay": delay.md
+        - "LED Blink": led_blink.md
+        - "Hardware Counter": read_counter.md
+        - "LED Blink using while loop": led_blink_while.md
+        - "LED Blink using for loop": led_blink_for.md
+        - "LED Blink using hardware counter as delay": led_blink_counter.md
+        - "HCSR04 Distance Sensor example": hcsr04_sensor.md
+        - "LED Blink with button control": led_blink_button.md
+    - Installation: 
+        - "Build from source": build.md
+        - "Install": install.md
+    - About: 
+        - "About Me": about.md
+        - "License": license.md
