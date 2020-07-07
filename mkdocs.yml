@@ -23,3 +23,5 @@ nav:
     - About: 
         - "About Me": about/about.md
         - "License": about/license.md
+markdown_extensions:
+  - admonition
