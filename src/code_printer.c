@@ -111,6 +111,7 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
     {
         if (node->opt >= 25 && node->opt <= 40)
         {
+            fprintf(handle, "%s", "(");
             ast_expression_printer((ast_node_expression*)node->left, handle);
             switch (node->opt)
             {
@@ -179,6 +180,7 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
                     break;     
             }
             ast_expression_printer((ast_node_expression*)node->right, handle);
+            fprintf(handle, "%s", ")");
         }
 
         if (node->opt == AST_NODE_CONSTANT)
