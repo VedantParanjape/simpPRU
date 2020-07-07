@@ -78,7 +78,7 @@ void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
         {
             if (decl->symbol_entry->data_type == DT_INTEGER || decl->symbol_entry->data_type == DT_BOOLEAN)
             {
-                fprintf(handle, "\t%s %s;\n", "int", decl->symbol_entry->identifier);
+                fprintf(handle, "\t%s %s = 0;\n", "int", decl->symbol_entry->identifier);
             }
         }
         else if (decl->expression != NULL)
