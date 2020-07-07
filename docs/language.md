@@ -109,4 +109,4 @@ test_var := true;
 
     `length1, length2, _City_1`
 
-Detailed info: https://www.includehelp.com/c/identifier-variable-naming-conventions.aspx
+Detailed info: [https://www.includehelp.com/c/identifier-variable-naming-conventions.aspx](https://www.includehelp.com/c/identifier-variable-naming-conventions.aspx)
