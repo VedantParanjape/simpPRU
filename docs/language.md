@@ -268,7 +268,7 @@ while : tag < 30 {
 
 ### break
 
-`break;` is used to break execution in a loop statement, either `for loop` or `while loop`. It exits the loop upon calling.
+`break` is used to break execution in a loop statement, either `for loop` or `while loop`. It exits the loop upon calling.
 
 #### Syntax
 
