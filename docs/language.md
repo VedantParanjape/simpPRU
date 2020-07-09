@@ -79,12 +79,17 @@ test_var := true;
 * Integer variable can be assigned only Integer expression/constant.
 * Boolean variable can be assigned only Boolean expression/constant.
 
+## Comments
+
+* TBD
+
 ## Keyword and Identifiers
 
 ### Reserved keywords
  
-| `true`  | `read_counter` | `stop_counter` |
+| | | |
 | --- | --- | --- |
+| **`true`**  | **`read_counter`** | **`stop_counter`** |
 | **`false`** | **`start_counter`** | **`pwm`** |
 | **`int`** | **`delay`** | **`digital_write`** |
 | **`bool`** | **`digital_read`** | **`def`** |
@@ -142,7 +147,7 @@ Detailed info: [https://www.includehelp.com/c/identifier-variable-naming-convent
 => false
 ```
 
-!!! note
+!!! Note
     Expressions are evaluated following the [operator precedence](#operators)
 
 ## If-else statement
@@ -263,7 +268,7 @@ while : tag < 30 {
 
 ## Control statements
 
-!!! warning
+!!! Warning
     `break` and `continue` should only be used inside looping statements
 
 ### break
@@ -303,4 +308,134 @@ for : j in 9:19 {
         break;
     }
 }
+``` 
+
+## Functions
+
+### Function definition
+
+A function is a group of statements that together perform a task. You can divide up your code into separate functions. How you divide up your code among different functions is up to you, but logically the division usually is such that each function performs a specific task. A function declaration tells the compiler about a function's name, return type, and parameters. A function definition provides the actual body of the function. 
+
+!!! warning
+    Function must be defined before calling it.
+
+#### Syntax
+
+```python
+def <function_name> : <data_type> : <data_type> <param_name>, <data_type> <param_name>, ... {
+    statement 1;
+    ...
+    ...
+
+    return <data_type>;
+}
 ```
+
+!!! Note
+    If return data type is void, then return statement is not needed, and if still it is added, it must be return nothing, i.e., something like this `return ;`
+
+!!! Warning
+    `return` can only be present in the body of the function only once, that too at the end of the function, not inside any compound statements.
+    
+!!! fail "Wrong"
+    * `return` inside a compound statement, this syntax is not allowed.
+    ```python
+    def test : int : int a {
+        if : a < 4 {
+            return a;
+        }
+    }
+    ```
+
+!!! done "Correct"
+    * `return` is not inside compound statments, It should be placed only at the end of function definition
+    ```python
+    def test : int : int a {
+        int gf := 8;
+        if : a < 4 {
+            gf := 4;
+        }
+
+        return gf;
+    }
+    ```
+
+
+#### Examples
+
+Examples according to return types
+
+=== "Integer"
+    ```python
+    def test_func : int : int a, int b {
+        int aa := a + 5;
+
+        if : aa < 3 {
+            aa : = 0;
+        }
+
+        return aa + b;
+    }
+    ```
+
+=== "Boolean"
+    ```python
+    def compare : bool : int val {
+        bool ret := false;
+
+        if : val < 0 {
+            ret := true;
+        }
+
+        return ret;
+    }
+    ```
+
+=== "Void"
+    ```python
+    def example_func : void : bool qu {
+        if : qu and true {
+            ...
+            do something
+            ...
+        }
+    }
+
+    def example_func_v : void : {
+        int temp := 90;
+
+        return;
+    }
+    ```
+
+### Function call
+
+Functions can be called only if, they have been defined earlier. They return data types according to their definition. Parameters are passed by value. Only pass by value is supported as of now.
+
+#### Syntax
+
+```python
+function_name(var1, var2, ..);
+```
+
+#### Examples
+
+We will consider functions defined in earlier [subsection](#examples_5)
+
+=== "Integer"
+    ```python
+    int a := 55;
+    int ret_val := test_func(4, a);
+    ```
+
+=== "Boolean"
+    ```python
+    bool val := compare(22);
+    compare(-2);
+    ```
+
+=== "Void"
+    ```python
+    example_func(false);
+    example_func_v();
+    ```

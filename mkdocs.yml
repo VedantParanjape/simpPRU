@@ -3,6 +3,10 @@ site_author: Vedant Paranjape
 site_description: "Documentation for simPRU language used to program TI's PRU found on BeagleBoards"
 site_url: https://simppru.readthedocs.io/
 repo_url: https://github.com/VedantParanjape/simpPRU
+
+theme:
+    name: material
+
 nav:
     - Home: index.md
     - "Language Reference": language.md
@@ -23,5 +27,10 @@ nav:
     - About: 
         - "About Me": about/about.md
         - "License": about/license.md
+
 markdown_extensions:
   - admonition
+  - codehilite    
+  - pymdownx.tabbed
+  - pymdownx.superfences
+  - pymdownx.smartsymbols
