@@ -1,4 +1,4 @@
-# Language Reference
+# Language Syntax
 
 * simpPRU is a procedural programming language.
 * It is a statically typed language. Variables and functions must be assigned data types during compilation.
@@ -16,6 +16,7 @@
 * `<any_integer>` - Integer constant
 * `true` - Boolean constant (True)
 * `false` - Boolean constant (False)
+* `Px_yz` - Pin mapping constants are Integer constant, where x is 1,2 or 8,9 and yz are the header pin numbers. For further details refer to [this](io.md)
 
 ## Operators
 
