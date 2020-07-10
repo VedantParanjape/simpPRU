@@ -9,7 +9,7 @@ theme:
     features:
         - tabs
     palette:
-            scheme: default
+            scheme: preference
 
 nav:
     - Home: index.md
