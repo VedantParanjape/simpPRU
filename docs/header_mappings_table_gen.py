@@ -1,6 +1,6 @@
 import json
 
-with open("../src/pocket_beagle_pinout.json", "r") as fp:
+with open("../src/beagle_bone_pinout.json", "r") as fp:
     js = json.load(fp)
 
 fout = open("header_mapping.md", "w")

@@ -32,10 +32,79 @@
         | 8 | 8 | P2_35 |
 
 === "BeagleBone Black"
-    * TBD
+    === "PRU0"
+        | R30 Register bit (Output) | R31 Register bit (Input) | Header pin |
+        | :--------------: | :--------------: | :--------: |
+        | - | 15 | P8_15 |
+        | 15 | - | P8_11 |
+        | - | 14 | P8_16 |
+        | 14 | - | P8_12 |
+        | 7 | 7 | P9_25 |
+        | 5 | 5 | P9_27 |
+        | 3 | 3 | P9_28 |
+        | 1 | 1 | P9_29 |
+        | 2 | 2 | P9_30 |
+        | 0 | 0 | P9_31 |
+        | 6 | 6 | P9_41 |
+        | 4 | 4 | P9_42 |
+
+    === "PRU1"
+        | R30 Register bit (Output) | R31 Register bit (Input) | Header pin |
+        | :--------------: | :--------------: | :--------: |
+        | 13 | 13 | P8_20 |
+        | 12 | 12 | P8_21 |
+        | 8 | 8 | **P8_27 |
+        | 10 | 10 | **P8_28 |
+        | 9 | 9 | **P8_29 |
+        | 6 | 6 | **P8_39 |
+        | 7 | 7 | **P8_40 |
+        | 4 | 4 | **P8_41 |
+        | 5 | 5 | **P8_42 |
+        | 2 | 2 | **P8_43 |
+        | 3 | 3 | **P8_44 |
+        | 0 | 0 | **P8_45 |
+        | 1 | 1 | **P8_46 |
+
+        ** Before using these pins, you need to disable HDMI functionality.     
+           You can read how to do this [here](https://archive.vn/D8Bzy)
 
 === "BeagleBone Black Wireless"
-    * TBD
+    === "PRU0"
+        | R30 Register bit (Output) | R31 Register bit (Input) | Header pin |
+        | :--------------: | :--------------: | :--------: |
+        | - | 15 | P8_15 |
+        | 15 | - | P8_11 |
+        | - | 14 | P8_16 |
+        | 14 | - | P8_12 |
+        | 7 | 7 | P9_25 |
+        | 5 | 5 | P9_27 |
+        | 3 | 3 | P9_28 |
+        | 1 | 1 | P9_29 |
+        | 2 | 2 | P9_30 |
+        | 0 | 0 | P9_31 |
+        | 6 | 6 | P9_41 |
+        | 4 | 4 | P9_42 |
+
+    === "PRU1"
+        | R30 Register bit (Output) | R31 Register bit (Input) | Header pin |
+        | :--------------: | :--------------: | :--------: |
+        | 13 | 13 | P8_20 |
+        | 12 | 12 | P8_21 |
+        | 8 | 8 | **P8_27 |
+        | 10 | 10 | **P8_28 |
+        | 9 | 9 | **P8_29 |
+        | 6 | 6 | **P8_39 |
+        | 7 | 7 | **P8_40 |
+        | 4 | 4 | **P8_41 |
+        | 5 | 5 | **P8_42 |
+        | 2 | 2 | **P8_43 |
+        | 3 | 3 | **P8_44 |
+        | 0 | 0 | **P8_45 |
+        | 1 | 1 | **P8_46 |
+
+        ** Before using these pins, you need to disable HDMI functionality.      
+           You can read how to do this [here](https://archive.vn/D8Bzy)
+
 
 * All Header pins are `constant integer variable` by default, with its value equal to respective R30/R31 register bit
   * Example: `P1_20` is an constant integer variable with value `16`, similary `P1_02` is an constant integer variable with value `9`
