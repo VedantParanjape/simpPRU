@@ -42,7 +42,7 @@ if : 4!=2 {
 /* if else nested */
 if : 3>2 {
     int a:= 3 +8;
-    if : 4=4 {
+    if : 4 == 4 {
         bool te := false;
     }
     else {
@@ -73,7 +73,7 @@ for : iota in 1:3 {
 }
 
 /* while loop */
-while : 3 = 3 {
+while : 3 == 3 {
     int rt := 90;
 }
 

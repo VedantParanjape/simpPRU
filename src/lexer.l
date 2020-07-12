@@ -190,7 +190,7 @@ comma                ([,])
   {
     return OPR_LE;
   }
-  else if (!strcmp(yytext,"="))
+  else if (!strcmp(yytext,"=="))
   {
     return OPR_EQ;
   }
