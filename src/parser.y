@@ -758,11 +758,11 @@ int main(int argc, char** argv)
     
     if (is_rpmsg_used == 1)
     {
-        system("pru-gcc ../generated_code/temp.c ../generated_code/pru_rpmsg.c ../generated_code/pru_virtqueue.c -o out.pru -mmcu=am335x.pru0 -I./../generated_code/include/ -I./../generated_code/include/am335x/ -D_ENABLE_RPMSG=1");
+        system("pru-gcc ../generated_code/temp.c ../generated_code/pru_rpmsg.c ../generated_code/pru_virtqueue.c -o out.pru -mmcu=am335x.pru0 -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=1");
     }
     else
     {
-        system("pru-gcc ../generated_code/temp.c -o out.pru -mmcu=am335x.pru0 -I./../generated_code/include/ -I./../generated_code/include/am335x/ -D_ENABLE_RPMSG=0");
+        system("pru-gcc ../generated_code/temp.c -o out.pru -mmcu=am335x.pru0 -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=0");
     }
     // -D_ENABLE_RPMSG=1, here _ENABLE_RPMSG is a macro used, we can define its value like this
 }
