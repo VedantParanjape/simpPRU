@@ -34,7 +34,7 @@
 #define _RSC_TYPES_H_
 
 #include <stdint.h>
-#include "pru_types.h"
+#include <pru_types.h>
 
 /* Size constants must match those used on host */
 #define SZ_4K			(0x00001000)
