@@ -30,7 +30,7 @@ bitwise_operators    ("~"|"&"|"|")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
-io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter")
+io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter"|"init_message_channel"|"receive_message"|"send_message")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
 separator            ([:])
@@ -279,6 +279,18 @@ comma                ([,])
   else if (!strcmp(yytext, "read_counter"))
   {
     return KW_READ_COUNTER;
+  }
+  else if (!strcmp(yytext, "init_message_channel"))
+  {
+    return KW_INIT_RPMSG;
+  }
+  else if (!strcmp(yytext, "receive_message"))
+  {
+    return KW_RECV_RPMSG;
+  }
+  else if (!strcmp(yytext, "send_message"))
+  {
+    return KW_SEND_RPMSG;
   }
 }
 

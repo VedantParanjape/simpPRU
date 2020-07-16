@@ -1,5 +1,7 @@
 #include "code_printer.h"
 
+static int rpmsg_artifact_found = 0;
+
 void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle, int is_func_def)
 {
     int i = 0;
@@ -58,6 +60,9 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
             case AST_NODE_START_COUNTER_CALL:
             case AST_NODE_STOP_COUNTER_CALL:
             case AST_NODE_READ_COUNTER_CALL:
+            case AST_NODE_INIT_RPMSG_CALL:
+            case AST_NODE_RECV_RPMSG_CALL:
+            case AST_NODE_SEND_RPMSG_CALL:
                 fprintf(handle, "%s", "\t");
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");
@@ -215,6 +220,11 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
         {
             ast_utility_function_call_printer((ast_node_utility_function_call*)node->left, handle);
         }
+
+        if (node->opt == AST_NODE_RECV_RPMSG_CALL)
+        {
+            ast_utility_function_call_printer((ast_node_utility_function_call*)node->left, handle);
+        }
     }
 }
 
@@ -358,6 +368,26 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
             case AST_NODE_READ_COUNTER_CALL:
                 fprintf(handle, "%s()", "read_counter");
                 break;
+            
+            case AST_NODE_INIT_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "%s()", "init_rpmsg");
+                break;
+
+            case AST_NODE_RECV_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "%s()", "receive_rpmsg");
+                break;
+
+            case AST_NODE_SEND_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "%s(", "send_rpmsg");
+                ast_expression_printer(ufc->rpmsg_data, handle);
+                fprintf(handle, "%s", ")");
+                break;
         }
     }
 }
@@ -412,7 +442,7 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
     }
 }
 
-void code_printer(ast_node* ast)
+int code_printer(ast_node* ast)
 {
     FILE* handle = fopen("../generated_code/temp.c", "w");
 
@@ -425,7 +455,8 @@ void code_printer(ast_node* ast)
     fprintf(handle, "%s", READ_COUNTER);
     fprintf(handle, "%s", DIGITAL_WRITE);
     fprintf(handle, "%s", DIGITAL_READ);
-       
+    fprintf(handle, "%s", RPMSG_DEFS);
+    
     vec_foreach(&ast->child_nodes, temp, i)
     {
         if (temp->node_type == AST_NODE_FUNCTION_DEFS)
@@ -478,6 +509,9 @@ void code_printer(ast_node* ast)
             case AST_NODE_START_COUNTER_CALL:
             case AST_NODE_STOP_COUNTER_CALL:
             case AST_NODE_READ_COUNTER_CALL:
+            case AST_NODE_INIT_RPMSG_CALL:
+            case AST_NODE_RECV_RPMSG_CALL:
+            case AST_NODE_SEND_RPMSG_CALL:
                 fprintf(handle, "%s", "\t");
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");
@@ -486,4 +520,6 @@ void code_printer(ast_node* ast)
     }
     fprintf(handle, "%s", END);
     fclose(handle);
+
+    return rpmsg_artifact_found;
 }

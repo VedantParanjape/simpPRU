@@ -67,6 +67,9 @@
 #define AST_NODE_START_COUNTER_CALL 52
 #define AST_NODE_STOP_COUNTER_CALL  53
 #define AST_NODE_READ_COUNTER_CALL  54
+#define AST_NODE_INIT_RPMSG_CALL    55
+#define AST_NODE_RECV_RPMSG_CALL    56
+#define AST_NODE_SEND_RPMSG_CALL    57
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
@@ -111,7 +114,6 @@ typedef struct ast_node_param ast_node_param;
 typedef struct ast_node_function_call ast_node_function_call;
 typedef struct ast_node_arguments ast_node_arguments;
 typedef struct ast_node_utility_function_call ast_node_utility_function_call;
-
 
 struct ast_node 
 {
@@ -268,6 +270,7 @@ struct ast_node_utility_function_call
     ast_node_expression *time_ms;
     ast_node_expression *frequency;
     ast_node_expression *duty_cycle;
+    ast_node_expression *rpmsg_data;
 };
 
 ast_node *create_translation_unit();
@@ -299,6 +302,9 @@ ast_node_utility_function_call *create_pwm_call_node(ast_node_expression *freq, 
 ast_node_utility_function_call *create_start_counter_call_node();
 ast_node_utility_function_call *create_stop_counter_call_node();
 ast_node_utility_function_call *create_read_counter_call_node();
+ast_node_utility_function_call *create_init_rpmsg_call_node();
+ast_node_utility_function_call *create_recv_rpmsg_call_node();
+ast_node_utility_function_call *create_send_rpmsg_call_node(ast_node_expression *rpmsg_data);
 
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);

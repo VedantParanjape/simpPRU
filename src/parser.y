@@ -74,6 +74,7 @@ ast_node *ast = NULL;
 %token KW_RETURN KW_DEF
 
 %token KW_DIGITAL_READ KW_DIGITAL_WRITE KW_DELAY KW_PWM KW_START_COUNTER KW_STOP_COUNTER KW_READ_COUNTER
+%token KW_INIT_RPMSG KW_RECV_RPMSG KW_SEND_RPMSG
 
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
@@ -94,7 +95,8 @@ ast_node *ast = NULL;
 %type <param> parameter_list_def parameters
 %type <variable> parameter
 %type <function_call> int_function_call bool_function_call void_function_call 
-%type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call
+%type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call 
+%type <util_function_call> init_rpmsg_call recv_rpmsg_call send_rpmsg_call 
 %type <arguments> function_call_parameters
 %start start
 %%
@@ -197,6 +199,15 @@ statement: compound_statement {
          }
          | read_counter_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_READ_COUNTER_CALL, (void*)$1);
+         }
+         | init_rpmsg_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_INIT_RPMSG_CALL, (void*)$1);
+         }
+         | recv_rpmsg_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_RECV_RPMSG_CALL, (void*)$1);
+         }
+         | send_rpmsg_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_SEND_RPMSG_CALL, (void*)$1);
          }
          ;
 
@@ -337,6 +348,9 @@ arithmetic_expression: CONST_INT {
           }
           | read_counter_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_READ_COUNTER_CALL, 0, (ast_node*)$1, NULL);
+          }
+          | recv_rpmsg_call {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_RECV_RPMSG_CALL, 0, (ast_node*)$1, NULL);
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
@@ -658,6 +672,26 @@ void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
              }
              ;
 
+function_call_parameters: function_call_parameters COMMA function_call_datatypes {
+                            $$ = add_argument_node($1, $3);
+                        }
+                        | function_call_datatypes {
+                            $$ = create_argument_node();
+                            $$ = add_argument_node($$, $1);
+                        }
+                        | /* empty */ {
+                            $$ = NULL;
+                        }
+                        ;
+                        
+function_call_datatypes: arithmetic_expression {
+                           $$ = $1;
+                       }
+                       | boolean_expression {
+                           $$ = $1;
+                       }
+                       ;
+
 digital_read_call: KW_DIGITAL_READ LPAREN arithmetic_expression RPAREN {
                         $$ = create_digital_read_call_node($3);
                      }
@@ -692,25 +726,20 @@ read_counter_call: KW_READ_COUNTER LPAREN RPAREN {
                     $$ = create_read_counter_call_node();
                  }
 
-function_call_parameters: function_call_parameters COMMA function_call_datatypes {
-                            $$ = add_argument_node($1, $3);
-                        }
-                        | function_call_datatypes {
-                            $$ = create_argument_node();
-                            $$ = add_argument_node($$, $1);
-                        }
-                        | /* empty */ {
-                            $$ = NULL;
-                        }
-                        ;
-                        
-function_call_datatypes: arithmetic_expression {
-                           $$ = $1;
-                       }
-                       | boolean_expression {
-                           $$ = $1;
-                       }
-                       ;
+init_rpmsg_call: KW_INIT_RPMSG LPAREN RPAREN {
+                    $$ = create_init_rpmsg_call_node();
+                }
+                ;
+
+recv_rpmsg_call: KW_RECV_RPMSG LPAREN RPAREN {
+                    $$ = create_recv_rpmsg_call_node();
+                }
+                ;
+
+send_rpmsg_call: KW_SEND_RPMSG LPAREN arithmetic_expression RPAREN {
+                    $$ = create_send_rpmsg_call_node($3);
+                }
+                ;
 %%
 
 int main(int argc, char** argv)
@@ -725,9 +754,17 @@ int main(int argc, char** argv)
     /* printf("%d",ast->node_type); */
 
     ast_node_dump(ast);
-    code_printer(ast);
-
-    system("pru-gcc ../generated_code/temp.c -o out.pru -mmcu=am335x.pru0");
+    int is_rpmsg_used = code_printer(ast);
+    
+    if (is_rpmsg_used == 1)
+    {
+        system("pru-gcc ../generated_code/temp.c -o out.pru -mmcu=am335x.pru0 -I./../generated_code/include/ -I./../generated_code/include/am335x/ -D_ENABLE_RPMSG=1");
+    }
+    else
+    {
+        system("pru-gcc ../generated_code/temp.c -o out.pru -mmcu=am335x.pru0 -I./../generated_code/include/ -I./../generated_code/include/am335x/ -D_ENABLE_RPMSG=0");
+    }
+    // -D_ENABLE_RPMSG=1, here _ENABLE_RPMSG is a macro used, we can define its value like this
 }
 
 void yyerror (const char *s) 

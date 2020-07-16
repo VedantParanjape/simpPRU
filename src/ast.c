@@ -68,6 +68,9 @@ ast_node_statements *create_statement_node(int node_type, void *child)
         case AST_NODE_START_COUNTER_CALL:
         case AST_NODE_STOP_COUNTER_CALL:
         case AST_NODE_READ_COUNTER_CALL:
+        case AST_NODE_INIT_RPMSG_CALL:
+        case AST_NODE_RECV_RPMSG_CALL:
+        case AST_NODE_SEND_RPMSG_CALL:
             stmt->child_nodes.utility_function_call = child;
             break;
     }
@@ -288,6 +291,7 @@ ast_node_utility_function_call *create_digital_read_call_node(ast_node_expressio
     utility_function_call->time_ms = NULL;
     utility_function_call->frequency = NULL;
     utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
 
     return utility_function_call;
 }
@@ -302,6 +306,7 @@ ast_node_utility_function_call *create_digital_write_call_node(ast_node_expressi
     utility_function_call->time_ms = NULL;
     utility_function_call->frequency = NULL;
     utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
     
     return utility_function_call;
 }
@@ -316,6 +321,7 @@ ast_node_utility_function_call *create_delay_call_node(ast_node_expression *time
     utility_function_call->time_ms = time_ms;
     utility_function_call->frequency = NULL;
     utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
 
     return utility_function_call;
 }
@@ -330,6 +336,7 @@ ast_node_utility_function_call *create_pwm_call_node(ast_node_expression *freq, 
     utility_function_call->time_ms = NULL;
     utility_function_call->frequency = freq;
     utility_function_call->duty_cycle = duty;
+    utility_function_call->rpmsg_data = NULL;
 
     return utility_function_call;
 }
@@ -344,6 +351,7 @@ ast_node_utility_function_call *create_start_counter_call_node()
     utility_function_call->time_ms = NULL;
     utility_function_call->frequency = NULL;
     utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
 
     return utility_function_call;
 }
@@ -358,6 +366,7 @@ ast_node_utility_function_call *create_stop_counter_call_node()
     utility_function_call->time_ms = NULL;
     utility_function_call->frequency = NULL;
     utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
 
     return utility_function_call;
 }
@@ -372,10 +381,55 @@ ast_node_utility_function_call *create_read_counter_call_node()
     utility_function_call->time_ms = NULL;
     utility_function_call->frequency = NULL;
     utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
 
     return utility_function_call;
 }
 
+ast_node_utility_function_call *create_init_rpmsg_call_node()
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_INIT_RPMSG_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_recv_rpmsg_call_node()
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_RECV_RPMSG_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = NULL;
+
+    return utility_function_call;
+}
+
+ast_node_utility_function_call *create_send_rpmsg_call_node(ast_node_expression *rpmsg_data)
+{
+    ast_node_utility_function_call *utility_function_call = (ast_node_utility_function_call*)malloc(sizeof(ast_node_utility_function_call));
+
+    utility_function_call->node_type = AST_NODE_SEND_RPMSG_CALL;
+    utility_function_call->pin_number = NULL;
+    utility_function_call->value = NULL;
+    utility_function_call->time_ms = NULL;
+    utility_function_call->frequency = NULL;
+    utility_function_call->duty_cycle = NULL;
+    utility_function_call->rpmsg_data = rpmsg_data;
+
+    return utility_function_call;
+}
 
 void ast_node_dump(ast_node* ast)
 {
@@ -517,7 +571,19 @@ void ast_node_type(int node_type)
         case AST_NODE_READ_COUNTER_CALL:
             printf("read counter call");
             break;
-            
+
+        case AST_NODE_INIT_RPMSG_CALL:
+            printf("init rpmsg call");
+            break;
+
+        case AST_NODE_RECV_RPMSG_CALL:
+            printf("recv rpmsg call");
+            break;
+
+        case AST_NODE_SEND_RPMSG_CALL:
+            printf("send rpmsg call");
+            break;
+
         default:
             printf("ast invalid");
             break;
