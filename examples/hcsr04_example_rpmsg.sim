@@ -1,17 +1,17 @@
 def measure : int : {
     bool timeout := false;
-    int echo := 0;
+    int echo := -1;
 
     start_counter();
     
     while : read_counter() <= 2000 {
-        digital_write(7, true);
+        digital_write(5, true);
     }
-    digital_write(7, false);
+    digital_write(5, false);
     stop_counter();
 
     start_counter();
-    while : not (digital_read(1)) and true {
+    while : not (digital_read(6)) and true {
         if : read_counter() > 200000000 {
             timeout := true;
             break;
@@ -21,7 +21,7 @@ def measure : int : {
     
     if : not(timeout) and true {
         start_counter();
-        while : digital_read(1) and true {
+        while : digital_read(6) and true {
             if : read_counter() > 200000000 {
                 timeout := true;
                 break;
@@ -38,11 +38,11 @@ def measure : int : {
     return echo;
 }
 
+init_message_channel();
+
 while : true {
-    int ping:= measure()*1000;
-    init_message_channel();
+    int ping:= measure();
 
     send_message(ping);
-
     delay(1000);
 }

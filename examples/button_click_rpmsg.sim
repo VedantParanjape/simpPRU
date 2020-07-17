@@ -1,0 +1,11 @@
+init_message_channel();
+
+while : true {
+    if : digital_read(6) {
+        send_message(1);
+    }
+    else {
+        send_message(0);
+    }
+    delay(100);
+}
