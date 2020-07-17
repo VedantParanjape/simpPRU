@@ -1,0 +1,29 @@
+init_message_channel();
+
+while : true {
+    int option := receive_message();
+    int a := receive_message();
+    int b := receive_message();
+
+    if : option == 1 {
+        send_message(a+b);
+    }
+    elif : option == 2 {
+        send_message(a-b);
+    }
+    elif : option == 3 {
+        send_message(a*b);
+    }
+    elif : option == 4 {
+        if : b != 0 {
+            send_message(a/b);
+        }
+        else {
+            send_message(a);
+        }
+    }
+    else
+    {
+        send_message(a+b);
+    }
+}

@@ -1,0 +1,9 @@
+init_message_channel();
+
+int count := receive_message();
+
+while : true {
+    send_message(count);
+    count := count + 1;
+    delay(1000);
+}
