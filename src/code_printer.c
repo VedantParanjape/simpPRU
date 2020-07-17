@@ -9,7 +9,7 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
 
     fprintf(handle, "%s", "{\n");
     vec_foreach(&cmpd_stmt->child_nodes, temp, i)
-    {           
+    {
         switch(temp->node_type)
         {
             case AST_NODE_COMPOUND_STATEMENT:
@@ -42,12 +42,15 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 fprintf(handle, "%s", ";\n");
                 break;
 
-            case AST_NODE_LOOP_CONTROL:
+            case AST_NODE_LOOP_BREAK:
                 if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_BREAK)
                 {
                     fprintf(handle, "\t%s;\n", "break");
                 }
-                else if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_CONTINUE)
+                break;
+
+            case AST_NODE_LOOP_CONTINUE:
+                if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_CONTINUE)
                 {
                     fprintf(handle, "\t%s;\n", "continue");
                 }
