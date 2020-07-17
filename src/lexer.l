@@ -299,7 +299,7 @@ comma                ([,])
 
   if (function_flag == 1)
   {
-    if (insert_symbol_table(yytext, DT_UNDEF, 0, 1) == 1)
+    if (insert_symbol_table(yytext, DT_UNDEF, 1, 1) == 1)
     {
       yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
       vec_init(&yylval.symbol_handle->params);
@@ -312,7 +312,7 @@ comma                ([,])
 
   if (assignment_flag == 1 || for_loop_flag == 1)
   {
-    if (insert_symbol_table(yytext, DT_UNDEF, 0, 0) == 1)
+    if (insert_symbol_table(yytext, DT_UNDEF, 1, 0) == 1)
     {
       yylval.symbol_handle = lookup_symbol_table(yytext, get_scope());
       assignment_flag = 0;

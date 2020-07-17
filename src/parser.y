@@ -347,10 +347,10 @@ arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
           }
           | read_counter_call {
-              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_READ_COUNTER_CALL, 0, (ast_node*)$1, NULL);
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_READ_COUNTER_CALL, 1, (ast_node*)$1, NULL);
           }
           | recv_rpmsg_call {
-              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_RECV_RPMSG_CALL, 0, (ast_node*)$1, NULL);
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_RECV_RPMSG_CALL, 1, (ast_node*)$1, NULL);
           }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
@@ -362,6 +362,10 @@ arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_MUL, $1->value * $3->value, (ast_node*)$1, (ast_node*)$3);
           } 
           | arithmetic_expression OPR_DIV arithmetic_expression {
+              if ($3->value == 0)
+              {
+                  yyerror("division by 0");
+              }
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_DIV, $1->value / $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | OPR_SUB arithmetic_expression {
