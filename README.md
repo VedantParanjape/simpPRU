@@ -91,5 +91,6 @@ Check `/examples` for different examples
 ### Milestone 6
 
 * [x] Implementing example codes
+* [x] Added support for RPMSG
 * [ ] Implementing helper programs to simplify the process of loading PRU firmware
 * [ ] Writing documentation
