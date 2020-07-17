@@ -92,5 +92,6 @@ Check `/examples` for different examples
 
 * [x] Implementing example codes
 * [x] Added support for RPMSG
+* [ ] Add support for using PWM using eCAP module
 * [ ] Implementing helper programs to simplify the process of loading PRU firmware
 * [ ] Writing documentation
