@@ -177,7 +177,7 @@ statement: compound_statement {
              $$ = create_statement_node(AST_NODE_LOOP_BREAK, (void*)create_loop_control_node(AST_NODE_LOOP_BREAK));
          }
          | KW_CONTINUE SEMICOLON {
-             $$ = create_statement_node(AST_NODE_LOOP_CONTINUE, (void*)create_loop_control_node(AST_NODE_LOOP_BREAK));
+             $$ = create_statement_node(AST_NODE_LOOP_CONTINUE, (void*)create_loop_control_node(AST_NODE_LOOP_CONTINUE));
          }
          | digital_read_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_DIGITAL_READ_CALL, (void*)$1);
