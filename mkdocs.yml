@@ -27,10 +27,10 @@ nav:
         - "LED Blink using hardware counter as delay": examples/led_blink_counter.md
         - "HCSR04 Distance Sensor example": examples/hcsr04_sensor.md
         - "LED Blink with button control": examples/led_blink_button.md
-        - "Using RPMSG to communicate with ARM core": examples/rpmsg_example.sim
-        - "Using RPMSG to implement a simple calculator on PRU": examples/rpmsg_pru_calculator.sim
-        - "Sending state of button using RPMSG": examples/button_click_rpmsg.sim
-        - "HCSR04 Distance Sensor example (sending distance data to ARM using RPMSG)": examples/hcsr04_example_rpmsg.sim
+        - "Using RPMSG to communicate with ARM core": examples/rpmsg_example.md
+        - "Using RPMSG to implement a simple calculator on PRU": examples/rpmsg_pru_calculator.md
+        - "Sending state of button using RPMSG": examples/button_click_rpmsg.md
+        - "HCSR04 Distance Sensor example (sending distance data to ARM using RPMSG)": examples/hcsr04_example_rpmsg.md
 
     - Installation: 
         - "Build from source": install/build.md
