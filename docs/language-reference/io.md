@@ -248,7 +248,7 @@ stop_counter();
 
 `read_counter()`
 
-#### Paramters
+#### Parameters
 
 * n/a
 
@@ -270,3 +270,81 @@ stop_counter();
 ```
 
 while the value of hardware counter is less than 200000000, it will set logic level of pin `P1_29` to `HIGH`, after that it will set it to `LOW`. Here, 200000000 cpu cycles means 1 second of time, as CPU clock is 200 MHz. So, LED will turn on for 1 second, and turn off after.
+
+## Init message channel
+
+`init_message_channel` is a function which is used to initialise communication channel between PRU and the ARM core. It is sets up necessary structures to use RPMSG to communicate, it expects a init message from the ARM core to initialise. It is a necessary to call this function before using any of the message functions.
+
+### Syntax
+
+`init_message_channel()`
+
+#### Parameters
+
+* n/a
+
+#### Return Type
+
+* `void` - returns nothing
+
+### Example
+
+```python
+init_message_channel();
+```
+
+## Receive message
+
+`receive_message` is a function which is used to receive messages from ARM to the PRU, messages can only be `integers`, as only they are supported as of now. It uses RPMSG channel setup by `init_message_channel` to receive messages from ARM core.
+
+### Syntax
+
+`receive_message()`
+
+#### Parameters
+
+* n/a
+
+#### Return Type
+
+* `integer` - returns integer data received from PRU
+
+### Example
+
+```c
+init_message_channel();
+
+int emp := receive_message();
+
+if : emp >= 0 {
+    digital_write(P1_29, true);
+}
+else {
+    digital_write(P1_29, false);
+}
+```
+
+## Send message
+
+`send_message` is a function which is used to send messages to ARM core from PRU, messages can only be `integers`. It uses RPMSG channel setup by `init_message_channel` to send messages from PRU to the ARM core.
+
+### Syntax
+
+`send_message(message)`
+
+#### Parameters
+
+* `message` is an integer, number passed to it is sent to the ARM core, through RPMSG.
+
+### Example
+
+```c
+init_message_channel();
+
+if : digital_read(P1_29) {
+    send_message(1);
+}
+else {
+    send_message(0);
+}
+```
