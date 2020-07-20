@@ -9,7 +9,23 @@ void init_symbol_table()
     handle = kh_init(symbol_table);
     scope = 0;
 
-    cJSON *json_head = cJSON_Parse(POCKETBEAGLE_PINOUT);
+    cJSON *json_head = NULL;
+    switch (read_device_model())
+    {
+        case MODEL_POCKETBEAGLE:
+            json_head = cJSON_Parse(POCKETBEAGLE_PINOUT);
+            break;
+        
+        case MODEL_BEAGLEBONE_BLACK:
+        case MODEL_BEAGLEBONE_BLACK_WIRELESS:
+            json_head = cJSON_Parse(BEAGLEBONEBLACK_PINOUT);
+            break;
+
+        default:    
+            json_head = cJSON_Parse(POCKETBEAGLE_PINOUT);
+            break;
+    }
+    
     if (json_head != NULL)
     {
         cJSON *pru_head_0 = cJSON_GetObjectItemCaseSensitive(json_head, "pru0");

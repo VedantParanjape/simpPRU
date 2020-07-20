@@ -449,6 +449,11 @@ int code_printer(ast_node* ast)
 {
     FILE* handle = fopen("../generated_code/temp.c", "w");
 
+    if (handle == NULL)
+    {
+        fprintf(stderr, "Unable to create translated file\n");
+        exit(0);
+    }
     int i = 0;
     ast_node *temp;
     

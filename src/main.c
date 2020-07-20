@@ -3,6 +3,7 @@
 #include "code_printer.h"
 #include "symbol_table.h"
 #include "ast.h"
+#include "pin_config.h"
 
 void yyerror(const char* s);
 extern int yylex();
@@ -16,12 +17,14 @@ int main(int argc, char** argv)
 {
     FILE* fhandle = fopen(argv[1], "r");
     yyin = fhandle;
+
+    set_device_model(MODEL_AUTODETECT);
+
     init_symbol_table();
 
     while(yyparse());
 
     dump_symbol_table();
-    /* printf("%d",ast->node_type); */
 
     ast_node_dump(ast);
     int is_rpmsg_used = code_printer(ast);
