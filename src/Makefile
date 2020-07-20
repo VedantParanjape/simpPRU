@@ -1,5 +1,5 @@
 compile: bison flex 
-	gcc lex.yy.c parser.tab.c symbol_table.c ast.c semantic.c code_printer.c pin_config.c cJSON/cJSON.c vec/vec.c -o compile
+	gcc main.c lex.yy.c parser.tab.c symbol_table.c ast.c semantic.c code_printer.c pin_config.c cJSON/cJSON.c vec/vec.c -o compile
 
 cross-arm: bison flex 
 	arm-linux-gnueabihf-gcc lex.yy.c parser.tab.c symbol_table.c ast.c semantic.c code_printer.c pin_config.c cJSON/cJSON.c vec/vec.c -o compile
