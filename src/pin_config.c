@@ -2,7 +2,7 @@
 
 khash_t(pin_config) *handle_pin_config = NULL;
 static int init = 0;
-static int model_beaglebone = 1;
+static int model_beaglebone = 0;
 
 int config_pins(int pru_pin_number, int mode, char* pru_id)
 {
@@ -127,6 +127,7 @@ int set_device_model(int model_bb)
         if (model == NULL)
         {
             fprintf(stderr, "Error opening /proc/device-tree/model\n");
+            model_beaglebone = MODEL_POCKETBEAGLE;
             return -1;
         }
 
