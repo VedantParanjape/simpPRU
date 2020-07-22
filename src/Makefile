@@ -1,16 +1,37 @@
-compile: bison flex 
-	gcc main.c lex.yy.c parser.tab.c symbol_table.c ast.c semantic.c code_printer.c pin_config.c cJSON/cJSON.c vec/vec.c -o compile
+CC := gcc
+CSRCS := $(wildcard *.c) \
+ 	     $(wildcard ../third-party/cJSON/*.c) \
+	     $(wildcard ../third-party/vec/*.c) \
 
-cross-arm: bison flex 
-	arm-linux-gnueabihf-gcc main.c lex.yy.c parser.tab.c symbol_table.c ast.c semantic.c code_printer.c pin_config.c cJSON/cJSON.c vec/vec.c -o compile
+ifeq ($(filter parser.tab.c, $(CSRCS)),)
+	CSRCS := $(CSRCS) parser.tab.c
+endif
+
+ifeq ($(filter lex.yy.c, $(CSRCS)),)
+	CSRCS := $(CSRCS) lex.yy.c
+endif
+
+OBJS := $(notdir $(CSRCS:.c=.o))	
+TARGET := simppru
+CFLAGS := -I./../include/ -I./../third-party/
+
+all: bison flex $(TARGET)
+	@echo All done
+
+$(OBJS): $(CSRCS)
+	$(CC) -c $^ $(CFLAGS)
+
+$(TARGET): $(OBJS)
+	$(CC) $^ -o $@ $(CFLAGS)	
+	rm $(OBJS)
 
 bison: parser.y
-	bison -d parser.y
+	bison --defines=./../include/parser.tab.h parser.y
 
-flex: lexer.l parser.tab.c parser.tab.h
+flex: lexer.l ./../include/parser.tab.h
 	flex lexer.l
 
 clean:
-	rm lex.yy.c compile parser.tab.h parser.tab.c
+	rm $(TARGET) ./../include/parser.tab.h lex.yy.c parser.tab.c
 
-arm: bison flex
+.PHONY: all clean

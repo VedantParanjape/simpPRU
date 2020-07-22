@@ -15,113 +15,132 @@ extern FILE* yyin;
 extern int linenumber;
 extern ast_node *ast;
 
-static int pru_id = 0;
-static char* output_name = "a.pru";
-int debug = 0;
-
 const char * argp_program_version = "v1.0";
 const char * argp_program_bug_address = "https://github.com/VedantParanjape/simpPRU/issues";
+static char * doc = "Compiler for simpPRU, compiles simpPRU code down to PRU-C";
+static char args_doc[] = "FILE";
 
-static int parse_opt(int key, char *arg, struct argp_state *state)
+struct arguments 
 {
+    char output_filename[200];
+    char input_filename[200];
+    int pruid;
+    int verbose;
+    int device_id;
+};
+
+static error_t parse_opt(int key, char *arg, struct argp_state *state)
+{
+    struct arguments *arguments = state->input;
     switch (key)
     {
-    case 'i':
-        yyin = fopen(arg, "r");
-        if (yyin == NULL)
-        {
-            fprintf(stderr, "fatal error: no valid input file\ncompilation terminated\n");
-            exit(0);
-        }
-        break;
+        case ARGP_KEY_ARG:
+            if (state->arg_num > 1)
+            {
+                fprintf(stderr, "\e[31merror:\e[0m too many input files\n");
+                argp_usage(state);
+            }
+            snprintf(arguments->input_filename, 200, "%s", arg);
+            break;
+        
+        case ARGP_KEY_END:
+            if (state->arg_num < 1)
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m no input file\n");
+                argp_usage(state);
+            }    
+            break;
 
-    case 777:
-        yyin = fopen(arg, "r");
-        if (yyin == NULL)
-        {
-            fprintf(stderr, "fatal error: no valid input file\ncompilation terminated\n");
-            exit(0);
-        }
-        break;
+        case 'o':
+            snprintf(arguments->output_filename, 200, "%s", arg);
+            break;
 
-    case 'o':
-        output_name = arg;
-        snprintf(output_name, 100, "%s.pru%d", arg, pru_id);
-        break;
+        case 'p':
+            if (atoi(arg) == 0)
+            {
+                arguments->pruid = 0;
+            }
+            else if (atoi(arg) == 1)
+            {
+                arguments->pruid = 1;
+            }
+            else
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m incorrect pru id\n");
+                argp_usage(state);
+            }
+            break;
 
-    case 'p':
-        if (atoi(arg) == 0)
-        {
-            pru_id = 0;
-        }
-        else if (atoi(arg) == 1)
-        {
-            pru_id = 1;
-        }
-        else
-        {
-            fprintf(stderr, "fatal error: incorrect pru id\n");
-            exit(0);
-        }
-        break;
+        case 888:
+            if (!strcmp(arg, "pocketbeagle"))
+            {
+                arguments->device_id = MODEL_POCKETBEAGLE;
+            }
+            else if (!strcmp(arg, "bbb"))
+            {
+                arguments->device_id = MODEL_BEAGLEBONE_BLACK;
+            }
+            else if (!strcmp(arg, "bbbwireless"))
+            {
+                arguments->device_id = MODEL_BEAGLEBONE_BLACK_WIRELESS;
+            }
+            else if (!strcmp(arg, "bbai"))
+            {
+                arguments->device_id = MODEL_BEAGLEBONE_AI;
+            }
+            else
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m incorrect beagleboard model\n");
+                argp_usage(state);
+            }
+            break;
 
-    case 888:
-        if (!strcmp(arg, "pocketbeagle"))
-        {
-            set_device_model(MODEL_POCKETBEAGLE);
-        }
-        else if (!strcmp(arg, "bbb"))
-        {
-            set_device_model(MODEL_BEAGLEBONE_BLACK);
-        }
-        else if (!strcmp(arg, "bbbwireless"))
-        {
-            set_device_model(MODEL_BEAGLEBONE_BLACK_WIRELESS);
-        }
-        else if (!strcmp(arg, "bbai"))
-        {
-            set_device_model(MODEL_BEAGLEBONE_AI);
-        }
-        else
-        {
-            fprintf(stderr, "fatal error: incorrect beagleboard model\n");
-            exit(0);
-        }
-        break;
+        case 999:
+            arguments->verbose = 1;
+            break;
 
-    case 'd':
-        debug = 1;  
-        break;
-
-    default:
-        break;
+        default:
+            return ARGP_ERR_UNKNOWN;
+            break;
     }
 
     return 0;
 }
 
+struct argp_option options[] = {
+    {"output", 'o', "<file>", 0, "Place the output into <file>"},
+    {"pru", 'p', "<pru_id>", 0, "Select which pru id (0/1) for which program is to be compiled"},
+    {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (PocketBeagle, BBB, BBB Wireless, BB AI)"},
+    {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
+    {0}
+};
+
+
 int main(int argc, char** argv)
 {
-    struct argp_option options[] = 
-    {
-        {"input", 'i', "file", 0, "Input file to be compiled"},
-        {0, 777, 0, 0, 0},
-        {"output", 'o', "file", 0, "Place the output into <file>"},
-        {"pru", 'p', "pru id", 0, "Select which pru id (0/1) for which program is to be compiled"},
-        {"device", 888, "device name", 0, "Select for which BeagleBoard to compile (PocketBeagle, BBB, BBB Wireless, BB AI)"},
-        {"debug", 'd', 0, 0, "Enable debug mode (dump symbol table and ast graph"},
-        {0}
-    };
-    struct argp argp = { options, parse_opt };   
-    argp_parse(&argp, argc, argv, 0, 0, 0); 
+    struct arguments arguments;
+    arguments.device_id = MODEL_AUTODETECT;
+    sprintf(arguments.input_filename, "%s", "");
+    sprintf(arguments.output_filename, "%s", "a");
+    arguments.pruid = 0;
+    arguments.verbose = 0;
 
-    if (read_device_model() == 0) 
+    struct argp argp = {options, parse_opt, args_doc, doc};   
+    argp_parse(&argp, argc, argv, 0, 0, &arguments); 
+
+    yyin = fopen(arguments.input_filename, "r");
+    if (yyin == NULL)
     {
-        set_device_model(MODEL_AUTODETECT);
-    }   
+        fprintf(stderr, "\e[31mfatal error:\e[0m no valid input file\ncompilation terminated\n");
+        exit(0);
+    }
+
+    set_device_model(arguments.device_id);
     init_symbol_table();
+
     while(yyparse());
-    if (debug)
+    
+    if (arguments.verbose)
     {
         dump_symbol_table();
         ast_node_dump(ast);
@@ -129,22 +148,21 @@ int main(int argc, char** argv)
 
     int is_rpmsg_used = code_printer(ast);
     
-    char command[500];
+    char command[700];
     if (is_rpmsg_used == 1)
     {
-        sprintf(command, "pru-gcc ../generated_code/temp.c ../generated_code/pru_rpmsg.c ../generated_code/pru_virtqueue.c -o %s -mmcu=am335x.pru%d -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=1", output_name, pru_id);
+        sprintf(command, "pru-gcc ../generated_code/temp.c ../generated_code/pru_rpmsg.c ../generated_code/pru_virtqueue.c -o %s.pru%d -mmcu=am335x.pru%d -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=1", arguments.output_filename, arguments.pruid, arguments.pruid);
         system(command);
     }
     else
     {
-        sprintf(command, "pru-gcc ../generated_code/temp.c -o %s -mmcu=am335x.pru%d -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=0", output_name, pru_id);
+        sprintf(command, "pru-gcc ../generated_code/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid);
         system(command);
     }
-    // -D_ENABLE_RPMSG=1, here _ENABLE_RPMSG is a macro used, we can define its value like this
 }
 
 void yyerror (const char *s) 
 {
     fprintf (stderr, "%d : error: %s\n", linenumber, s);
     exit(0);
-} 
+}
