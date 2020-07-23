@@ -1,6 +1,6 @@
 %{
   #include <stdio.h>
-  #include "parser.tab.h"
+  #include "parser.h"
   #include "symbol_table.h"
 
   int linenumber = 1;
