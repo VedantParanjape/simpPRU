@@ -4,7 +4,7 @@
 AC_PREREQ([2.69])
 AC_INIT([simppru], [1.0], [https://github.com/VedantParanjape/simppru/issues])
 AC_CONFIG_SRCDIR([src/main.c])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 # Checks for programs.
 AC_PROG_CC
