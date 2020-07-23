@@ -1,4 +1,3 @@
-
 # simpru compilation stuff
 CC := gcc
 CSRCS := $(wildcard *.c) \
