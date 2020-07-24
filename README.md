@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-<img src="https://github.com/VedantParanjape/simpPRU/workflows/.github/workflows/arm32.yml/badge.svg?branch=master">
+<img src="https://github.com/VedantParanjape/simpPRU/workflows/.github/workflows/x86.yml/badge.svg?branch=master">
 <img src="https://github.com/VedantParanjape/simpPRU/workflows/.github/workflows/arm32.yml/badge.svg?branch=master">
 <img src="https://img.shields.io/github/stars/VedantParanjape/simpPRU">
 <img src="https://img.shields.io/github/forks/VedantParanjape/simpPRU">
