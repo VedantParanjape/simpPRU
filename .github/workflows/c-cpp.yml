@@ -23,3 +23,23 @@ jobs:
       run: make check
     - name: make distcheck
       run: sudo make distcheck
+  
+  build_arm32:
+    runs-on: ubuntu-18.04
+    name: Build on ARMv7 
+    steps:
+      - uses: actions/checkout@v2.1.0
+      - uses: uraimo/run-on-arch-action@v1.0.9
+        id: runcmd
+        with:
+          architecture: armv7
+          distribution: ubuntu18.04
+          run: | 
+            git clone https://github.com/VedantParanjape/simpPRU.git
+            cd simpPRU
+            aclocal && autoconf && automake --add-missing
+            ./configure
+            make
+            make check
+            sudo make distcheck
+            
