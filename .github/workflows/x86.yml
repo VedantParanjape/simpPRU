@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+jobs:
+    build_simppru_job:
+        runs-on: ubuntu-latest
+        name: This will build simppru using autotools on x86 machine
+        steps: 
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: build inside docker x86
+              uses: ./.github/action_build_x86

@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-<img src="https://github.com/VedantParanjape/simpPRU/workflows/C/C++%20CI/badge.svg?branch=master">
+<img src="https://cloud.drone.io/api/badges/VedantParanjape/simpPRU/status.svg?ref=refs/heads/master">
 <img src="https://img.shields.io/github/stars/VedantParanjape/simpPRU">
 <img src="https://img.shields.io/github/forks/VedantParanjape/simpPRU">
 <img src="https://img.shields.io/github/issues/VedantParanjape/simpPRU">

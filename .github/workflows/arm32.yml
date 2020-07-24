@@ -1,0 +1,13 @@
+on: [push, pull_request]
+
+jobs:
+    build_simppru_job:
+        runs-on: ubuntu-latest
+        name: This will build simppru using autotools on arm32 machine
+        steps: 
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: preconfig
+              run: sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+            - name: build inside docker arm32
+              uses: ./.github/action_build_arm32
