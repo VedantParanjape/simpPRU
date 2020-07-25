@@ -22,7 +22,7 @@ PRUCSRCS  := $(filter-out ../generated_code/temp.c, $(wildcard ../generated_code
 PRUOBJS := $(notdir $(PRUCSRCS:.c=.o))
 PRUTARGET0 := libprurpmsg0.a
 PRUTARGET1 := libprurpmsg1.a
-PRUCFLAGS := -I./../generated_code/include/ -I./../generated_code/include/am335x
+PRUCFLAGS := -I./../include/pru/ -I./../include/pru/am335x
 
 # Default rule
 all: bison flex $(TARGET) $(PRUTARGET0) $(PRUTARGET1)

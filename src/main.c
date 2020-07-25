@@ -151,12 +151,12 @@ int main(int argc, char** argv)
     char command[700];
     if (is_rpmsg_used == 1)
     {
-        sprintf(command, "pru-gcc ../generated_code/temp.c -L../lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=1", arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid);
+        sprintf(command, "pru-gcc ../generated_code/temp.c -L../lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I./../include/pru/ -I./../include/pru/am335x/ -DCONFIG_ENABLE_RPMSG=1", arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid);
         system(command);
     }
     else
     {
-        sprintf(command, "pru-gcc ../generated_code/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I./../generated_code/include/ -I./../generated_code/include/am335x/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid);
+        sprintf(command, "pru-gcc ../generated_code/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I./../include/pru/ -I./../include/pru/am335x/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid);
         system(command);
     }
 }
