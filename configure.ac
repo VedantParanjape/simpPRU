@@ -17,9 +17,6 @@ AC_PROG_LEX
 AC_CHECK_PROG(PRU_GCC_CHECK, pru-gcc, yes)
 AS_IF([test x"$PRU_GCC_CHECK" != x"yes"], [AC_MSG_ERROR([Please install pru-gcc before continuing.])])
 
-# test "$YACC" == "bison -y" && AC_MSG_ERROR([Required program 'bison' not found.])
-# test "$LEX" == "flex" && AC_MSG_ERROR([Required program 'flex' not found.])
-
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h libintl.h limits.h locale.h netdb.h stddef.h stdint.h stdlib.h string.h sys/socket.h unistd.h])
 
