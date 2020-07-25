@@ -52,6 +52,7 @@ AC_CONFIG_FILES([Makefile
                  third-party/cJSON/Makefile
                  third-party/vec/Makefile
                  src/Makefile])
-AC_CONFIG_SUBDIRS([generated_code])
+
+# AC_CONFIG_SUBDIRS([generated_code])
 AC_OUTPUT
 	
