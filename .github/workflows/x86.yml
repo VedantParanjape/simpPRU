@@ -7,5 +7,7 @@ jobs:
         steps: 
             - name: Checkout
               uses: actions/checkout@v2
+            - name: preconfig
+              run: sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
             - name: build inside docker x86
               uses: ./.github/action_build_x86

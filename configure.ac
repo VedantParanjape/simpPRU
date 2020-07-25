@@ -16,6 +16,8 @@ AC_PROG_YACC
 AC_PROG_LEX
 AC_CHECK_PROG(PRU_GCC_CHECK, pru-gcc, yes)
 AS_IF([test x"$PRU_GCC_CHECK" != x"yes"], [AC_MSG_ERROR([Please install pru-gcc before continuing.])])
+AC_CHECK_PROG(PRU_GCC_AR_CHECK, pru-gcc-ar, yes)
+AS_IF([test x"$PRU_GCC_AR_CHECK" != x"yes"], [AC_MSG_ERROR([Please install pru-gcc-ar before continuing.])])
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h libintl.h limits.h locale.h netdb.h stddef.h stdint.h stdlib.h string.h sys/socket.h unistd.h])
@@ -49,7 +51,7 @@ AC_CHECK_FUNCS([dup2 gethostbyaddr gethostbyname localeconv memmove memset pow s
 AC_CONFIG_FILES([Makefile
                  third-party/cJSON/Makefile
                  third-party/vec/Makefile
-                 src/Makefile
-                 generated_code/Makefile])
+                 src/Makefile])
+AC_CONFIG_SUBDIRS([generated_code])
 AC_OUTPUT
 	
