@@ -1,8 +1,4 @@
-FROM debian:buster
-
-RUN uname -r
-RUN apt update
-RUN apt install -y git build-essential flex bison autoconf automake
+FROM simppru/amd64-build-image:latest
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
