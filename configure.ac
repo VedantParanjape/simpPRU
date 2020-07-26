@@ -13,7 +13,7 @@ AC_PROG_CC
 AC_PROG_RANLIB
 AM_PROG_AR
 AC_PROG_YACC
-AC_PROG_LEX
+AM_PROG_LEX
 AC_CHECK_PROG(PRU_GCC_CHECK, pru-gcc, yes)
 AS_IF([test x"$PRU_GCC_CHECK" != x"yes"], [AC_MSG_ERROR([Please install pru-gcc before continuing.])])
 AC_CHECK_PROG(PRU_GCC_AR_CHECK, pru-gcc-ar, yes)
@@ -53,6 +53,7 @@ AC_CONFIG_FILES([Makefile
                  third-party/vec/Makefile
                  src/Makefile])
 
-# AC_CONFIG_SUBDIRS([generated_code])
+ac_configure_args="$ac_configure_args --host=pru"
+AC_CONFIG_SUBDIRS([generated_code])
 AC_OUTPUT
 	

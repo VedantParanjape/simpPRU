@@ -19,6 +19,3 @@ make
 
 echo "Running make check"
 make check
-
-echo "Running make distcheck"
-make distcheck
