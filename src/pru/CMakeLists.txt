@@ -1,19 +1,26 @@
+# Specify minimum cmake version required
 cmake_minimum_required(VERSION 3.4)
 
-project(libprurpmsg VERSION 1.0)
-
+# CMake project description and project specific settings
+project(libprurpmsg 
+        VERSION ${CMAKE_PROJECT_VERSION}
+        DESCRIPTION "Static library for PRU RPMSG"
+        HOMEPAGE_URL "https://github.com/VedantParanjape/simpPRU/")
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${simppru_SOURCE_DIR}/lib")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif()
-  
+# Set pru-gcc as the compiler
 set(CMAKE_SYSTEM_PROCESSOR pru)
 set(CMAKE_C_COMPILER pru-gcc)
 set(CMAKE_CXX_COMPILER pru-g++)
 
+# Specify Build type
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+  
 ######## SOURCES ########
+# Add source files and header files
 file(GLOB PROJECT_HEADERS ${simppru_SOURCE_DIR}/include/pru/*.h ${simppru_SOURCE_DIR}/include/pru/am335x/*.h)
 file(GLOB PROJECT_SOURCES *.c)
 set(PROJECT_FILES
@@ -21,6 +28,7 @@ set(PROJECT_FILES
     ${PROJECT_SOURCES})
 
 ######## TARGETS ########
+# Add static libraries targets
 set(library_name_pru0 prurpmsg0-${CMAKE_PROJECT_VERSION})
 set(library_name_pru1 prurpmsg1-${CMAKE_PROJECT_VERSION})
 
@@ -39,6 +47,7 @@ target_include_directories(${library_name_pru1} PUBLIC
   $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/am335x/>)
 
 ######## INSTALL ########
+# Install static libraries and headers
 set(include_destination "include/simppru-${CMAKE_PROJECT_VERSION}")
 set(lib_destination "lib/")
 install(FILES ${PROJECT_HEADERS} DESTINATION ${include_destination})
