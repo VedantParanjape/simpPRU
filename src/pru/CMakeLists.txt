@@ -39,5 +39,7 @@ target_include_directories(${library_name_pru1} PUBLIC
   $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/am335x/>)
 
 ######## INSTALL ########
-set(include_destination "include/simppru-${MY_LIBRARY_VERSION}")
+set(include_destination "include/simppru-${CMAKE_PROJECT_VERSION}")
 set(lib_destination "lib/")
+install(FILES ${PROJECT_HEADERS} DESTINATION ${include_destination})
+install(TARGETS ${library_name_pru0} ${library_name_pru1} DESTINATION ${lib_destination})

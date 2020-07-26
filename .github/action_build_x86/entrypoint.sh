@@ -14,3 +14,5 @@ cmake ..
 echo "Running make"
 make
 
+echo "Running make install"
+make install

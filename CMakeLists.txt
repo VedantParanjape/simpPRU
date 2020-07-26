@@ -56,3 +56,4 @@ target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC
 
 ######## INSTALL ########
 set(bin_destination "bin")
+install(TARGETS ${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} DESTINATION ${bin_destination})
