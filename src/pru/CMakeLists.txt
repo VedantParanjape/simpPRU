@@ -21,16 +21,23 @@ set(PROJECT_FILES
     ${PROJECT_SOURCES})
 
 ######## TARGETS ########
-add_library(prurpmsg0 STATIC ${PROJECT_FILES})
-set_target_properties(prurpmsg0 PROPERTIES COMPILE_FLAGS "-mmcu=am335x.pru0")
+set(library_name_pru0 prurpmsg0-${CMAKE_PROJECT_VERSION})
+set(library_name_pru1 prurpmsg1-${CMAKE_PROJECT_VERSION})
 
-add_library(prurpmsg1 STATIC ${PROJECT_FILES})
-set_target_properties(prurpmsg1 PROPERTIES COMPILE_FLAGS "-mmcu=am335x.pru1")
+add_library(${library_name_pru0} STATIC ${PROJECT_FILES})
+set_target_properties(${library_name_pru0} PROPERTIES COMPILE_FLAGS "-mmcu=am335x.pru0")
 
-target_include_directories(prurpmsg0 PUBLIC 
+add_library(${library_name_pru1} STATIC ${PROJECT_FILES})
+set_target_properties(${library_name_pru1} PROPERTIES COMPILE_FLAGS "-mmcu=am335x.pru1")
+
+target_include_directories(${library_name_pru0} PUBLIC 
   $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/pru>
   $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/am335x/>)
 
-target_include_directories(prurpmsg1 PUBLIC 
+target_include_directories(${library_name_pru1} PUBLIC 
   $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/pru>
   $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/am335x/>)
+
+######## INSTALL ########
+set(include_destination "include/simppru-${MY_LIBRARY_VERSION}")
+set(lib_destination "lib/")

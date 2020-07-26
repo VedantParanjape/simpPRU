@@ -48,10 +48,11 @@ flex_target(lexer
             ${CMAKE_CURRENT_SOURCE_DIR}/lexer.c)
 ADD_FLEX_BISON_DEPENDENCY(lexer parser)
 
-add_executable(${PROJECT_NAME} ${PROJECT_FILES} ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS})
-target_include_directories(${PROJECT_NAME} PUBLIC 
+add_executable(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} ${PROJECT_FILES} ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS})
+target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC 
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/third-party>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 
 ######## INSTALL ########
+set(bin_destination "bin")
