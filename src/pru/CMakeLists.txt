@@ -50,5 +50,6 @@ target_include_directories(${library_name_pru1} PUBLIC
 # Install static libraries and headers
 set(include_destination "include/simppru-${CMAKE_PROJECT_VERSION}")
 set(lib_destination "lib/")
+# install(DIRECTORY ${simppru_SOURCE_DIR}/include/pru DESTINATION ${include_destination})
 install(FILES ${PROJECT_HEADERS} DESTINATION ${include_destination})
 install(TARGETS ${library_name_pru0} ${library_name_pru1} DESTINATION ${lib_destination})
