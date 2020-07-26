@@ -16,3 +16,6 @@ make
 
 echo "Running make install"
 make install
+
+echo "Running make package"
+make package
