@@ -7,6 +7,10 @@
 #include "ast.h"
 #include "pin_config.h"
 
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)
+
+
 void yyerror(const char* s);
 extern int yylex();
 extern int yyparse();
@@ -151,12 +155,12 @@ int main(int argc, char** argv)
     char command[700];
     if (is_rpmsg_used == 1)
     {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -L/usr/local/lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I/usr/local/include/simppru-1.0/pru/  -DCONFIG_ENABLE_RPMSG=1", arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid);
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/simppru-1.0/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid, TOSTRING(INSTALL_PATH));
         system(command);
     }
     else
     {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I/usr/local/include/simppru-1.0/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid);
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/simppru-1.0/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid, TOSTRING(INSTALL_PATH));
         system(command);
     }
 }

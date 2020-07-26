@@ -65,6 +65,7 @@ ADD_FLEX_BISON_DEPENDENCY(lexer parser)
 
 # Add executables
 add_executable(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} ${PROJECT_FILES} ${BISON_parser_OUTPUTS} ${FLEX_lexer_OUTPUTS})
+set_target_properties(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PROPERTIES COMPILE_FLAGS "-DINSTALL_PATH=${CMAKE_INSTALL_PREFIX}")
 target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC 
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/third-party>
@@ -74,3 +75,5 @@ target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC
 # Install generated binaries
 set(bin_destination "bin")
 install(TARGETS ${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} DESTINATION ${bin_destination})
+
+message(${CMAKE_INSTALL_PREFIX})
