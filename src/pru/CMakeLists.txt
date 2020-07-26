@@ -53,3 +53,8 @@ set(lib_destination "lib/")
 # install(DIRECTORY ${simppru_SOURCE_DIR}/include/pru DESTINATION ${include_destination})
 install(FILES ${PROJECT_HEADERS} DESTINATION ${include_destination})
 install(TARGETS ${library_name_pru0} ${library_name_pru1} DESTINATION ${lib_destination})
+
+# Create symlink to remove project version
+install(CODE "execute_process(COMMAND ln -sf simppru-${CMAKE_PROJECT_VERSION} simppru WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)")
+install(CODE "execute_process(COMMAND ln -sf libprurpmsg0-${CMAKE_PROJECT_VERSION}.a libprurpmsg0.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${lib_destination})")
+install(CODE "execute_process(COMMAND ln -sf libprurpmsg1-${CMAKE_PROJECT_VERSION}.a libprurpmsg1.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${lib_destination})")
