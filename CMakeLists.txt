@@ -10,6 +10,22 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
+
+find_program(pru_gcc pru-gcc)
+if(NOT pru_gcc)
+    message(FATAL_ERROR "pru-gcc not found!")
+endif()
+
+find_program(pru_gcc pru-gcc-ar)
+if(NOT pru_gcc)
+    message(FATAL_ERROR "pru-gcc-ar not found!")
+endif()
+
+find_program(pru_gcc pru-gcc-ranlib)
+if(NOT pru_gcc)
+    message(FATAL_ERROR "pru-gcc-ranlib not found!")
+endif()
+
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/pru")
 
 if(NOT CMAKE_BUILD_TYPE)
