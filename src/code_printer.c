@@ -447,7 +447,7 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
 
 int code_printer(ast_node* ast)
 {
-    FILE* handle = fopen("../generated_code/temp.c", "w");
+    FILE* handle = fopen("/tmp/temp.c", "w+");
 
     if (handle == NULL)
     {

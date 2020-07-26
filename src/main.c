@@ -151,12 +151,12 @@ int main(int argc, char** argv)
     char command[700];
     if (is_rpmsg_used == 1)
     {
-        snprintf(command, 700, "pru-gcc ../generated_code/temp.c -L../lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I./../include/pru/ -I./../include/pru/am335x/ -DCONFIG_ENABLE_RPMSG=1", arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid);
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -L/usr/local/lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I/usr/local/include/simppru-1.0/pru/  -DCONFIG_ENABLE_RPMSG=1", arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid);
         system(command);
     }
     else
     {
-        snprintf(command, 700, "pru-gcc ../generated_code/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I./../include/pru/ -I./../include/pru/am335x/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid);
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I/usr/local/include/simppru-1.0/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid);
         system(command);
     }
 }
