@@ -155,12 +155,12 @@ int main(int argc, char** argv)
     char command[700];
     if (is_rpmsg_used == 1)
     {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/simppru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid, TOSTRING(INSTALL_PATH));
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid, TOSTRING(INSTALL_PATH));
         system(command);
     }
     else
     {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/simppru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid, TOSTRING(INSTALL_PATH));
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid, TOSTRING(INSTALL_PATH));
         system(command);
     }
 }

@@ -13,7 +13,7 @@ project(simppru
         HOMEPAGE_URL "https://github.com/VedantParanjape/simpPRU/")
 enable_language(C)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 # Check for required packages
 find_package(BISON REQUIRED)
@@ -76,8 +76,9 @@ target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC
 set(bin_destination "bin")
 install(TARGETS ${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} DESTINATION ${bin_destination})
 
-# Create symlink to remove version name
-install(CODE "execute_process(COMMAND ln -sf ${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} ${PROJECT_NAME} WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${bin_destination})")
+# Create symlink to remove version name and add install the symlink
+install(CODE "execute_process(COMMAND ln -sf ${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} ${PROJECT_NAME} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})")
+install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME} DESTINATION ${bin_destination})
 
 ######## Debian Package generator ########
 EXECUTE_PROCESS(COMMAND dpkg --print-architecture COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
@@ -100,5 +101,6 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_SOURCE_DIR}/build/;${CMAKE_SOURCE_DIR}/.git/")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE__SOURCE_DIR}/script/postinst")
 
 include(CPack)

@@ -48,13 +48,19 @@ target_include_directories(${library_name_pru1} PUBLIC
 
 ######## INSTALL ########
 # Install static libraries and headers
-set(include_destination "include/simppru-${CMAKE_PROJECT_VERSION}")
+set(include_destination "include/pru-${CMAKE_PROJECT_VERSION}")
 set(lib_destination "lib/")
+
 # install(DIRECTORY ${simppru_SOURCE_DIR}/include/pru DESTINATION ${include_destination})
 install(FILES ${PROJECT_HEADERS} DESTINATION ${include_destination})
 install(TARGETS ${library_name_pru0} ${library_name_pru1} DESTINATION ${lib_destination})
 
 # Create symlink to remove project version
-install(CODE "execute_process(COMMAND ln -sf simppru-${CMAKE_PROJECT_VERSION} simppru WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)")
-install(CODE "execute_process(COMMAND ln -sf libprurpmsg0-${CMAKE_PROJECT_VERSION}.a libprurpmsg0.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${lib_destination})")
-install(CODE "execute_process(COMMAND ln -sf libprurpmsg1-${CMAKE_PROJECT_VERSION}.a libprurpmsg1.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${lib_destination})")
+install(CODE "execute_process(COMMAND ln -sf pru-${CMAKE_PROJECT_VERSION} pru WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include)")
+install(CODE "execute_process(COMMAND ln -sf libprurpmsg0-${CMAKE_PROJECT_VERSION}.a libprurpmsg0.a WORKING_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})")
+install(CODE "execute_process(COMMAND ln -sf libprurpmsg1-${CMAKE_PROJECT_VERSION}.a libprurpmsg1.a WORKING_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})")
+
+# Install symlinks of static libraries
+install(DIRECTORY ${CMAKE_INSTALL_PREFIX}/include/pru DESTINATION include/)
+install(FILES ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/libprurpmsg0.a DESTINATION ${lib_destination})
+install(FILES ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/libprurpmsg1.a DESTINATION ${lib_destination})
