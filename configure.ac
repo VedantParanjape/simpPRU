@@ -53,7 +53,7 @@ AC_CONFIG_FILES([Makefile
                  third-party/vec/Makefile
                  src/Makefile])
 
-ac_configure_args="$ac_configure_args --host=pru"
-AC_CONFIG_SUBDIRS([generated_code])
+# ac_configure_args="$ac_configure_args --host=pru"
+# AC_CONFIG_SUBDIRS([generated_code])
 AC_OUTPUT
 	
