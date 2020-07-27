@@ -3,9 +3,9 @@ on:
         types: build-deb-package
 
 jobs:
-    build_simppru_job:
+    build_simppru_debian_job:
         runs-on: ubuntu-latest
-        name: This will build simppru using autotools on x86 machine
+        name: This will build simppru debian packages
         steps: 
             - name: Checkout
               uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
               run: |
                 foo_filename__=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n');name__=$(echo ${foo_filename__%-*} | tr -d '\n')
                 foo_filename_=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n');version__name__=${foo_filename_#*-};version__=$(echo ${version__name__%-*} | tr -d '\n')   
-                arm32__filename__=$(echo $(ls build | grep ..arm32.deb) | tr -d '\n')
+                arm32__filename__=$(echo $(ls build | grep ..armhf.deb) | tr -d '\n')
                 amd64__filename__=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n')
                 echo "::set-env name=name__::$name__"
                 echo "::set-env name=version__::$version__"
@@ -36,6 +36,7 @@ jobs:
                 draft: false
                 prerelease: false
             - name: Upload amd64 Release Asset
+              id: amd64_release_asset
               uses: actions/upload-release-asset@v1
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,6 +46,7 @@ jobs:
                 asset_name: ${{ env.amd64__filename__ }}
                 asset_content_type: application/vnd.debian.binary-package
             - name: Upload arm32 Release Asset
+              id: arm32_release_asset
               uses: actions/upload-release-asset@v1
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
