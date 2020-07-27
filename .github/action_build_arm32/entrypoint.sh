@@ -2,23 +2,20 @@
 
 uname -a
 
-echo "Running aclocal"
-aclocal
+echo "Making build directory"
+mkdir build
 
-echo "Running autoconf"
-autoconf
+echo "Going into build directory"
+cd build
 
-echo "Running automake"
-automake --add-missing
-
-echo "Running configure script"
-./configure
+echo "Generating cmake files"
+cmake ..
 
 echo "Running make"
 make
 
-echo "Running make check"
-make check
+echo "Running make install"
+make install
 
-echo "Running make distcheck"
-make distcheck
+echo "Running make package"
+make package
