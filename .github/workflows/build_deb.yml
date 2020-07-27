@@ -1,0 +1,56 @@
+on: 
+    repository_dispatch:
+        types: build-deb-package
+
+jobs:
+    build_simppru_job:
+        runs-on: ubuntu-latest
+        name: This will build simppru using autotools on x86 machine
+        steps: 
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: preconfig
+              run: sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+            - name: build inside docker amd64
+              uses: ./.github/action_build_amd64
+            - name: build inside docker arm32
+              uses: ./.github/action_build_arm32
+            - name: postconfig
+              run: |
+                foo_filename__=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n');name__=$(echo ${foo_filename__%-*} | tr -d '\n')
+                foo_filename_=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n');version__name__=${foo_filename_#*-};version__=$(echo ${version__name__%-*} | tr -d '\n')   
+                arm32__filename__=$(echo $(ls build | grep ..arm32.deb) | tr -d '\n')
+                amd64__filename__=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n')
+                echo "::set-env name=name__::$name__"
+                echo "::set-env name=version__::$version__"
+                echo "::set-env name=arm32__filename__::$arm32__filename__"
+                echo "::set-env name=amd64__filename__::$amd64__filename__"
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                tag_name: ${{ env.version__ }}
+                release_name: ${{ env.name__ }}
+                draft: false
+                prerelease: false
+            - name: Upload amd64 Release Asset
+              uses: actions/upload-release-asset@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: ./build/${{ env.amd64__filename__ }}
+                asset_name: ${{ env.amd64__filename__ }}
+                asset_content_type: application/vnd.debian.binary-package
+            - name: Upload arm32 Release Asset
+              uses: actions/upload-release-asset@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: ./build/${{ env.arm32__filename__ }}
+                asset_name: ${{ env.arm32__filename__ }}
+                asset_content_type: application/vnd.debian.binary-package
+            
