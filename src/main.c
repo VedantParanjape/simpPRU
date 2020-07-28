@@ -6,6 +6,7 @@
 #include "symbol_table.h"
 #include "ast.h"
 #include "pin_config.h"
+#include "firmware_loader.h"
 
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
@@ -31,6 +32,7 @@ struct arguments
     int pruid;
     int verbose;
     int device_id;
+    int load;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -103,6 +105,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             arguments->verbose = 1;
             break;
 
+        case 1111:
+            arguments->load = 1;
+            break;
+
         default:
             return ARGP_ERR_UNKNOWN;
             break;
@@ -116,6 +122,7 @@ struct argp_option options[] = {
     {"pru", 'p', "<pru_id>", 0, "Select which pru id (0/1) for which program is to be compiled"},
     {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (PocketBeagle, BBB, BBB Wireless, BB AI)"},
     {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
+    {"load", 1111, 0, 0, "Load generated firmware to /lib/firmware/"},
     {0}
 };
 
@@ -128,6 +135,7 @@ int main(int argc, char** argv)
     sprintf(arguments.output_filename, "%s", "a");
     arguments.pruid = 0;
     arguments.verbose = 0;
+    arguments.load = 0;
 
     struct argp argp = {options, parse_opt, args_doc, doc};   
     argp_parse(&argp, argc, argv, 0, 0, &arguments); 
@@ -156,12 +164,29 @@ int main(int argc, char** argv)
     if (is_rpmsg_used == 1)
     {
         snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -llibprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid, TOSTRING(INSTALL_PATH));
-        system(command);
+        if (system(command) == -1)
+        {
+            fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+        }
     }
     else
     {
         snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid, TOSTRING(INSTALL_PATH));
-        system(command);
+        if (system(command) == -1)
+        {
+            fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+        }
+    }
+    
+    if (arguments.load == 1)
+    {
+        char output_filename_[250];
+        snprintf(output_filename_, 250, "%s.pru%d", arguments.output_filename, arguments.pruid);
+
+        if (firmware_loader(output_filename_, arguments.pruid) == -1)
+        {
+            fprintf(stderr, "\e[31mfatal error:\e[0m unable to load firmware to /lib/firmware/\n");
+        }
     }
 }
 

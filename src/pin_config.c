@@ -110,7 +110,11 @@ int config_pins(int pru_pin_number, int mode, char* pru_id)
                     }
                     break;
             }
-            system(command_string);
+            if (system(command_string) == -1)
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m unable to set pin mode using config pin\n");
+                return -1;
+            }
 
             return 1;
         }
@@ -139,6 +143,7 @@ int set_device_model(int model_bb)
             model_beaglebone = MODEL_BEAGLEBONE_BLACK_WIRELESS;
             printf("Detected %s\n", model_name);
         }
+        // Add BBB also
         else if (!strcmp(model_name, "TI AM335x PocketBeagle"))
         {
             model_beaglebone = MODEL_POCKETBEAGLE;
