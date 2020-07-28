@@ -57,10 +57,10 @@ set(PROJECT_FILES
 # Add bison and flex targets
 bison_target(parser
             src/parser.y
-            ${CMAKE_CURRENT_SOURCE_DIR}/parser.c)
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.c)
 flex_target(lexer
             src/lexer.l
-            ${CMAKE_CURRENT_SOURCE_DIR}/lexer.c)
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/lexer.c)
 ADD_FLEX_BISON_DEPENDENCY(lexer parser)
 
 # Add executables
