@@ -44,56 +44,38 @@
 
 Requirements:
 
-```C
 * flex
 * bison
 * gcc
 * pru-gcc
+
+```bash
+mkdir build
+cd build
+cmake ..
+make 
+sudo make install
+
+# build debian package
+sudo make package
+
+# install debian package
+sudo dpkg -i <debian_package_name>.deb
 ```
 
-* `make`
-* `./compile <file_name_to_be_compiled>`
+## Install
+
+Download debian package from Releases, available for amd64 and arm32 arch
+
+```bash
+sudo dpkg -i <debian_package_name>.deb
+```
 
 Check `/examples` for different examples
 
 ## To Do List
 
-### Milestone 1
-
-* [x] int data type
-* [x] bool data type
-* [x] arithmetic operators
-* [x] relational operators
-
-### Milestone 2
-
-* [x] Unary operators
-* [x] Logical operators
-* [x] Arithmetic operations
-* [x] Variable assignment
-  
-### Milestone 3
-
-* [x] Implementing if else elif
-* [x] Implementing for loop
-* [x] Implementing while loop
-* [x] Implementing functions
-* [x] Implementing Register access
-
-### Milestone 4
-
-* [x] Implementing Language backend for variables and arithmetic operators
-* [x] Implementing Language backend for for loop and if elif else
-
-### Milestone 5
-
-* [x] Implementing Language backend for functions and register access
-* [x] Implementing Utility functions
-
-### Milestone 6
-
-* [x] Implementing example codes
-* [x] Added support for RPMSG
+* [ ] Add support for AM57xx systems (BeagleBone AI)
 * [ ] Add support for using PWM using eCAP module
 * [ ] Implementing helper programs to simplify the process of loading PRU firmware
 * [ ] Writing documentation
