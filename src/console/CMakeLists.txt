@@ -41,8 +41,9 @@ set(PROJECT_FILES
 ######## TARGETS ########
 # Add executables
 add_executable(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} ${PROJECT_FILES})
+set_target_properties(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PROPERTIES CXX_STANDARD 17)
 target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC 
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/console>
+  $<BUILD_INTERFACE:${simppru_SOURCE_DIR}/include/console>
   $<BUILD_INTERFACE:${ftxui_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 

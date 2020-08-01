@@ -12,7 +12,7 @@ echo "Generating cmake files"
 cmake ..
 
 echo "Running make"
-make
+make -j 8
 
 echo "Running make install"
 make install
