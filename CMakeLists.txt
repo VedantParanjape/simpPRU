@@ -39,6 +39,7 @@ endif()
 
 # Add subdirectory with a subproject
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/pru")
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/console")
 
 # Specify Build type
 if(NOT CMAKE_BUILD_TYPE)
