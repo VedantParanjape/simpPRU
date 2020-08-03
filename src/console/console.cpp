@@ -5,7 +5,7 @@
 
 static int model_beaglebone__ = 0;
 
-int firmware_loader(char* output_filename, int pru_id)
+int device_model()
 {
     FILE *model = fopen("/proc/device-tree/model", "r");
     if (model == NULL)
@@ -42,6 +42,81 @@ int firmware_loader(char* output_filename, int pru_id)
     return 1;
 }
 
+int send_data(int value, int pru_id)
+{
+    FILE *rpmsg_handle = pru_id == 0 ? fopen("/dev/rpmsg_pru30", "w") : fopen("/dev/rpmsg_pru31", "w");
+    if (rpmsg_handle == NULL)
+    {
+        fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
+        return -1;
+    }
+
+    const char* data = std::to_string(value).c_str();
+    return fprintf(rpmsg_handle, "%s", data);
+}
+
+int start_pru(int pru_id)
+{
+    FILE *remoteproc_start = NULL;
+
+    if (model_beaglebone__ == MODEL_POCKETBEAGLE)
+    {
+        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc1/state", "rw") : fopen("/sys/class/remoteproc/remoteproc2/state", "rw");
+    }
+    else
+    {
+        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc0/state", "rw") : fopen("/sys/class/remoteproc/remoteproc1/state", "rw");
+    }
+
+    if (remoteproc_start == NULL)
+    {
+        fprintf(stderr, "Error could not open /sys/class/remoteproc/");
+        return -1;
+    }
+
+    char state[20];
+    int bits_read = fscanf(remoteproc_start, "%s", state);
+
+    if (!strcmp(state, "offline") && bits_read > 0)
+    {
+        fprintf(remoteproc_start, "%s", "start");
+        return 1;
+    }
+    
+    return 1;
+}
+
+int stop_pru(int pru_id)
+{
+    FILE *remoteproc_start = NULL;
+
+    if (model_beaglebone__ == MODEL_POCKETBEAGLE)
+    {
+        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc1/state", "rw") : fopen("/sys/class/remoteproc/remoteproc2/state", "rw");
+    }
+    else
+    {
+        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc0/state", "rw") : fopen("/sys/class/remoteproc/remoteproc1/state", "rw");
+    }
+
+    if (remoteproc_start == NULL)
+    {
+        fprintf(stderr, "Error could not open /sys/class/remoteproc/");
+        return -1;
+    }
+
+    char state[20];
+    int bits_read = fscanf(remoteproc_start, "%s", state);
+
+    if (!strcmp(state, "running") && bits_read > 0)
+    {
+        fprintf(remoteproc_start, "%s", "stop");
+        return 1;
+    }
+    
+    return 1;
+}
+
 using namespace ftxui;
 
 class console : public Component 
@@ -54,9 +129,19 @@ class console : public Component
             container.Add(&input_box);
             container.Add(&pru_start_top);
 
-            right_menu.entries = {
-                L"PRU0", L"PRU1",
-            };
+            if (model_beaglebone__ == MODEL_BEAGLEBONE_AI)
+            {
+                right_menu.entries = {
+                    L"PRU0-0", L"PRU0-1", L"PRU1-0", L"PRU1-1",
+                };
+            }
+            else
+            {
+                right_menu.entries = {
+                    L"PRU0", L"PRU1",
+                };
+            }
+            
             input_box.placeholder = L"type here";
             pru_start_top.entries = {
                 L"Start", L"Stop"
@@ -69,6 +154,7 @@ class console : public Component
                 try
                 {
                     data_sent = std::stoi(input_box.content);
+                    send_data(data_sent, pru_id);
                 }
                 catch(const std::invalid_argument &err)
                 {
@@ -77,6 +163,14 @@ class console : public Component
             };
             pru_start_top.on_change = [this] {
                 started = pru_start_top.selected;
+                if (started == 0)
+                {
+                    start_pru(pru_id);
+                }
+                else if (started == 1)
+                {
+                    stop_pru(pru_id);
+                }
             };
         }
   
@@ -84,18 +178,18 @@ class console : public Component
         Container container = Container::Horizontal();
         RadioBox right_menu;
         Input input_box;
-        Toggle pru_start_top;
-        int pru_id;
-        int data_sent;
+        RadioBox pru_start_top;
+        int pru_id = 0;
+        int data_sent = 0;
         int started = -1;
-
+        
         Element Render() override 
         {
             return border(vbox({
                 // Console and PRU selection
                 hbox({
                     hflow({
-                        paragraph(std::to_wstring(pru_start_top.selected)),
+                        paragraph(std::to_wstring(data_sent)),
                     }) | border,
                                         
                     vbox({
@@ -120,8 +214,15 @@ class console : public Component
 
 int main(int argc, const char* argv[]) 
 {
+    int model = device_model();
+    
+    if (model == -1)
+    {
+        fprintf(stderr, "Not a beagleboard device\n");
+        // return 0;
+    }
+
     auto screen = ScreenInteractive::Fullscreen();
     console console_simppru;
-    // console_simppru.on_enter = screen.ExitLoopClosure();
     screen.Loop(&console_simppru);
 }

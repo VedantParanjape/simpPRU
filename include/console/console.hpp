@@ -17,7 +17,8 @@
 #define MODEL_BEAGLEBONE_BLACK_WIRELESS 3
 #define MODEL_BEAGLEBONE_AI 4
 
-int firmware_loader(char* output_filename, int pru_id);
-
-
+int device_model();
+int send_data(int value, int pru_id);
+int start_pru(int pru_id);
+int stop_pru(int pru_id);
 #endif
