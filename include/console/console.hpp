@@ -2,6 +2,8 @@
 #define CONSOLE_HPP
 
 #include <iostream>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>

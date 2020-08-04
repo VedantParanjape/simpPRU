@@ -44,43 +44,49 @@ int device_model()
 
 int send_data(int value, int pru_id)
 {
-    FILE *rpmsg_handle = pru_id == 0 ? fopen("/dev/rpmsg_pru30", "w") : fopen("/dev/rpmsg_pru31", "w");
-    if (rpmsg_handle == NULL)
+    int rpmsg_handle = pru_id == 0 ? open("/dev/rpmsg_pru30", O_WRONLY) : open("/dev/rpmsg_pru31", O_WRONLY);
+    if (rpmsg_handle < 0)
     {
         fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
         return -1;
     }
 
     const char* data = std::to_string(value).c_str();
-    return fprintf(rpmsg_handle, "%s", data);
+    return write(rpmsg_handle, data, sizeof(char)*strlen(data));
 }
 
 int start_pru(int pru_id)
 {
-    FILE *remoteproc_start = NULL;
+    int remoteproc_start = -1;
 
     if (model_beaglebone__ == MODEL_POCKETBEAGLE)
     {
-        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc1/state", "rw") : fopen("/sys/class/remoteproc/remoteproc2/state", "rw");
+        remoteproc_start = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc1/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc2/state", O_RDWR);
     }
     else
     {
-        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc0/state", "rw") : fopen("/sys/class/remoteproc/remoteproc1/state", "rw");
+        remoteproc_start = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc0/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc1/state", O_RDWR);
     }
 
-    if (remoteproc_start == NULL)
+    if (remoteproc_start < 0)
     {
         fprintf(stderr, "Error could not open /sys/class/remoteproc/");
         return -1;
     }
 
     char state[20];
-    int bits_read = fscanf(remoteproc_start, "%s", state);
+    int bits_read = read(remoteproc_start, state, sizeof(char)*20);
 
     if (!strcmp(state, "offline") && bits_read > 0)
     {
-        fprintf(remoteproc_start, "%s", "start");
-        return 1;
+        if (write(remoteproc_start, "start", 6*sizeof(char)) > 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
     
     return 1;
@@ -88,30 +94,37 @@ int start_pru(int pru_id)
 
 int stop_pru(int pru_id)
 {
-    FILE *remoteproc_start = NULL;
+    int remoteproc_start = -1;
 
     if (model_beaglebone__ == MODEL_POCKETBEAGLE)
     {
-        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc1/state", "rw") : fopen("/sys/class/remoteproc/remoteproc2/state", "rw");
+        remoteproc_start = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc1/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc2/state", O_RDWR);
     }
     else
     {
-        remoteproc_start = pru_id == 0 ? fopen("/sys/class/remoteproc/remoteproc0/state", "rw") : fopen("/sys/class/remoteproc/remoteproc1/state", "rw");
+        remoteproc_start = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc0/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc1/state", O_RDWR);
     }
 
-    if (remoteproc_start == NULL)
+    if (remoteproc_start < 0)
     {
         fprintf(stderr, "Error could not open /sys/class/remoteproc/");
         return -1;
     }
 
     char state[20];
-    int bits_read = fscanf(remoteproc_start, "%s", state);
+    int bits_read = read(remoteproc_start, state, sizeof(char)*20);
 
     if (!strcmp(state, "running") && bits_read > 0)
     {
-        fprintf(remoteproc_start, "%s", "stop");
-        return 1;
+        if (write(remoteproc_start, "stop", 5*sizeof(char)) > 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+        
     }
     
     return 1;
