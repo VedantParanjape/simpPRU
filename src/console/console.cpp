@@ -52,7 +52,10 @@ int send_data(int value, int pru_id)
     }
 
     const char* data = std::to_string(value).c_str();
-    return write(rpmsg_handle, data, sizeof(char)*strlen(data));
+    int data_sent = write(rpmsg_handle, data, sizeof(char)*strlen(data));
+    close(rpmsg_handle);
+
+    return data_sent;
 }
 
 int start_pru(int pru_id)
