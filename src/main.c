@@ -120,7 +120,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 struct argp_option options[] = {
     {"output", 'o', "<file>", 0, "Place the output into <file>"},
     {"pru", 'p', "<pru_id>", 0, "Select which pru id (0/1) for which program is to be compiled"},
-    {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (PocketBeagle, BBB, BBB Wireless, BB AI)"},
+    {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (pocketbeagle, bbb, bbbwireless, bbai)"},
     {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
     {"load", 1111, 0, 0, "Load generated firmware to /lib/firmware/"},
     {0}

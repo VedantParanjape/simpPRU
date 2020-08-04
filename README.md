@@ -47,7 +47,8 @@ Requirements:
 * flex
 * bison
 * gcc
-* pru-gcc
+* gcc-pru
+* cmake
 
 ```bash
 mkdir build
