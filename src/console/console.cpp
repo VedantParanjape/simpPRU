@@ -74,8 +74,8 @@ int start_pru(int pru_id)
         return -1;
     }
 
-    char state[20];
-    int bits_read = read(remoteproc_start, state, sizeof(char)*20);
+    char state[20] = " ";
+    int bits_read = read(remoteproc_start, state, sizeof(char)*7);
 
     if (!strcmp(state, "offline") && bits_read > 0)
     {
@@ -111,8 +111,8 @@ int stop_pru(int pru_id)
         return -1;
     }
 
-    char state[20];
-    int bits_read = read(remoteproc_start, state, sizeof(char)*20);
+    char state[20] = " ";
+    int bits_read = read(remoteproc_start, state, sizeof(char)*7);
 
     if (!strcmp(state, "running") && bits_read > 0)
     {
@@ -124,7 +124,6 @@ int stop_pru(int pru_id)
         {
             return -1;
         }
-        
     }
     
     return 1;
@@ -228,7 +227,6 @@ class console : public Component
 int main(int argc, const char* argv[]) 
 {
     int model = device_model();
-    
     if (model == -1)
     {
         fprintf(stderr, "Not a beagleboard device\n");
