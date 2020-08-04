@@ -158,7 +158,7 @@ int main(int argc, char** argv)
         ast_node_dump(ast);
     }
 
-    int is_rpmsg_used = code_printer(ast);
+    int is_rpmsg_used = code_printer(ast, arguments.pruid);
     
     char command[700];
     if (is_rpmsg_used == 1)

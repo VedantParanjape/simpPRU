@@ -54,6 +54,6 @@ void ast_loop_while_printer(ast_node_loop_while *node, FILE* handle);
 void ast_function_call_printer(ast_node_function_call *fc, FILE* handle);
 void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE* handle);
 void ast_function_definition(ast_node_function_def *def, FILE* handle);
-int code_printer(ast_node* ast);
+int code_printer(ast_node* ast, int pru_id);
 
 #endif

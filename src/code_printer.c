@@ -1,6 +1,7 @@
 #include "code_printer.h"
 
 static int rpmsg_artifact_found = 0;
+static char pru_id_[5] = "pru0";
 
 void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle, int is_func_def)
 {
@@ -322,7 +323,7 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 ast_expression_printer(ufc->pin_number, handle);
                 fprintf(handle, "%s", ")");
 
-                if (config_pins(ufc->pin_number->value, IN, "pru0") == -1)
+                if (config_pins(ufc->pin_number->value, IN, pru_id_) == -1)
                 {
                     printf("(%d) : incorrect pin used in digital read call\n", ufc->pin_number->value);
                 }
@@ -335,7 +336,7 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 ast_expression_printer(ufc->value, handle);
                 fprintf(handle, "%s", ")");
 
-                if (config_pins(ufc->pin_number->value, OUT, "pru0") == -1)
+                if (config_pins(ufc->pin_number->value, OUT, pru_id_) == -1)
                 {
                     printf("(%d) : incorrect pin used in digital write call\n", ufc->pin_number->value);
                 }
@@ -354,7 +355,7 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 ast_expression_printer(ufc->duty_cycle, handle);
                 fprintf(handle, "%s", ")");
 
-                if (config_pins(ufc->pin_number->value, OUT, "pru0") == -1)
+                if (config_pins(ufc->pin_number->value, OUT, pru_id_) == -1)
                 {
                     printf("(%d) : incorrect pin used in pwm call\n", ufc->pin_number->value);
                 }
@@ -445,9 +446,10 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
     }
 }
 
-int code_printer(ast_node* ast)
+int code_printer(ast_node* ast, int pru_id)
 {
     FILE* handle = fopen("/tmp/temp.c", "w+");
+    snprintf(pru_id_, 5, "pru%d", pru_id);
 
     if (handle == NULL)
     {
