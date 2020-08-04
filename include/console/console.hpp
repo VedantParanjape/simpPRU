@@ -21,6 +21,7 @@
 
 int device_model();
 int send_data(int value, int pru_id);
+int receive_data(int pru_id);
 int start_pru(int pru_id);
 int stop_pru(int pru_id);
 #endif

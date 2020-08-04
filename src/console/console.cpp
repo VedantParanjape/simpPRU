@@ -59,6 +59,11 @@ int send_data(int value, int pru_id)
     return data_sent;
 }
 
+// int receive_data(int pru_id)
+// {
+    
+// }
+
 int start_pru(int pru_id)
 {
     int remoteproc_start = -1;
@@ -175,6 +180,9 @@ class console : public Component
                 {
                     data_sent = std::stoi(input_box.content);
                     send_data(data_sent, pru_id);
+                    output_box.push_back(select(text(input_box.content)));
+                    input_box.content = L"";
+
                 }
                 catch(const std::invalid_argument &err)
                 {
@@ -199,6 +207,7 @@ class console : public Component
         RadioBox right_menu;
         Input input_box;
         RadioBox pru_start_top;
+        Elements output_box;
         int pru_id = 0;
         int data_sent = 0;
         int started = -1;
@@ -209,7 +218,9 @@ class console : public Component
                 // Console and PRU selection
                 hbox({
                     hflow({
-                        paragraph(std::to_wstring(data_sent)),
+                        vbox({
+                            output_box ,
+                        }),
                     }) | border,
                                         
                     vbox({
