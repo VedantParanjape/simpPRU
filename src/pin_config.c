@@ -143,7 +143,11 @@ int set_device_model(int model_bb)
             model_beaglebone = MODEL_BEAGLEBONE_BLACK_WIRELESS;
             printf("Detected %s\n", model_name);
         }
-        // Add BBB also
+        else if (!strcmp(model_name, "TI AM335x BeagleBone Black"))
+        {
+            model_beaglebone = MODEL_BEAGLEBONE_BLACK;
+            printf("Detected %s\n", model_name);
+        }
         else if (!strcmp(model_name, "TI AM335x PocketBeagle"))
         {
             model_beaglebone = MODEL_POCKETBEAGLE;
