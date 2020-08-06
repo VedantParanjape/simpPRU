@@ -180,7 +180,7 @@ class console : public Component
                 {
                     data_sent = std::stoi(input_box.content);
                     send_data(data_sent, pru_id);
-                    output_box.push_back(select(text(input_box.content)));
+                    output_box.push_back(text(input_box.content));
                     input_box.content = L"";
 
                 }
@@ -189,7 +189,7 @@ class console : public Component
                     std::cerr << err.what() << "\n";
                 } 
             };
-            pru_start_top.on_change = [this] {
+            pru_start_top.on_enter = [this] {
                 started = pru_start_top.selected;
                 if (started == 0)
                 {
@@ -206,7 +206,7 @@ class console : public Component
         Container container = Container::Horizontal();
         RadioBox right_menu;
         Input input_box;
-        RadioBox pru_start_top;
+        Toggle pru_start_top;
         Elements output_box;
         int pru_id = 0;
         int data_sent = 0;
@@ -217,12 +217,12 @@ class console : public Component
             return border(vbox({
                 // Console and PRU selection
                 hbox({
-                    hflow({
+                    hbox({
                         vbox({
-                            output_box ,
-                        }),
-                    }) | border,
-                                        
+                            vbox({output_box}),
+                            text(L"   ") | ftxui::select,
+                        }) | frame,                                        
+                    }) | flex | border,
                     vbox({
                         hcenter(bold(text(L"PRU"))),
                         separator(),
