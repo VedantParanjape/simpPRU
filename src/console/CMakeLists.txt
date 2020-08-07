@@ -15,6 +15,9 @@ if(NOT ftxui_POPULATED)
   add_subdirectory(${ftxui_SOURCE_DIR} ${ftxui_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+# Find Threads Library
+find_package( Threads )
+
 # CMake project description and project specific settings
 project(simppru-console
         VERSION ${CMAKE_PROJECT_VERSION}
@@ -47,12 +50,14 @@ target_include_directories(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION} PUBLIC
   $<BUILD_INTERFACE:${ftxui_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 
-# Link ftxui library
+# Link ftxui and Thread library
 target_link_libraries(${PROJECT_NAME}-${CMAKE_PROJECT_VERSION}
 PRIVATE ftxui::screen
 PRIVATE ftxui::dom
 PRIVATE ftxui::component
+${CMAKE_THREAD_LIBS_INIT}
 )
+
 
 ######## INSTALL ########
 # Install generated binaries

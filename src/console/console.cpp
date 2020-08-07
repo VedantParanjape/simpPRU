@@ -4,6 +4,10 @@
 #include "console.hpp"
 
 static int model_beaglebone__ = 0;
+static int rpmsg_fd = -1;
+std::thread read_rpmsg_thread;
+std::promise<void> stop_read_signal;
+std::future<void> break_flag;
 
 int device_model()
 {
@@ -43,26 +47,48 @@ int device_model()
     return 1;
 }
 
-int send_data(int value, int pru_id)
+int send_rpmsg_data(int value, int pru_id)
 {
-    int rpmsg_handle = pru_id == 0 ? open("/dev/rpmsg_pru30", O_WRONLY) : open("/dev/rpmsg_pru31", O_WRONLY);
-    if (rpmsg_handle < 0)
+    if (rpmsg_fd < 0)
     {
         fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
         return -1;
     }
 
     const char* data = std::to_string(value).c_str();
-    int data_sent = write(rpmsg_handle, data, sizeof(char)*strlen(data));
-    close(rpmsg_handle);
+    int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
+    close(rpmsg_fd);
 
     return data_sent;
 }
 
-// int receive_data(int pru_id)
-// {
-    
-// }
+int receive_rpmsg_data(int pru_id, ftxui::Elements &output, std::future<void> flag)
+{
+    if (rpmsg_fd < 0)
+    {
+        return -1;
+    }
+
+    while(flag.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
+    {
+        char buffer[512];
+        for (int i = 0; i < 512; i++)
+        {
+            buffer[i] = '\0';
+        }
+
+        if (rpmsg_fd > 0)
+        {
+            int data_read = read(rpmsg_fd, buffer, 512);
+            if (data_read > 0)
+            {
+                output.push_back(ftxui::text(std::wstring(&buffer[0], &buffer[512])));
+            }
+        }
+    }
+
+    return 1;
+}
 
 int start_pru(int pru_id)
 {
@@ -179,10 +205,8 @@ class console : public Component
                 try
                 {
                     data_sent = std::stoi(input_box.content);
-                    send_data(data_sent, pru_id);
-                    output_box.push_back(text(input_box.content));
                     input_box.content = L"";
-
+                    send_rpmsg_data(data_sent, pru_id);
                 }
                 catch(const std::invalid_argument &err)
                 {
@@ -191,13 +215,30 @@ class console : public Component
             };
             pru_start_top.on_enter = [this] {
                 started = pru_start_top.selected;
+
                 if (started == 0)
                 {
-                    start_pru(pru_id);
+                    if (start_pru(pru_id) == 1)
+                    {
+                        rpmsg_fd = pru_id == 0 ? open("/dev/rpmsg_pru30", O_RDWR) : open("/dev/rpmsg_pru31", O_RDWR);
+                        if (rpmsg_fd > 0)
+                        {
+                            stop_read_signal = std::promise<void>();
+                            break_flag = stop_read_signal.get_future();
+
+                            read_rpmsg_thread = std::thread(receive_rpmsg_data, pru_id, std::ref(output_box), std::move(break_flag));
+                            read_rpmsg_thread.detach();
+                        }
+                    }
                 }
                 else if (started == 1)
                 {
-                    stop_pru(pru_id);
+                    if (stop_pru(pru_id) == 1)
+                    {
+                        stop_read_signal.set_value();
+                        output_box.clear();
+                        close(rpmsg_fd);
+                    }
                 }
             };
         }
@@ -250,6 +291,22 @@ int main(int argc, const char* argv[])
     {
         fprintf(stderr, "Not a beagleboard device\n");
         // return 0;
+    }
+
+    int init_rpmsg_0 = open("/dev/rpmsg_pru30", O_RDWR);
+    int init_rpmsg_1 = open("/dev/rpmsg_pru31", O_RDWR);
+
+    if (init_rpmsg_0 > 0)
+    {
+        const char* data = std::to_string(0).c_str();
+        int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
+        close(init_rpmsg_0);
+    }
+    if (init_rpmsg_1 > 0)
+    {
+        const char* data = std::to_string(0).c_str();
+        int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
+        close(init_rpmsg_1);
     }
 
     auto screen = ScreenInteractive::Fullscreen();
