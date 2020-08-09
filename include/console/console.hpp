@@ -5,7 +5,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <thread>
+#include <mutex>
 #include <future>
+#include <chrono>
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>

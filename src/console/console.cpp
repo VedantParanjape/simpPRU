@@ -8,6 +8,7 @@ static int rpmsg_fd = -1;
 std::thread read_rpmsg_thread;
 std::promise<void> stop_read_signal;
 std::future<void> break_flag;
+std::timed_mutex rpsmg_mutex;
 
 int device_model()
 {
@@ -56,10 +57,17 @@ int send_rpmsg_data(int value, int pru_id)
     }
 
     const char* data = std::to_string(value).c_str();
-    int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
-    close(rpmsg_fd);
 
-    return data_sent;
+    std::unique_lock<std::timed_mutex> rpsmg_lock(rpsmg_mutex, std::defer_lock);
+    if (rpsmg_lock.try_lock_for(std::chrono::milliseconds(1000)))
+    {
+        int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
+        rpsmg_lock.unlock();
+
+        return data_sent;
+    }
+
+    return -1;
 }
 
 int receive_rpmsg_data(int pru_id, ftxui::Elements &output, std::future<void> flag)
@@ -79,10 +87,16 @@ int receive_rpmsg_data(int pru_id, ftxui::Elements &output, std::future<void> fl
 
         if (rpmsg_fd > 0)
         {
-            int data_read = read(rpmsg_fd, buffer, 512);
-            if (data_read > 0)
-            {
-                output.push_back(ftxui::text(std::wstring(&buffer[0], &buffer[512])));
+            std::unique_lock<std::timed_mutex> rpsmg_lock(rpsmg_mutex, std::defer_lock);
+            if (rpsmg_lock.try_lock_for(std::chrono::milliseconds(1000)))
+            {   
+                int data_read = read(rpmsg_fd, buffer, 512);
+                rpsmg_lock.unlock();
+
+                if (data_read > 0)
+                {
+                    output.push_back(ftxui::text(std::wstring(&buffer[0], &buffer[512])));
+                }
             }
         }
     }
@@ -125,6 +139,11 @@ int start_pru(int pru_id)
             return -1;
         }
     }
+    else
+    {
+        return -1;
+    }
+    
     
     return 1;
 }
@@ -163,6 +182,10 @@ int stop_pru(int pru_id)
             close(remoteproc_stop);
             return -1;
         }
+    }
+    else
+    {
+        return -1;
     }
     
     return 1;
