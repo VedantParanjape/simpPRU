@@ -1,14 +1,17 @@
 #include <iostream>
 #include <string.h>
 #include <string>
+#include <errno.h>
 #include "console.hpp"
 
 static int model_beaglebone__ = 0;
 static int rpmsg_fd = -1;
 std::thread read_rpmsg_thread;
-std::promise<void> stop_read_signal;
-std::future<void> break_flag;
+// std::promise<void> stop_read_signal;
+// std::future<void> break_flag;
 std::timed_mutex rpsmg_mutex;
+bool stop_read_signal_ = false;
+FILE *fd = NULL;
 
 int device_model()
 {
@@ -50,56 +53,89 @@ int device_model()
 
 int send_rpmsg_data(int value, int pru_id)
 {
+    int rpmsg_fd = -1;
+    while(rpmsg_fd < 0)
+    {
+       rpmsg_fd = pru_id == 0 ? open("/dev/rpmsg_pru30", O_RDWR) : open("/dev/rpmsg_pru31", O_RDWR);
+    }
     if (rpmsg_fd < 0)
     {
         fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
+        fprintf(fd, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
+        
         return -1;
     }
 
     const char* data = std::to_string(value).c_str();
 
     std::unique_lock<std::timed_mutex> rpsmg_lock(rpsmg_mutex, std::defer_lock);
+
     if (rpsmg_lock.try_lock_for(std::chrono::milliseconds(1000)))
     {
-        int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
-        rpsmg_lock.unlock();
+        fprintf(fd, "%s", "fd locked\n");
 
+        int data_sent = write(rpmsg_fd, data, sizeof(char)*strlen(data));
+        fprintf(fd, "%s: %d\n", data, strlen(data));
+
+        rpsmg_lock.unlock();
+        fprintf(fd, "%s", "fd unlocked\n");
+
+        close(rpmsg_fd);
         return data_sent;
     }
 
+    close(rpmsg_fd);
     return -1;
 }
 
-int receive_rpmsg_data(int pru_id, ftxui::Elements &output, std::future<void> flag)
+int receive_rpmsg_data(int pru_id, ftxui::Elements &output)
 {
-    if (rpmsg_fd < 0)
-    {
-        return -1;
-    }
-
-    while(flag.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
+    // while(flag.wait_for(std::chrono::milliseconds(10)) == std::future_status::timeout)
+    while(!stop_read_signal_)
     {
         char buffer[512];
         for (int i = 0; i < 512; i++)
         {
             buffer[i] = '\0';
         }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::unique_lock<std::timed_mutex> rpsmg_lock(rpsmg_mutex, std::defer_lock);
+        if (rpsmg_lock.try_lock_for(std::chrono::milliseconds(1000)))
+        {   
+            // fprintf(fd, "%s", "fd recv locked\n");
 
-        if (rpmsg_fd > 0)
-        {
-            std::unique_lock<std::timed_mutex> rpsmg_lock(rpsmg_mutex, std::defer_lock);
-            if (rpsmg_lock.try_lock_for(std::chrono::milliseconds(1000)))
-            {   
-                int data_read = read(rpmsg_fd, buffer, 512);
-                rpsmg_lock.unlock();
-
-                if (data_read > 0)
-                {
-                    output.push_back(ftxui::text(std::wstring(&buffer[0], &buffer[512])));
-                }
+            int rpmsg_fd = -1;
+            while(rpmsg_fd < 0)
+            {
+                rpmsg_fd = pru_id == 0 ? open("/dev/rpmsg_pru30", O_RDWR | O_NONBLOCK) : open("/dev/rpmsg_pru31", O_RDWR | O_NONBLOCK);
             }
+            if (rpmsg_fd < 0)
+            {
+                fprintf(fd, "error recv: %s\n", strerror(errno));
+            }
+
+            int data_read = read(rpmsg_fd, buffer, 512);
+            rpsmg_lock.unlock();
+            
+            // fprintf(fd, "%s", "fd recv unlocked\n");
+
+            if (data_read > 0)
+            {
+                buffer[strlen(buffer)-1] = '\0';
+                // output.push_back(ftxui::text(std::wstring(&buffer[0], &buffer[512])));
+                fprintf(fd, "recv: %s: %d\n", buffer, strlen(buffer));
+            }
+            close(rpmsg_fd);
+        }
+        else
+        {
+            fprintf(fd, "error recv: %s\n", "couldn't unlock mutex");
         }
     }
+
+    stop_read_signal_ = false;
+    // fprintf(fd, "error recv: %s\n", "promise failed");
 
     return 1;
 }
@@ -143,8 +179,6 @@ int start_pru(int pru_id)
     {
         return -1;
     }
-    
-    
     return 1;
 }
 
@@ -243,24 +277,20 @@ class console : public Component
                 {
                     if (start_pru(pru_id) == 1)
                     {
-                        rpmsg_fd = pru_id == 0 ? open("/dev/rpmsg_pru30", O_RDWR) : open("/dev/rpmsg_pru31", O_RDWR);
-                        if (rpmsg_fd > 0)
-                        {
-                            stop_read_signal = std::promise<void>();
-                            break_flag = stop_read_signal.get_future();
+                    //     stop_read_signal = std::promise<void>();
+                    //     break_flag = stop_read_signal.get_future();
 
-                            read_rpmsg_thread = std::thread(receive_rpmsg_data, pru_id, std::ref(output_box), std::move(break_flag));
-                            read_rpmsg_thread.detach();
-                        }
+                        read_rpmsg_thread = std::thread(receive_rpmsg_data, pru_id, std::ref(output_box));
+                        read_rpmsg_thread.detach();
                     }
                 }
                 else if (started == 1)
                 {
                     if (stop_pru(pru_id) == 1)
                     {
-                        stop_read_signal.set_value();
+                        // stop_read_signal.set_value();
+                        stop_read_signal_ = true;
                         output_box.clear();
-                        close(rpmsg_fd);
                     }
                 }
             };
@@ -309,6 +339,7 @@ class console : public Component
 
 int main(int argc, const char* argv[]) 
 {
+    fd = fopen("/tmp/log.txt", "w+");
     int model = device_model();
     if (model == -1)
     {

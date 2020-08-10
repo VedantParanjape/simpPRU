@@ -25,7 +25,7 @@
 
 int device_model();
 int send_rpmsg_data(int value, int pru_id);
-int receive_rpmsg_data(int pru_id, ftxui::Elements &output, std::future<void> flag);
+int receive_rpmsg_data(int pru_id, ftxui::Elements &output);
 int start_pru(int pru_id);
 int stop_pru(int pru_id);
 #endif
