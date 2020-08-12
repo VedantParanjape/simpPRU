@@ -8,7 +8,7 @@ endif()
 
 # CMake project description and project specific settings
 project(simppru 
-        VERSION 1.1
+        VERSION 1.2
         DESCRIPTION "Compiler for simpPRU, compiles simpPRU code down to PRU-C"
         HOMEPAGE_URL "https://github.com/VedantParanjape/simpPRU/")
 enable_language(C)
