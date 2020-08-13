@@ -11,7 +11,6 @@
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
 
-
 void yyerror(const char* s);
 extern int yylex();
 extern int yyparse();
@@ -20,9 +19,9 @@ extern FILE* yyin;
 extern int linenumber;
 extern ast_node *ast;
 
-const char * argp_program_version = "v1.0";
-const char * argp_program_bug_address = "https://github.com/VedantParanjape/simpPRU/issues";
-static char * doc = "Compiler for simpPRU, compiles simpPRU code down to PRU-C";
+const char *argp_program_version = TOSTRING(VERSION_NUMBER);
+const char *argp_program_bug_address = "https://github.com/VedantParanjape/simpPRU/issues";
+static char *doc = "Compiler for simpPRU, compiles simpPRU code down to PRU-C";
 static char args_doc[] = "FILE";
 
 struct arguments 
