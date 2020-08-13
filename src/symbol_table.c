@@ -21,6 +21,10 @@ void init_symbol_table()
             json_head = cJSON_Parse(BEAGLEBONEBLACK_PINOUT);
             break;
 
+        case MODEL_BEAGLEBONE_AI:
+            json_head = cJSON_Parse(BEAGLEBONEAI_PINOUT);
+            break;
+            
         default:    
             json_head = cJSON_Parse(POCKETBEAGLE_PINOUT);
             break;
@@ -89,6 +93,76 @@ void init_symbol_table()
                         if (temp != -1)
                         {
                             kh_value(handle, temp) = pin;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (read_device_model() == MODEL_BEAGLEBONE_AI)
+        {
+            cJSON *pru_head_2 = cJSON_GetObjectItemCaseSensitive(json_head, "pru2");
+            cJSON *pru_head_3 = cJSON_GetObjectItemCaseSensitive(json_head, "pru3");
+            
+            if (pru_head_2 != NULL && pru_head_3 != NULL)
+            {
+                cJSON *pru_2_pins = NULL;
+                char *key_2 = NULL;
+                cJSON_ArrayForEach(pru_2_pins, pru_head_2)
+                {
+                    key_2 = pru_2_pins->string;
+                    for (int i = 0; i < cJSON_GetArraySize(pru_2_pins); i++)
+                    {
+                        cJSON* elem = cJSON_GetArrayItem(pru_2_pins, i);
+                        if (elem != NULL)
+                        {
+                            sym_ptr pin = (sym_ptr) malloc(sizeof(sym));
+                            pin->identifier = strdup(cJSON_GetArrayItem(elem, 0)->valuestring);
+                            pin->data_type = DT_INTEGER;
+                            pin->value = atoi(key_2);
+                            pin->scope = 0;
+                            pin->next = NULL;
+                            pin->is_hidden = 0;
+                            pin->is_function = 0;
+                            pin->is_constant = 1;
+
+                            int err;
+                            khint_t temp = kh_put(symbol_table, handle, strdup(pin->identifier), &err);
+                            if (temp != -1)
+                            {
+                                kh_value(handle, temp) = pin;
+                            }
+                        }
+                    }
+                }
+
+                cJSON *pru_3_pins = NULL;
+                char *key_3 = NULL;
+
+                cJSON_ArrayForEach(pru_3_pins, pru_head_3)
+                {
+                    key_3 = pru_3_pins->string;
+                    for (int i = 0; i < cJSON_GetArraySize(pru_3_pins); i++)
+                    {
+                        cJSON* elem = cJSON_GetArrayItem(pru_3_pins, i);
+                        if (elem != NULL)
+                        {
+                            sym_ptr pin = (sym_ptr) malloc(sizeof(sym));
+                            pin->identifier = strdup(cJSON_GetArrayItem(elem, 0)->valuestring);
+                            pin->data_type = DT_INTEGER;
+                            pin->value = atoi(key_3);
+                            pin->scope = 0;
+                            pin->next = NULL;
+                            pin->is_hidden = 0;
+                            pin->is_function = 0;
+                            pin->is_constant = 1;
+
+                            int err;
+                            khint_t temp = kh_put(symbol_table, handle, strdup(pin->identifier), &err);
+                            if (temp != -1)
+                            {
+                                kh_value(handle, temp) = pin;
+                            }
                         }
                     }
                 }

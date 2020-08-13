@@ -24,6 +24,10 @@ int config_pins(int pru_pin_number, int mode, char* pru_id)
             json_head = cJSON_Parse(BEAGLEBONEBLACK_PINOUT);
             break;
 
+        case MODEL_BEAGLEBONE_AI:
+            json_head = cJSON_Parse(BEAGLEBONEAI_PINOUT);
+            break;
+            
         default:    
             json_head = cJSON_Parse(POCKETBEAGLE_PINOUT);
             break;
