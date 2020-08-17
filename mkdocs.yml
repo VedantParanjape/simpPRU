@@ -45,3 +45,4 @@ markdown_extensions:
   - pymdownx.tabbed
   - pymdownx.superfences
   - pymdownx.smartsymbols
+  - pymdownx.arithmatex

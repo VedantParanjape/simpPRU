@@ -98,7 +98,8 @@ test_var := true;
 | **`if`** | **`and`** | **`not`** |
 | **`elif`** | **`continue`** | **`break`** |
 | **`else`** | **`while`** | **`in`** |
-| **`for`** | | |
+| **`for`** | **`init_message_channel`** | **`send_message`** |
+| **`receive_message`** | | |
 
 ### Valid identifier naming
 
