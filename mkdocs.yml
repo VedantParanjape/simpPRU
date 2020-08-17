@@ -13,6 +13,9 @@ theme:
 
 nav:
     - Home: index.md
+    - Usage: 
+        - "simpPRU": usage/usage-simppru.md
+        - "simpPRU-console": usage/usage-simppru-console.md
     - "Language Reference": 
         - "Language Syntax": language-reference/language.md
         - "Input/Output functions": language-reference/io.md

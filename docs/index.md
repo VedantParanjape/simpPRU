@@ -12,6 +12,7 @@ This can be achieved by implementing a language on top of PRU C. It will directl
 * It is a statically typed language. Variables and functions must be assigned data types during compilation.
 * It is typesafe, and data types of variables are decided during compilation.
 * simPRU codes have a `.sim` extension.
+* simpPRU provides a console app to use Remoteproc functionality.
 
 ## Requirements
 
@@ -20,11 +21,6 @@ Currently this only supports am335x systems: PocketBeagle, BeagleBone Black and 
 * `pru-gcc`
 * beaglebone image with official support for remoteproc: `ti-4.19+ kernel`
 * `config-pin` utility
-
-## Usage
-
-* `./simppru <filename>.sim` - Compile a program
-* `./simppru -h` Display help info
 
 ## Issues
 
