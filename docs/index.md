@@ -22,6 +22,46 @@ Currently this only supports am335x systems: PocketBeagle, BeagleBone Black and 
 * beaglebone image with official support for remoteproc: `ti-4.19+ kernel`
 * `config-pin` utility
 
+## Installation
+
+For Instructions head over to [Installation](/install/install)
+
+## Build from source
+
+For Instructions head over to [Building from source](/install/build)
+## Usage
+
+* simppru
+
+    ```bash
+    simppru [OPTION...] FILE
+
+        --device=<device_name> Select for which BeagleBoard to compile
+                                (pocketbeagle, bbb, bbbwireless, bbai)
+        --load                 Load generated firmware to /lib/firmware/
+    -o, --output=<file>        Place the output into <file>
+    -p, --pru=<pru_id>         Select which pru id (0/1) for which program is to
+                                be compiled
+        --verbose              Enable verbose mode (dump symbol table and ast
+                                graph
+    -?, --help                 Give this help list
+        --usage                Give a short usage message
+    -V, --version              Print program version
+
+    Mandatory or optional arguments to long options are also mandatory or optional
+    for any corresponding short options.
+    ```
+
+    For detailed usage head to [Detailed Usage](/usage/usage-simppru)
+
+* simppru-console
+
+    ```bash
+    simppru-console
+    ```
+
+    For detailed usage head to [Detailed Usage](/usage/usage-simppru-console)
+
 ## Issues
 
 * For full source code of simPRU [visit](https://github.com/VedantParanjape/simppru)
