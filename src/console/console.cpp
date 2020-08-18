@@ -149,6 +149,12 @@ int start_pru(int pru_id)
     {
         remoteproc_start = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc1/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc2/state", O_RDWR);
     }
+    else if (model_beaglebone__ == MODEL_BEAGLEBONE_AI)
+    {
+        char path[100] = " ";
+        snprintf(path, 100, "/sys/class/remoteproc/remoteproc%d/state", pru_id%4);
+        remoteproc_start = open(path, O_RDWR);
+    }
     else
     {
         remoteproc_start = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc0/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc1/state", O_RDWR);
@@ -190,6 +196,12 @@ int stop_pru(int pru_id)
     if (model_beaglebone__ == MODEL_POCKETBEAGLE)
     {
         remoteproc_stop = pru_id == 0 ? open("/sys/class/remoteproc/remoteproc1/state", O_RDWR) : open("/sys/class/remoteproc/remoteproc2/state", O_RDWR);
+    }
+    else if (model_beaglebone__ == MODEL_BEAGLEBONE_AI)
+    {
+        char path[100] = " ";
+        snprintf(path, 100, "/sys/class/remoteproc/remoteproc%d/state", pru_id%4);
+        remoteproc_stop = open(path, O_RDWR);
     }
     else
     {
