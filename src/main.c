@@ -69,6 +69,14 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             {
                 arguments->pruid = 1;
             }
+            else if (atoi(arg) == 2)
+            {
+                arguments->pruid = 2;
+            }
+            else if (atoi(arg) == 3)
+            {
+                arguments->pruid = 3;
+            }
             else
             {
                 fprintf(stderr, "\e[31mfatal error:\e[0m incorrect pru id\n");
@@ -162,7 +170,7 @@ int main(int argc, char** argv)
     char command[700];
     if (is_rpmsg_used == 1)
     {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid, arguments.output_filename, arguments.pruid, arguments.pruid, TOSTRING(INSTALL_PATH));
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
         if (system(command) == -1)
         {
             fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
@@ -170,7 +178,7 @@ int main(int argc, char** argv)
     }
     else
     {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid, TOSTRING(INSTALL_PATH));
+        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
         if (system(command) == -1)
         {
             fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
