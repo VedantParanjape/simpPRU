@@ -43,7 +43,7 @@ int firmware_loader(char* output_filename, int pru_id)
     char command[700];
     if (model_beaglebone_ == MODEL_BEAGLEBONE_AI)
     {
-        snprintf(command, 700, "cp %s /lib/firmware/am335x-pru%d-fw", output_filename, pru_id);
+        snprintf(command, 700, "cp %s /lib/firmware/am57xx-pru%d_%d-fw", output_filename, (int)(pru_id/2) + 1, pru_id%2);
         if (system(command) == -1)
         {
             return -1;
@@ -51,7 +51,7 @@ int firmware_loader(char* output_filename, int pru_id)
     }
     else 
     {
-        snprintf(command, 700, "cp %s /lib/firmware/am57xx-pru%d_%d-fw", output_filename, (int)(pru_id/2) + 1, pru_id%2);
+        snprintf(command, 700, "cp %s /lib/firmware/am335x-pru%d-fw", output_filename, pru_id);
         if (system(command) == -1)
         {
             return -1;
