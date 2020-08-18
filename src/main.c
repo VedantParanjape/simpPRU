@@ -192,7 +192,7 @@ int main(int argc, char** argv)
             fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
         }
     }
-    
+
     if (arguments.load == 1)
     {
         char output_filename_[250];
