@@ -60,12 +60,14 @@ int send_rpmsg_data(int value, int pru_id)
     int rpmsg_fd = -1;
     while(rpmsg_fd < 0)
     {
-       rpmsg_fd = pru_id == 0 ? open("/dev/rpmsg_pru30", O_RDWR) : open("/dev/rpmsg_pru31", O_RDWR);
+       char path[30] = " ";
+       snprintf(path, 30, "/dev/rpmsg_pru%d", pru_id%4+30);
+       rpmsg_fd = open(path, O_RDWR);
     }
     if (rpmsg_fd < 0)
     {
-        fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
-        fprintf(fd, "Error could not open /dev/rpmsg%d\n", pru_id == 0 ? 30 : 31);
+        fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id%4+30);
+        fprintf(fd, "Error could not open /dev/rpmsg%d\n", pru_id%4+30);
         
         return -1;
     }
@@ -109,12 +111,14 @@ int receive_rpmsg_data(int pru_id, ftxui::Elements &output)
             int rpmsg_fd = -1;
             while(rpmsg_fd < 0 && !stop_read_signal.load())
             {
-                rpmsg_fd = pru_id == 0 ? open("/dev/rpmsg_pru30", O_RDWR | O_NONBLOCK) : open("/dev/rpmsg_pru31", O_RDWR | O_NONBLOCK);
+                char path[30] = " ";
+                snprintf(path, 30, "/dev/rpmsg_pru%d", pru_id%4+30);
+                rpmsg_fd = open(path, O_RDWR | O_NONBLOCK);
             }
             if (rpmsg_fd < 0)
             {
-                fprintf(fd, "error recv: %s\n", strerror(errno));
-                close(rpmsg_fd);
+                fprintf(stderr, "Error could not open /dev/rpmsg%d\n", pru_id%4+30);
+                fprintf(fd, "Error could not open /dev/rpmsg%d\n", pru_id%4+30);
             }
 
             int data_read = read(rpmsg_fd, buffer, 512);
@@ -350,6 +354,8 @@ int main(int argc, const char* argv[])
 
     stop_pru(0);
     stop_pru(1);
+    stop_pru(2);
+    stop_pru(3);
 
     auto screen = ScreenInteractive::Fullscreen();
 
