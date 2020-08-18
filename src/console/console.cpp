@@ -152,7 +152,7 @@ int start_pru(int pru_id)
     else if (model_beaglebone__ == MODEL_BEAGLEBONE_AI)
     {
         char path[100] = " ";
-        snprintf(path, 100, "/sys/class/remoteproc/remoteproc%d/state", pru_id%4);
+        snprintf(path, 100, "/sys/class/remoteproc/remoteproc%d/state", pru_id%4+4);
         remoteproc_start = open(path, O_RDWR);
     }
     else
@@ -200,7 +200,7 @@ int stop_pru(int pru_id)
     else if (model_beaglebone__ == MODEL_BEAGLEBONE_AI)
     {
         char path[100] = " ";
-        snprintf(path, 100, "/sys/class/remoteproc/remoteproc%d/state", pru_id%4);
+        snprintf(path, 100, "/sys/class/remoteproc/remoteproc%d/state", pru_id%4+4);
         remoteproc_stop = open(path, O_RDWR);
     }
     else
