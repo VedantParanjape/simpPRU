@@ -10,7 +10,7 @@
     Intuitive language for PRU which compiles down to PRU Assembly.
     <br/>
     <br/>
-    <a href="https://github.com/VedantParanjape/simpPRU/"><strong>Explore the docs »</strong></a>
+    <a href="https://simppru.readthedocs.io/en/latest/"><strong>Explore the docs »</strong></a>
     <br />
     <a href="https://github.com/VedantParanjape/simpPRU/issues">Report Bug</a>
     ·
