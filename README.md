@@ -1,10 +1,8 @@
 <br />
 <p align="center">
   <a href="https://github.com/VedantParanjape/simpPRU">
-    <img src="assets/cover.png" alt="Logo" width="800" height="350">
+    <img src="assets/default-monochrome-black.svg" alt="Logo" width="400" height="100">
   </a>
-
-  <h3 align="center">simpPRU</h3>
 
   <p align="center">
     Intuitive language for PRU which compiles down to PRU Assembly.
