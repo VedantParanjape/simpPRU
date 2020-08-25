@@ -74,4 +74,9 @@ Check `/examples` for different examples
 
 ## To Do List
 
-* [ ] Add support for using PWM using eCAP module
+* [ ] Add support for using PWM using eCAP module.
+* [ ] Better error handler in bison parser.
+* [ ] Update grammar such that control statements (break/continue) can only be called inside loops.
+* [ ] Update grammar such that return statements can be called anywhere inside function definitions and not only at the end.
+* [ ] Add support for directly calling C code in simppru.
+* [ ] Add unit tests which run using pru-sim.
