@@ -74,7 +74,4 @@ Check `/examples` for different examples
 
 ## To Do List
 
-* [ ] Add support for AM57xx systems (BeagleBone AI)
 * [ ] Add support for using PWM using eCAP module
-* [ ] Implementing helper programs to simplify the process of loading PRU firmware
-* [ ] Writing documentation
