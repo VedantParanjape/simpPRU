@@ -5,7 +5,7 @@
   </a>
 
   <p align="center">
-    Intuitive language for PRU which compiles down to PRU Assembly.
+    Intuitive language for PRU which compiles down to PRU C.
     <br/>
     <br/>
     <a href="https://simppru.readthedocs.io/en/latest/"><strong>Explore the docs »</strong></a>
