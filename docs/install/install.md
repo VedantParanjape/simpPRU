@@ -2,7 +2,7 @@
 
 ## Dependencies
   
-* pru-gcc
+* gcc-pru
 * config-pin utility (for autoconfig)
 
 ## amd64
