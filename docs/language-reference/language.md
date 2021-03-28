@@ -82,7 +82,14 @@ test_var := true;
 
 ## Comments
 
-* TBD
+* simpPRU supports C style multiline comments.
+
+```cpp
+/* This is a comment */
+
+/* Comments can span
+multiple lines */
+```
 
 ## Keyword and Identifiers
 
