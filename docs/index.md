@@ -24,11 +24,12 @@ Currently this only supports am335x systems: PocketBeagle, BeagleBone Black and 
 
 ## Installation
 
-For Instructions head over to [Installation](/install/install)
+For Instructions head over to [Installation][install]
 
 ## Build from source
 
-For Instructions head over to [Building from source](/install/build)
+For Instructions head over to [Building from source][build]
+
 ## Usage
 
 * simppru
@@ -52,7 +53,7 @@ For Instructions head over to [Building from source](/install/build)
     for any corresponding short options.
     ```
 
-    For detailed usage head to [Detailed Usage](/usage/usage-simppru)
+    For detailed usage head to [Detailed Usage][usage-simppru]
 
 * simppru-console
 
@@ -60,9 +61,15 @@ For Instructions head over to [Building from source](/install/build)
     simppru-console
     ```
 
-    For detailed usage head to [Detailed Usage](/usage/usage-simppru-console)
+    For detailed usage head to [Detailed Usage][usage-simppru-console]
 
 ## Issues
 
 * For full source code of simPRU [visit](https://github.com/VedantParanjape/simppru)
 * To report a bug or start a issue [visit](https://github.com/VedantParanjape/simppru/issues)
+
+
+[install]: https://simppru.readthedocs.io/en/latest/install/install/
+[build]: https://simppru.readthedocs.io/en/latest/install/build/
+[usage-simppru]: https://simppru.readthedocs.io/en/latest/usage/usage-simppru
+[usage-simppru-console]: https://simppru.readthedocs.io/en/latest/usage/usage-simppru-console
