@@ -24,20 +24,26 @@
 #define MODEL_BEAGLEBONE_AI 4
 
 using namespace ftxui;
-class console : public Component 
+class console : public ComponentBase
 {
     public:
         console(); 
         
     private:
-        Container container = Container::Horizontal();
-        RadioBox right_menu;
-        Input input_box;
-        Toggle pru_start_top;
-        Elements output_box;
         int pru_id = 0;
+        std::vector<std::wstring> pru_id_entries;
+        Component pru_id_menu = Menu(&pru_id_entries, &pru_id);
+
+        std::wstring input_box_content;
+        Component input_box = Input(&input_box_content, "type here");
+
+        int pru_start_top_selected = 0;
+        std::vector<std::wstring> pru_start_top_entries;
+        Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
+
+        int started = 0;
+        Elements output_box;
         int data_sent = 0;
-        int started = -1;
         
         Element Render() override;
 };

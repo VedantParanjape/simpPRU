@@ -72,7 +72,8 @@ int send_rpmsg_data(int value, int pru_id)
         return -1;
     }
 
-    const char* data = std::to_string(value).c_str();
+    std::string value_str = std::to_string(value);
+    const char *data = value_str.c_str();
 
     std::unique_lock<std::timed_mutex> rpmsg_lock(rpmsg_mutex, std::defer_lock);
 
@@ -245,36 +246,41 @@ int stop_pru(int pru_id)
 using namespace ftxui;
 console::console() 
 {
-    Add(&container);
-    container.Add(&right_menu);
-    container.Add(&input_box);
-    container.Add(&pru_start_top);
+    auto container = Container::Vertical({
+      pru_id_menu,
+      Container::Horizontal({
+        input_box,
+        pru_start_top,
+      }),
+    });
+    Add(container);
 
     if (model_beaglebone__ == MODEL_BEAGLEBONE_AI)
     {
-        right_menu.entries = {
-            L"PRU0-0", L"PRU0-1", L"PRU1-0", L"PRU1-1",
+        pru_id_entries = {
+            L"PRU0-0",
+            L"PRU0-1",
+            L"PRU1-0",
+            L"PRU1-1",
         };
     }
     else
     {
-        right_menu.entries = {
-            L"PRU0", L"PRU1",
+        pru_id_entries = {
+            L"PRU0",
+            L"PRU1",
         };
     }
-    input_box.placeholder = L"type here";
-    pru_start_top.entries = {
-        L"Start", L"Stop"
+    pru_start_top_entries = {
+        L"Start",
+        L"Stop",
     };
 
-    right_menu.on_change = [this] {
-        pru_id = right_menu.selected;
-    };
-    input_box.on_enter = [this] {
+    InputBase::From(input_box)->on_enter = [this] {
         try
         {
-            data_sent = std::stoi(input_box.content);
-            input_box.content = L"";
+            data_sent = std::stoi(input_box_content);
+            input_box_content = L"";
             if (started == 0)
             {
                 send_rpmsg_data(data_sent, pru_id);
@@ -285,8 +291,8 @@ console::console()
             std::cerr << err.what() << "\n";
         } 
     };
-    pru_start_top.on_enter = [this] {
-        started = pru_start_top.selected;
+    ToggleBase::From(pru_start_top)->on_enter = [this] {
+        started = pru_start_top_selected;
 
         if (started == 0)
         {
@@ -325,7 +331,7 @@ Element console::Render()
             vbox({
                 hcenter(bold(text(L"PRU"))),
                 separator(),
-                right_menu.Render(),
+                pru_id_menu->Render(),
             }) | border,
         }) | flex,
         
@@ -333,9 +339,9 @@ Element console::Render()
         vbox({
             hbox({
                 text(L" send : "),
-                input_box.Render(),
+                input_box->Render(),
                 separator(),
-                pru_start_top.Render(),
+                pru_start_top->Render(),
             }),
         }) | border,
     }));
@@ -371,6 +377,5 @@ int main(int argc, const char* argv[])
     }
     });
 
-    console console_simppru;
-    screen.Loop(&console_simppru);
+    screen.Loop(ftxui::Make<console>());
 }
