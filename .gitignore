@@ -54,3 +54,6 @@ dkms.conf
 # VSCode files
 .vscode/
 site/
+
+# Build folder
+build/
