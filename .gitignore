@@ -55,5 +55,9 @@ dkms.conf
 .vscode/
 site/
 
-# Build folder
+# Build folders
 build/
+bin/
+src/lexer.c
+src/parser.c
+src/parser.h
