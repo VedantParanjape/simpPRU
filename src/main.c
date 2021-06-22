@@ -32,6 +32,7 @@ struct arguments
     int verbose;
     int device_id;
     int load;
+    int c;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -116,6 +117,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             arguments->load = 1;
             break;
 
+        case 'c':
+            arguments->c = 1;
+            break;
+
         default:
             return ARGP_ERR_UNKNOWN;
             break;
@@ -130,6 +135,7 @@ struct argp_option options[] = {
     {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (pocketbeagle, bbb, bbbwireless, bbai)"},
     {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
     {"load", 1111, 0, 0, "Load generated firmware to /lib/firmware/"},
+    {0, 'c', 0, 0, "Stop after generating intermediate C file"},
     {0}
 };
 
@@ -143,6 +149,7 @@ int main(int argc, char** argv)
     arguments.pruid = 0;
     arguments.verbose = 0;
     arguments.load = 0;
+    arguments.c = 0;
 
     struct argp argp = {options, parse_opt, args_doc, doc};   
     argp_parse(&argp, argc, argv, 0, 0, &arguments); 
@@ -168,39 +175,49 @@ int main(int argc, char** argv)
     int is_rpmsg_used = code_printer(ast, arguments.pruid);
     
     char command[700];
-    if (is_rpmsg_used == 1)
+    if (arguments.c == 0)
     {
-        if (arguments.pruid == 2 || arguments.pruid == 3)
+        if (is_rpmsg_used == 1)
         {
-            snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+            if (arguments.pruid == 2 || arguments.pruid == 3)
+            {
+                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+            }
+            else
+            {
+                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            }
+            
+            if (system(command) == -1)
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+            }
         }
         else
         {
-            snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
-        }
-        
-        if (system(command) == -1)
-        {
-            fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
-        }
-    }
-    else
-    {
-        snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
-        if (system(command) == -1)
-        {
-            fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+            snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            if (system(command) == -1)
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+            }
         }
     }
 
     if (arguments.load == 1)
     {
-        char output_filename_[250];
-        snprintf(output_filename_, 250, "%s.pru%d", arguments.output_filename, arguments.pruid);
-
-        if (firmware_loader(output_filename_, arguments.pruid) == -1)
+        if (arguments.c == 0)
         {
-            fprintf(stderr, "\e[31mfatal error:\e[0m unable to load firmware to /lib/firmware/\n");
+            char output_filename_[250];
+            snprintf(output_filename_, 250, "%s.pru%d", arguments.output_filename, arguments.pruid);
+
+            if (firmware_loader(output_filename_, arguments.pruid) == -1)
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m unable to load firmware to /lib/firmware/\n");
+            }
+        }
+        else
+        {
+            printf("--load cannot be called with -c\n");
         }
     }
 }
