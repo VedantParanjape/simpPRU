@@ -483,7 +483,7 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
     }
 }
 
-int code_printer(ast_node* ast, int pru_id)
+int code_printer(ast_node* ast, int pru_id, int test)
 {
     FILE* handle = fopen("/tmp/temp.c", "w+");
     snprintf(pru_id_, 5, "pru%d", pru_id);
@@ -493,16 +493,24 @@ int code_printer(ast_node* ast, int pru_id)
         fprintf(stderr, "Unable to create translated file\n");
         exit(0);
     }
+
+    if (test == 0)
+    {
+        fprintf(handle, "%s", BEGIN);
+        fprintf(handle, "%s", START_COUNTER);
+        fprintf(handle, "%s", STOP_COUNTER);
+        fprintf(handle, "%s", READ_COUNTER);
+        fprintf(handle, "%s", DIGITAL_WRITE);
+        fprintf(handle, "%s", DIGITAL_READ);
+        fprintf(handle, "%s", RPMSG_DEFS);
+    }
+    else
+    {
+        fprintf(handle, "%s", TEST);
+    }
+    
     int i = 0;
     ast_node *temp;
-    
-    fprintf(handle, "%s", BEGIN);
-    fprintf(handle, "%s", START_COUNTER);
-    fprintf(handle, "%s", STOP_COUNTER);
-    fprintf(handle, "%s", READ_COUNTER);
-    fprintf(handle, "%s", DIGITAL_WRITE);
-    fprintf(handle, "%s", DIGITAL_READ);
-    fprintf(handle, "%s", RPMSG_DEFS);
     
     vec_foreach(&ast->child_nodes, temp, i)
     {
