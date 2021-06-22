@@ -21,6 +21,7 @@ braces               ("{"|"}")
 parenthesis          ("("|")")
 integer              ([0-9]+)
 bool                 ("true"|"false")
+string               (\"(\\.|[^"\\])*\")
 datatype             ("int"|"bool")
 conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
@@ -31,6 +32,7 @@ logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
 io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter"|"init_message_channel"|"receive_message"|"send_message")
+print                ("print"|"println")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
 separator            ([:])
@@ -98,6 +100,11 @@ comma                ([,])
   }
 
   return CONST_BOOL;
+}
+
+{string}                {
+  yylval.string = strdup(yytext);
+  return CONST_STRING;
 }
 
 {datatype}              {
@@ -291,6 +298,17 @@ comma                ([,])
   else if (!strcmp(yytext, "send_message"))
   {
     return KW_SEND_RPMSG;
+  }
+}
+
+{print}                 {
+  if (!strcmp(yytext, "print"))
+  {
+    return KW_PRINT;
+  }
+  else if (!strcmp(yytext, "println"))
+  {
+    return KW_PRINTLN;
   }
 }
 

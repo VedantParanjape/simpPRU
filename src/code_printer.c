@@ -71,6 +71,18 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");
                 break;
+            
+            case AST_NODE_PRINT_STRING_FUNCTION_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_print_string_function_call_printer(((ast_node_statements*)temp)->child_nodes.print_string_function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+            
+            case AST_NODE_PRINT_ID_FUNCTION_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_print_id_function_call_printer(((ast_node_statements*)temp)->child_nodes.print_id_function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
         }
     }
     if (is_func_def == 0)
@@ -396,6 +408,31 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
     }
 }
 
+void ast_print_string_function_call_printer(ast_node_print_string_function_call *pfc, FILE* handle)
+{
+    if (pfc != NULL && handle != NULL)
+    {
+        fprintf(handle, "printf(\"%%s\", %s)", pfc->string);
+        if (pfc->add_newline)
+        {
+            fprintf(handle, "; printf(\"\\n\")");
+        }
+    }
+}
+
+void ast_print_id_function_call_printer(ast_node_print_id_function_call *pfc, FILE *handle)
+{
+    if (pfc != NULL && handle != NULL)
+    {
+        fprintf(handle, "printf(\"%%d\", %s)", pfc->symbol_handle->identifier);
+        
+        if (pfc->add_newline)
+        {
+            fprintf(handle, "; printf(\"\\n\")");
+        }
+    }
+}
+
 void ast_function_definition(ast_node_function_def *def, FILE* handle)
 {
     if (def != NULL && handle != NULL)
@@ -526,6 +563,19 @@ int code_printer(ast_node* ast, int pru_id)
                 ast_utility_function_call_printer(((ast_node_statements*)temp)->child_nodes.utility_function_call, handle);
                 fprintf(handle, "%s", ";\n");
                 break;
+            
+            case AST_NODE_PRINT_STRING_FUNCTION_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_print_string_function_call_printer(((ast_node_statements*)temp)->child_nodes.print_string_function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+
+            case AST_NODE_PRINT_ID_FUNCTION_CALL:
+                fprintf(handle, "%s", "\t");
+                ast_print_id_function_call_printer(((ast_node_statements*)temp)->child_nodes.print_id_function_call, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+
         }
     }
     fprintf(handle, "%s", END);
