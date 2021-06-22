@@ -33,6 +33,7 @@ struct arguments
     int device_id;
     int load;
     int c;
+    int t;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -121,6 +122,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             arguments->c = 1;
             break;
 
+        case 't':
+            arguments->t = 1;
+            break;
+
         default:
             return ARGP_ERR_UNKNOWN;
             break;
@@ -136,6 +141,7 @@ struct argp_option options[] = {
     {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
     {"load", 1111, 0, 0, "Load generated firmware to /lib/firmware/"},
     {0, 'c', 0, 0, "Stop after generating intermediate C file"},
+    {0, 't', 0, 0, "Use stub functions for testing PRU specific functions"},
     {0}
 };
 
@@ -150,6 +156,7 @@ int main(int argc, char** argv)
     arguments.verbose = 0;
     arguments.load = 0;
     arguments.c = 0;
+    arguments.t = 0;
 
     struct argp argp = {options, parse_opt, args_doc, doc};   
     argp_parse(&argp, argc, argv, 0, 0, &arguments); 
@@ -172,7 +179,7 @@ int main(int argc, char** argv)
         ast_node_dump(ast);
     }
 
-    int is_rpmsg_used = code_printer(ast, arguments.pruid);
+    int is_rpmsg_used = code_printer(ast, arguments.pruid, arguments.t);
     
     char command[700];
     if (arguments.c == 0)
