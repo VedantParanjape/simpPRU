@@ -25,6 +25,7 @@ ast_node *ast = NULL;
 %union{
     int integer;
     int boolean;
+    char* string;
     struct symbol* symbol_handle;
     struct ast_node *node;
     struct ast_node_statements *statements;
@@ -44,6 +45,8 @@ ast_node *ast = NULL;
     struct ast_node_function_call *function_call;
     struct ast_node_arguments *arguments;
     struct ast_node_utility_function_call *util_function_call;
+    struct ast_node_print_string_function_call *print_string_function_call;
+    struct ast_node_print_id_function_call *print_id_function_call;
 }
 
 %left LBRACE RBRACE
@@ -75,9 +78,11 @@ ast_node *ast = NULL;
 
 %token KW_DIGITAL_READ KW_DIGITAL_WRITE KW_DELAY KW_PWM KW_START_COUNTER KW_STOP_COUNTER KW_READ_COUNTER
 %token KW_INIT_RPMSG KW_RECV_RPMSG KW_SEND_RPMSG
+%token KW_PRINT KW_PRINTLN
 
 %token <integer> CONST_INT
 %token <boolean> CONST_BOOL
+%token <string> CONST_STRING
 
 %token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER
 
@@ -97,6 +102,8 @@ ast_node *ast = NULL;
 %type <function_call> int_function_call bool_function_call void_function_call 
 %type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call 
 %type <util_function_call> init_rpmsg_call recv_rpmsg_call send_rpmsg_call 
+%type <print_string_function_call> print_string_call
+%type <print_id_function_call> print_id_call
 %type <arguments> function_call_parameters
 %start start
 %%
@@ -208,6 +215,12 @@ statement: compound_statement {
          }
          | send_rpmsg_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_SEND_RPMSG_CALL, (void*)$1);
+         }
+         | print_string_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_PRINT_STRING_FUNCTION_CALL, (void*)$1);
+         }
+         | print_id_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_PRINT_ID_FUNCTION_CALL, (void*)$1);
          }
          ;
 
@@ -730,6 +743,7 @@ stop_counter_call: KW_STOP_COUNTER LPAREN RPAREN {
 read_counter_call: KW_READ_COUNTER LPAREN RPAREN {
                     $$ = create_read_counter_call_node();
                  }
+                 ;
 
 init_rpmsg_call: KW_INIT_RPMSG LPAREN RPAREN {
                     $$ = create_init_rpmsg_call_node();
@@ -745,4 +759,27 @@ send_rpmsg_call: KW_SEND_RPMSG LPAREN arithmetic_expression RPAREN {
                     $$ = create_send_rpmsg_call_node($3);
                 }
                 ;
+
+print_string_call:  KW_PRINT LPAREN CONST_STRING RPAREN {
+                        $$ = create_print_string_function_call_node($3, 0);
+                    }
+                    | KW_PRINTLN LPAREN CONST_STRING RPAREN {
+                        $$ = create_print_string_function_call_node($3, 1);
+                    }
+                    ;
+
+print_id_call:  KW_PRINT LPAREN INT_IDENTIFIER RPAREN {
+                    $$ = create_print_id_function_call_node($3, 0);
+                }
+                | KW_PRINT LPAREN BOOL_IDENTIFIER RPAREN {
+                    $$ = create_print_id_function_call_node($3, 0);
+                }
+                | KW_PRINTLN LPAREN INT_IDENTIFIER RPAREN {
+                    $$ = create_print_id_function_call_node($3, 1);
+                }
+                | KW_PRINTLN LPAREN BOOL_IDENTIFIER RPAREN {
+                    $$ = create_print_id_function_call_node($3, 1);
+                }
+                ;
+
 %%
