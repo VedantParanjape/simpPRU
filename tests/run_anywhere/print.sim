@@ -1,0 +1,19 @@
+print("Start");
+println(" with newline");
+
+int a := 5;
+if: a == 5 {
+    print("Printing!");
+    println(" inside, with newline");
+}
+
+println(a);
+
+int b;
+println(b);
+
+b := 10;
+if: b == 10 {
+    print(b);
+    println(" is the value of b");
+}
