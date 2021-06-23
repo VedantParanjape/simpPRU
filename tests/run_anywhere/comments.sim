@@ -1,0 +1,5 @@
+print("Comments!\n");
+/* These too should be ignored
+The quick brown fox jumps over the lazy dog
+Beagle*/
+println("/* These should not be ignored */");

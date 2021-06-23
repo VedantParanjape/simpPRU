@@ -1,0 +1,41 @@
+def add: int: int a, int b {
+    int c := a + b;
+    return c;
+}
+
+int result := add(2, 3);
+println(result);
+
+def add_subtract: int: int a, int b, bool control {
+    int c;
+    if: control {
+        c := a + b;
+    }
+    else {
+        c := a - b;
+    }
+    return c;
+}
+result := add_subtract(3, 4, true);
+println(result);
+result := add_subtract(3, 4, false);
+println(result);
+
+def print_int: void: int a {
+    print(a);
+}
+print_int(result);
+println("");
+
+def less_than: bool: int a, int b {
+    bool result;
+    if: a < b {
+        result := true;
+    }
+    return result;
+}
+
+bool res := less_than(2, 3);
+println(res);
+res := less_than(3, 2);
+println(res);
