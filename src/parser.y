@@ -479,12 +479,13 @@ conditional_statement_else: KW_ELSE compound_statement {
                           }
                           ;
 
-loop_statement_for: KW_FOR COLON IDENTIFIER KW_IN arithmetic_expression COLON arithmetic_expression compound_statement {
-                      $3->data_type = DT_INTEGER;
-                      $3->value = $5->value;
-                      $$ = create_loop_for_node(create_variable_node(AST_DT_INT, $3), $5, $7, $8);
+loop_statement_for: KW_FOR COLON IDENTIFIER {
+                      $3->data_type = DT_INTEGER;}                    
+                    KW_IN arithmetic_expression COLON arithmetic_expression compound_statement {
+                      $3->value = $6->value;
+                      $$ = create_loop_for_node(create_variable_node(AST_DT_INT, $3), $6, $8, $9);
                       
-                      printf("inside for => %s => %d : %d\n", $3->identifier, $5->value, $7->value);
+                      printf("inside for => %s => %d : %d\n", $3->identifier, $6->value, $8->value);
                   }
                   ;
 
