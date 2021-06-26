@@ -31,11 +31,10 @@
 #define _OPR_ASSIGNMENT " = " 
 
 #define _DT_INT_ "int"
-#define _DT_BOOL_ "bool"
 #define _DT_VOID_ "void"
 
 #define TEST "#include<stdio.h>\n\nvoid digital_write(int pin, int value)\n{\n    printf(\"digital_write called with pin %d and value %d\\n\", pin, value);\n}\n\nint digital_read(int pin)\n{\n    printf(\"digital_read called with pin %d\\n\", pin);\n    return 0;\n}\n\nvoid start_counter()\n{\n    printf(\"start_counter called\\n\");\n}\n\nvoid stop_counter()\n{\n    printf(\"stop_counter called\\n\");\n}\n\nint read_counter()\n{\n    printf(\"read_counter called\\n\");\n    return 0;\n}\n\nvoid init_rpmsg()\n{\n    printf(\"init_rpmsg called\\n\");\n}\n\nvoid send_rpmsg(int data)\n{\n    printf(\"send_rpmsg called\\n\");\n}\n\nint receive_rpmsg()\n{\n    printf(\"receive_rpmsg called\\n\");\n    return 0;\n}\n"
-#define BEGIN "#include<stdio.h>\n#include <stdint.h>\n#include <pru_types.h>\n#include <stddef.h>\n#include <pru/io.h>\n\n"
+#define BEGIN "#include <stdint.h>\n#include <pru_types.h>\n#include <stddef.h>\n#include <pru/io.h>\n\n"
 #define MAIN "int main(void)\n{\n"
 #define END "\n\treturn 0;\n}\n"
 #define DIGITAL_WRITE "void digital_write(int pin, int value)\n{\n\tif(value == 0) write_r30(read_r31()|0);\n\telse write_r30(read_r31()|((uint32_t) 1 << (pin%32)));\n}\n\n"
