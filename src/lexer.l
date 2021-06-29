@@ -19,7 +19,7 @@ whitespace           (\t|" "|\r)
 newline              (\n)
 braces               ("{"|"}")
 parenthesis          ("("|")")
-integer              ([0-9]+)
+integer              ([0-9]+|(("0x"|"0X")[a-fA-F0-9]+))
 bool                 ("true"|"false")
 string               (\"(\\.|[^"\\])*\")
 datatype             ("int"|"bool")
@@ -85,7 +85,8 @@ comma                ([,])
 }
 
 {integer}               {
-  yylval.integer = atoi(yytext);
+  /*octal if first digit is 0, hexadecimal if first two characters are 0x or 0X, decimal otherwise*/
+  yylval.integer = strtol(yytext, NULL, 0);
   return CONST_INT;
 }
 

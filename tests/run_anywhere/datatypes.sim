@@ -17,3 +17,12 @@ if: (a == 2) {
 if: b {
     println("true");
 }
+
+int c := 0xF;
+int d := 0x123A8F;
+int e := 0XF1;
+int f := c - e;
+println(c);
+println(d);
+println(e);
+println(f);
