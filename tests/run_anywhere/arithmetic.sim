@@ -25,3 +25,18 @@ int p := 11 % 3;
 int q := 5 % p;
 println(p);
 println(q);
+
+int m := 0x1;
+int n := m << 2;
+println(n);
+n := n >> 1;
+println(n);
+
+int aa := 2 * 6 << 2 + 1;
+int bb := 23 & 45 + 190 % 7 - 23 | 14;
+int cc := ~0xFFFFFFFF;
+int dd := (7 + 8 * 6 / 2 ) % 5 * (8 - 1 + (6 & 3) | 7 & 2 ) | 23 % 12;
+println(aa);
+println(bb);
+println(cc);
+println(dd);
