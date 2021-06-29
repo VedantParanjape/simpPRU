@@ -53,14 +53,20 @@ ast_node *ast = NULL;
 
 %left LPAREN RPAREN
 
+%left OPR_LGL_OR
+%left OPR_LGL_AND
+
+%left OPR_BW_OR
+%left OPR_BW_AND
+
+%left OPR_EQ OPR_NE
+%left OPR_GT OPR_LT OPR_GE OPR_LE
+
+%left OPR_BW_LFT OPR_BW_RGT
 %left OPR_ADD OPR_SUB
 %left OPR_MUL OPR_DIV OPR_MOD
 
-%left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_GE OPR_LE
-
-%left OPR_BW_NOT OPR_BW_AND OPR_BW_OR
-
-%left OPR_LGL_NOT OPR_LGL_AND OPR_LGL_OR
+%right OPR_BW_NOT OPR_LGL_NOT
 
 %token OPR_ASSIGNMENT
 
@@ -91,7 +97,7 @@ ast_node *ast = NULL;
 %type <compound_statement> statement_list compound_statement conditional_statement_else
 %type <declaration> declaration declaration_assignment
 %type <assignment> assignment
-%type <expression> bool_expressions arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
+%type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -265,7 +271,7 @@ declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression S
 
                printf ("%s := %d\n", $2->identifier, $2->value);
             }
-            | DT_BOOL IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
+            | DT_BOOL IDENTIFIER OPR_ASSIGNMENT boolean_expression SEMICOLON {
                if ($2 == NULL)
                {
                    yyerror("variable already defined");
@@ -301,7 +307,7 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
 
                printf("%s := %d\n", $1->identifier, $1->value);
             }
-            | BOOL_IDENTIFIER OPR_ASSIGNMENT bool_expressions SEMICOLON {
+            | BOOL_IDENTIFIER OPR_ASSIGNMENT boolean_expression SEMICOLON {
                 if ($1 == NULL)
                 {
                     yyerror("variable already defined");
@@ -324,17 +330,6 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                printf("%s := %d\n", $1->identifier, $1->value);
             }
             ;
-            
-bool_expressions: boolean_expression {
-                    $$ = $1;
-                }
-                | relational_expression {
-                    $$ = $1;
-                }
-                | logical_expression {
-                    $$ = $1;
-                }
-                ;
 
 arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, $1, NULL, NULL);
@@ -365,6 +360,18 @@ arithmetic_expression: CONST_INT {
           | recv_rpmsg_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_RECV_RPMSG_CALL, 1, (ast_node*)$1, NULL);
           }
+          | arithmetic_expression OPR_BW_OR arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_OR, $1->value | $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
+          | arithmetic_expression OPR_BW_AND arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
+          | arithmetic_expression OPR_BW_LFT arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_LFT, $1->value << $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
+          | arithmetic_expression OPR_BW_RGT arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_RGT, $1->value >> $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
           | arithmetic_expression OPR_ADD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_ADD, $1->value + $3->value, (ast_node*)$1, (ast_node*)$3);
           } 
@@ -383,6 +390,9 @@ arithmetic_expression: CONST_INT {
           }
           | arithmetic_expression OPR_MOD arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_MOD, $1->value % $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
+          | OPR_BW_NOT arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_NOT, ~ $2->value, NULL, (ast_node*)$2);
           }
           | OPR_SUB arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, -1*$2->value, NULL, (ast_node*)$2);
@@ -418,15 +428,11 @@ boolean_expression: CONST_BOOL {
           | digital_read_call {
               $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_DIGITAL_READ_CALL, 0, (ast_node*)$1, NULL);
           }
-          | OPR_BW_NOT boolean_expression {
-              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_NOT, $2->value ? 0 : 1, NULL, (ast_node*)$2);
-
+          | relational_expression {
+              $$ = $1;
           }
-          | boolean_expression OPR_BW_AND boolean_expression {
-              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
-          } 
-          | boolean_expression OPR_BW_OR boolean_expression {
-              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_OPR_BW_OR, $1->value | $3->value, (ast_node*)$1, (ast_node*)$3);
+          | logical_expression {
+              $$ = $1;
           }
           | LPAREN boolean_expression RPAREN {
               $$ = $2;
@@ -451,33 +457,27 @@ relational_expression: arithmetic_expression OPR_GT arithmetic_expression {
           | arithmetic_expression OPR_LE arithmetic_expression {
               $$ = create_expression_node(AST_NODE_RELATIONAL_EXP, AST_OPR_LE, $1->value <= $3->value, (ast_node*)$1, (ast_node*)$3);
           }
-          | LPAREN relational_expression RPAREN {
-              $$ = $2;
-          } 
           ;
 
 
-logical_expression: OPR_LGL_NOT bool_expressions {
+logical_expression: OPR_LGL_NOT boolean_expression {
               $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_NOT, $2->value ? 0 : 1, NULL, (ast_node*)$2);
           } 
-          | bool_expressions OPR_LGL_AND bool_expressions {
+          | boolean_expression OPR_LGL_AND boolean_expression {
               $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
           }
-          | bool_expressions OPR_LGL_OR bool_expressions {
+          | boolean_expression OPR_LGL_OR boolean_expression {
               $$ = create_expression_node(AST_NODE_LOGICAL_EXP, AST_OPR_LGL_OR, $1->value | $3->value, (ast_node*)$1, (ast_node*)$3);
-          }
-          | LPAREN logical_expression RPAREN {
-              $$ = $2;
           }
           ;
 
-conditional_statement: KW_IF COLON bool_expressions compound_statement conditional_statement_else_if conditional_statement_else {
+conditional_statement: KW_IF COLON boolean_expression compound_statement conditional_statement_else_if conditional_statement_else {
                           printf("inside if\n");
                           $$ = create_conditional_if_node($3, $4, $5, $6);
                      }
                      ;  
 
-conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON bool_expressions compound_statement {
+conditional_statement_else_if: conditional_statement_else_if KW_ELIF COLON boolean_expression compound_statement {
                                  printf("inside else if\n");
                                  $$ = add_else_if_node($1, $4, $5);
                              }
@@ -505,7 +505,7 @@ loop_statement_for: KW_FOR COLON IDENTIFIER {
                   }
                   ;
 
-loop_statement_while: KW_WHILE COLON bool_expressions compound_statement {
+loop_statement_while: KW_WHILE COLON boolean_expression compound_statement {
                       printf("inside while\n");
                       $$ = create_loop_while_node($3, $4);
                     }
@@ -616,7 +616,7 @@ parameter: DT_INT IDENTIFIER {
          }
          ;
 
-return_statement: KW_RETURN bool_expressions SEMICOLON {
+return_statement: KW_RETURN boolean_expression SEMICOLON {
                     $$ = $2;
                 }
                 | KW_RETURN arithmetic_expression SEMICOLON {
@@ -718,7 +718,7 @@ digital_read_call: KW_DIGITAL_READ LPAREN arithmetic_expression RPAREN {
                      }
                      ;
 
-digital_write_call: KW_DIGITAL_WRITE LPAREN arithmetic_expression COMMA bool_expressions RPAREN {
+digital_write_call: KW_DIGITAL_WRITE LPAREN arithmetic_expression COMMA boolean_expression RPAREN {
                     $$ = create_digital_write_call_node($3, $5);
                   }
                   ;
