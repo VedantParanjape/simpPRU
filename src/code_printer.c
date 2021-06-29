@@ -151,6 +151,10 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
                 case AST_OPR_DIV:
                     fprintf(handle, "%s", _OPR_DIV);
                     break;     
+                
+                case AST_OPR_MOD:
+                    fprintf(handle, "%s", _OPR_MOD);
+                    break;
 
                 case AST_OPR_GT:
                     fprintf(handle, "%s", _OPR_GT);

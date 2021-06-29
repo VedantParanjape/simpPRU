@@ -25,7 +25,7 @@ string               (\"(\\.|[^"\\])*\")
 datatype             ("int"|"bool")
 conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
-arithmetic_operators ("+"|"-"|"*"|"/")
+arithmetic_operators ("+"|"-"|"*"|"/"|"%")
 relational_operators (">"|">="|"<"|"<="|"=="|"!=")
 bitwise_operators    ("~"|"&"|"|")
 logical_operators    ("not"|"and"|"or")
@@ -177,6 +177,10 @@ comma                ([,])
   else if (!strcmp(yytext,"/"))
   {
     return OPR_DIV;
+  }
+  else if (!strcmp(yytext, "%"))
+  {
+    return OPR_MOD;
   }
 }
 

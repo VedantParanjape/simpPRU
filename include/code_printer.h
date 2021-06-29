@@ -13,6 +13,7 @@
 #define _OPR_SUB " - " 
 #define _OPR_MUL " * " 
 #define _OPR_DIV " / " 
+#define _OPR_MOD " % "
 
 #define _OPR_GT " > "  
 #define _OPR_LT " < " 

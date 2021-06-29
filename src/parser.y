@@ -54,7 +54,7 @@ ast_node *ast = NULL;
 %left LPAREN RPAREN
 
 %left OPR_ADD OPR_SUB
-%left OPR_MUL OPR_DIV
+%left OPR_MUL OPR_DIV OPR_MOD
 
 %left OPR_GT OPR_LT OPR_EQ OPR_NE OPR_GE OPR_LE
 
@@ -380,6 +380,9 @@ arithmetic_expression: CONST_INT {
                   yyerror("division by 0");
               }
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_DIV, $1->value / $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
+          | arithmetic_expression OPR_MOD arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_MOD, $1->value % $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | OPR_SUB arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, -1*$2->value, NULL, (ast_node*)$2);

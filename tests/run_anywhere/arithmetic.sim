@@ -12,3 +12,16 @@ if: 2 == 2 {
     print(e);
 }
 println("");
+
+int x := 4 * 2;
+int y := x + 10;
+x := 19;
+int z := x + y * x;
+println(x);
+println(y);
+println(z);
+
+int p := 11 % 3;
+int q := 5 % p;
+println(p);
+println(q);
