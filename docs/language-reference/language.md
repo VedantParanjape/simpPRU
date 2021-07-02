@@ -13,7 +13,7 @@
 
 ## Constants
 
-* `<any_integer>` - Integer constant
+* `<any_integer>` - Integer constant. Integers can be decimal, hexadecimal (start with 0x or 0X) or octal (start with 0)
 * `true` - Boolean constant (True)
 * `false` - Boolean constant (False)
 * `Px_yz` - Pin mapping constants are Integer constant, where x is 1,2 or 8,9 and yz are the header pin numbers. For further details refer to [this](io.md)
@@ -22,24 +22,17 @@
 
 * `{`,`}` - Braces
 * `(`,`)` - Parenthesis
-* `/`,`*`,`+`,`-` - Arithmetic operators
+* `/`,`*`,`+`,`-`,`%` - Arithmetic operators
 * `>`,`<`,`==`,`!=`,`>=`,`<=` - Comparison operators
-* `~`,`&`,`|` - Bitwise operators: not, and, or
+* `~`,`&`,`|`,`<<`,`>>` - Bitwise operators: not, and, or and bitshifts
 * `not`,`and`,`or` - Logical operators: not, and, or
 * `:=` - Assignment operator
 
-***Bitwise operators*** and ***Logical operators*** cannot be interchangeably used.
-
-```cpp
-Correct: bool test := true & false | (false and true);
-Wrong:   bool test := true & false | false and true;
-```
-
-* Result of Arithmetic operator is Integer constant.
-* Result of Comparison, Bitwise and Logical operators is Boolean constant.
-* Only Integer constants can be used with Arithmetic operators.
+* Result of Arithmetic and Bitwise operators is Integer constant.
+* Result of Comparison and Logical operators is Boolean constant.
+* Only Integer constants can be used with Arithmetic and Bitwise operators.
 * Only Integer constants can be used with Comparison operators.
-* Only Boolean constants can be used with Bitwise and Logical operators.
+* Only Boolean constants can be used with Logical operators.
 
 ```cpp
 Correct: bool out := 5 > 6;
@@ -106,7 +99,7 @@ multiple lines */
 | **`elif`** | **`continue`** | **`break`** |
 | **`else`** | **`while`** | **`in`** |
 | **`for`** | **`init_message_channel`** | **`send_message`** |
-| **`receive_message`** | | |
+| **`receive_message`** | **`print`** | **`println`** |
 
 ### Valid identifier naming
 
@@ -129,35 +122,23 @@ Detailed info: [https://www.includehelp.com/c/identifier-variable-naming-convent
 
 ### Arithmetic expressions
 
-```cpp
-=> ((3+3)/2)
-=> 3
+```python
+int a := (9 + 8) * 2 + -1;
+int p := 11 % 3;
+int q := 5 % p;
+int x := 2 * 6 << 2 + 1;
+int y := ~0xFFFFFFFF;
 ```
 
 ### Boolean expressions
 
-```cpp
-=> (false & true) | ~false
-=> true
-
-=> (true and true) & (not false)
-=> true
-
-=> (3 > 4) and false
-=> false
-
-=> (4 != 3) & (false and true)
-=> false
-
-=> true
-=> true
-
-=> false
-=> false
+```python
+bool a := 9 > 2 or 8 != 2 and not( 2 >= 5 or 9 <= 5 ) or 9 != 7;
+bool b := 0xFFFFFFFF != 0XFFFFFFFF;
 ```
 
 !!! Note
-    Expressions are evaluated following the [operator precedence](#operators)
+    Expressions are evaluated following the [operator precedence](https://en.cppreference.com/w/c/language/operator_precedence)
 
 ## If-else statement
 
@@ -448,3 +429,28 @@ We will consider functions defined in earlier [subsection](#examples_5)
     example_func(false);
     example_func_v();
     ```
+
+### Testing or Debugging
+
+For testing or debugging code, use the --test or -t flag to enable print, println and stub functions. Use --preprocess to stop after generating the C code only. Then run the generated C code (at /tmp/temp.c) using `gcc`.
+
+#### Print functions
+
+print can take either a string (double quoted) or any `int` / `bool` identifier.
+
+println is similar to print but also prints a newline (`\n`).
+
+**Examples**
+
+```java
+print("Hello World!");
+int a := 2;
+print(a);
+a := a + 2;
+print(a);
+println("");
+```
+
+#### Stub functions
+
+PRU specific functions will be replaced by stub functions which print "function_name called with arguments arg_name" when called.
