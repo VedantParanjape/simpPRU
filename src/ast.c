@@ -197,7 +197,7 @@ ast_node_conditional_else_if *add_else_if_node(ast_node_conditional_else_if *par
     return parent;
 }
 
-ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_expression *start, ast_node_expression *end, ast_node_compound_statement *body)
+ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_expression *start, ast_node_expression *end, ast_node_expression *increment, ast_node_compound_statement *body)
 {
     ast_node_loop_for *loop_for = (ast_node_loop_for*)malloc(sizeof(ast_node_loop_for));
 
@@ -205,6 +205,11 @@ ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_expres
     loop_for->init = init;
     loop_for->start_condition = start;
     loop_for->end_condition = end;
+    if (!increment)
+    {
+        increment = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, 1, NULL, NULL);
+    }
+    loop_for->increment_condition = increment;
     loop_for->body = body;
 
     return loop_for;

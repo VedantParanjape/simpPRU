@@ -97,7 +97,7 @@ ast_node *ast = NULL;
 %type <compound_statement> statement_list compound_statement conditional_statement_else
 %type <declaration> declaration declaration_assignment
 %type <assignment> assignment
-%type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
+%type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes loop_statement_for_increment
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -497,13 +497,21 @@ conditional_statement_else: KW_ELSE compound_statement {
 
 loop_statement_for: KW_FOR COLON IDENTIFIER {
                       $3->data_type = DT_INTEGER;}                    
-                    KW_IN arithmetic_expression COLON arithmetic_expression compound_statement {
+                    KW_IN arithmetic_expression COLON arithmetic_expression loop_statement_for_increment compound_statement {
                       $3->value = $6->value;
-                      $$ = create_loop_for_node(create_variable_node(AST_DT_INT, $3), $6, $8, $9);
+                      $$ = create_loop_for_node(create_variable_node(AST_DT_INT, $3), $6, $8, $9, $10);
                       
                       printf("inside for => %s => %d : %d\n", $3->identifier, $6->value, $8->value);
                   }
                   ;
+
+loop_statement_for_increment: COLON arithmetic_expression {
+                        $$ = $2;
+                    }
+                    | /* empty */ {
+                        $$ = NULL;
+                    }
+                    ;
 
 loop_statement_while: KW_WHILE COLON boolean_expression compound_statement {
                       printf("inside while\n");
