@@ -38,3 +38,37 @@ for : i in 1:10 {
         }
     }
 }
+for : i in 0:11:2 {
+    if : i % 4 == 0 {
+        continue;
+    }
+    print(i);
+}
+println("");
+
+int itr := 2;
+for: j in 2:200 {
+    if: itr * itr == j {
+        print(itr);
+        itr := itr * itr;
+    }
+    else {
+        continue;
+    }
+}
+println("");
+
+int j;
+for: i in 100:0:-10 {
+    if: i%20 == 0 {
+        j := i / 20;
+        print(j);
+    }
+    else {
+        print(i);
+    }
+    if: (i == 30) {
+        break;
+    }
+}
+println("");
