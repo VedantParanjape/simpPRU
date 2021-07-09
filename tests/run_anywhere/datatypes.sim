@@ -26,3 +26,11 @@ println(c);
 println(d);
 println(e);
 println(f);
+
+char ch := 'a';
+println(ch);
+int chi := 65;
+ch := chi;
+println(ch);
+char ch2 := 66;
+println(ch2);
