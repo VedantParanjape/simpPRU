@@ -108,7 +108,7 @@ ast_node *ast = NULL;
 %type <function_def> function_definition 
 %type <param> parameter_list_def parameters
 %type <variable> parameter
-%type <function_call> int_function_call bool_function_call void_function_call 
+%type <function_call> int_function_call bool_function_call char_function_call void_function_call 
 %type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call 
 %type <util_function_call> init_rpmsg_call recv_rpmsg_call send_rpmsg_call 
 %type <print_string_function_call> print_string_call
@@ -184,6 +184,9 @@ statement: compound_statement {
              $$ = create_statement_node(AST_NODE_FUNC_CALL, (void*)$1);
          }
          | bool_function_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_FUNC_CALL, (void*)$1);
+         }
+         | char_function_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_FUNC_CALL, (void*)$1);
          }
          | void_function_call SEMICOLON {
@@ -420,6 +423,9 @@ arithmetic_expression: CONST_INT {
           | int_function_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
           }
+          | char_function_call {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
+          }
           | read_counter_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_READ_COUNTER_CALL, 1, (ast_node*)$1, NULL);
           }
@@ -634,6 +640,30 @@ function_definition: KW_DEF IDENTIFIER COLON DT_INT {
                        }
                        printf("func\n");
                    }
+                   | KW_DEF IDENTIFIER COLON DT_CHAR {
+                       if ($2 == NULL){yyerror("function name already defined");}
+                       temp = $2; temp->data_type = DT_CHAR_;} 
+                   COLON parameters compound_statement {
+                       if (vec_last(&$8->child_nodes)->node_type == AST_NODE_FUNC_RETURN)
+                       {
+                           $$ = create_function_def_node($2, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
+                       }
+                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type == DT_VOID_)
+                       {
+                           $$ = create_function_def_node($2, $7, $8, NULL);
+                       }
+                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type != DT_VOID_)
+                       {
+                           yyerror("return statement missing in a non void function");
+                       }
+                       temp = NULL;
+                       
+                       if (check_function_definition($$) == -1)
+                       {
+                          yyerror("return statement different from return type");
+                       }
+                       printf("func\n");
+                   }
                    | KW_DEF IDENTIFIER COLON DT_VOID {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_VOID_;} 
@@ -688,6 +718,12 @@ parameter: DT_INT IDENTIFIER {
             vec_push(&temp->params, $2);
 
             $$ = create_variable_node(AST_DT_BOOL, $2);
+         }
+         | DT_CHAR IDENTIFIER {
+            $2->data_type = DT_CHAR_;
+            vec_push(&temp->params, $2);
+
+            $$ = create_variable_node(AST_DT_CHAR, $2);
          }
          ;
 
@@ -745,6 +781,28 @@ bool_function_call: BOOL_IDENTIFIER LPAREN function_call_parameters RPAREN {
                 printf("function call\n");
              }
              ;
+
+char_function_call: CHAR_IDENTIFIER LPAREN function_call_parameters RPAREN {
+                    if ($1 != NULL)
+                    {
+                        if ($1->is_function != 1)
+                        {
+                            yyerror("not a function");
+                        }
+
+                        $$ = create_function_call_node($1, $3);
+                        if(check_function_call($$) == -1)
+                        {
+                            yyerror("wrong paramters for the function");
+                        }
+                    }
+                    else 
+                    {
+                        yyerror("function not defined");
+                    }
+                    printf("function call\n");
+                    }
+                ;
 
 void_function_call: VOID_IDENTIFIER LPAREN function_call_parameters RPAREN {
                 if ($1 != NULL)

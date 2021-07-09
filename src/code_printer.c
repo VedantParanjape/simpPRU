@@ -486,6 +486,10 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
                 fprintf(handle, "%s ", _DT_INT_);
                 break;
 
+            case DT_CHAR_:
+                fprintf(handle, "%s ", _DT_CHAR_);
+                break;
+
             case DT_VOID_:
                 fprintf(handle, "%s ", _DT_VOID_);
                 break;
@@ -503,6 +507,10 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
                     case DT_INTEGER:
                     case DT_BOOLEAN:
                         fprintf(handle, "%s ", _DT_INT_);
+                        break;
+
+                    case DT_CHAR_:
+                        fprintf(handle, "%s ", _DT_CHAR_);
                         break;
                 }
                 fprintf(handle, "%s", temp->symbol_entry->identifier);
