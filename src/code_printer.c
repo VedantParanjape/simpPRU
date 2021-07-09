@@ -101,12 +101,20 @@ void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
             {
                 fprintf(handle, "\t%s %s = 0;\n", "int", decl->symbol_entry->identifier);
             }
+            else if (decl->symbol_entry->data_type == DT_CHAR_)
+            {
+                fprintf(handle, "\t%s %s = 0;\n", "char", decl->symbol_entry->identifier);
+            }
         }
         else if (decl->expression != NULL)
         {
             if (decl->symbol_entry->data_type == DT_INTEGER || decl->symbol_entry->data_type == DT_BOOLEAN)
             {
                 fprintf(handle, "\t%s %s = ", "int", decl->symbol_entry->identifier);
+            }
+            else if (decl->symbol_entry->data_type == DT_CHAR_)
+            {
+                fprintf(handle, "\t%s %s = ", "char", decl->symbol_entry->identifier);
             }
             ast_expression_printer(decl->expression, handle);
             fprintf(handle, "%s", ";\n");
@@ -219,6 +227,11 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
         if (node->opt == AST_NODE_CONSTANT)
         {
             fprintf(handle, " %d ", node->value);
+        }
+
+        if (node->opt == AST_NODE_CONSTANT_CHAR)
+        {
+            fprintf(handle, " '%c' ", node->value);
         }
 
         if (node->opt == AST_NODE_VARIABLE)

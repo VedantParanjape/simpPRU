@@ -76,6 +76,7 @@ ast_node *ast = NULL;
 %token DT_INT
 %token DT_BOOL
 %token DT_VOID
+%token DT_CHAR
 
 %token KW_IF KW_ELIF KW_ELSE
 
@@ -87,11 +88,11 @@ ast_node *ast = NULL;
 %token KW_INIT_RPMSG KW_RECV_RPMSG KW_SEND_RPMSG
 %token KW_PRINT KW_PRINTLN
 
-%token <integer> CONST_INT
+%token <integer> CONST_INT CONST_CHAR
 %token <boolean> CONST_BOOL
 %token <string> CONST_STRING
 
-%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER
+%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER CHAR_IDENTIFIER
 
 %type <node> translation_unit program
 %type <statements> statement
@@ -259,6 +260,15 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
 
                printf ("bool %s ;\n", $2->identifier);
            }
+           | DT_CHAR IDENTIFIER SEMICOLON {
+               if ($2 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+
+               $2->data_type = DT_CHAR_;
+               $$ = create_declaration_node($2, NULL);
+           }
            ;
         
 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
@@ -284,6 +294,18 @@ declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression S
                $$ = create_declaration_node($2, $4);
 
                printf ("%s := %d\n", $2->identifier, $2->value);
+            }
+            | DT_CHAR IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+                if ($2 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                $2->data_type = DT_CHAR_;
+                $2->value = $4->value;
+                $$ = create_declaration_node($2, $4);
+
+                printf("%s := %c\n", $2->identifier, $2->value);
             }
             ;
 
@@ -331,10 +353,35 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
 
                printf("%s := %d\n", $1->identifier, $1->value);
             }
+            | CHAR_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_CHAR_;
+                $1->value = $3->value;
+                $$ = create_assignment_node($1, $3);
+
+                printf("%s := %c\n", $1->identifier, $1->value);
+            }
             ;
 
 arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, $1, NULL, NULL);
+          }
+          | CONST_CHAR {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT_CHAR, $1, NULL, NULL);
           }
           | INT_IDENTIFIER {
               if ($1 != NULL)
@@ -347,12 +394,29 @@ arithmetic_expression: CONST_INT {
                   {
                       yyerror("variable undefined");
                   }
-                  else
+                  else if ($1->data_type == DT_BOOLEAN)
                   {
-                      yyerror("bool variable not allowed with int");
+                      yyerror("bool variable not allowed with int/char");
                   }
               }
           } 
+          | CHAR_IDENTIFIER {
+              if ($1 != NULL)
+              {
+                  if ($1->data_type == DT_CHAR_)
+                  {
+                      $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_VARIABLE, $1->value, (ast_node*)create_variable_node(DT_CHAR_, $1), NULL);
+                  }
+                  else if ($1->data_type == DT_UNDEF)
+                  {
+                      yyerror("variable undefined");
+                  }
+                  else if ($1->data_type == DT_BOOLEAN)
+                  {
+                      yyerror("bool variable not allowed with int/char");
+                  }
+              }
+          }
           | int_function_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
           }
@@ -788,10 +852,16 @@ print_id_call:  KW_PRINT LPAREN INT_IDENTIFIER RPAREN {
                 | KW_PRINT LPAREN BOOL_IDENTIFIER RPAREN {
                     $$ = create_print_id_function_call_node($3, 0);
                 }
+                | KW_PRINT LPAREN CHAR_IDENTIFIER RPAREN {
+                    $$ = create_print_id_function_call_node($3, 0);
+                }
                 | KW_PRINTLN LPAREN INT_IDENTIFIER RPAREN {
                     $$ = create_print_id_function_call_node($3, 1);
                 }
                 | KW_PRINTLN LPAREN BOOL_IDENTIFIER RPAREN {
+                    $$ = create_print_id_function_call_node($3, 1);
+                }
+                | KW_PRINTLN LPAREN CHAR_IDENTIFIER RPAREN {
                     $$ = create_print_id_function_call_node($3, 1);
                 }
                 ;
