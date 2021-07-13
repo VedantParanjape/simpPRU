@@ -444,7 +444,6 @@ ast_node_print_string_function_call *create_print_string_function_call_node(char
 
     print_function_call->node_type = AST_NODE_PRINT_STRING_FUNCTION_CALL;
     print_function_call->add_newline = add_newline;
-    
     print_function_call->string = string;
 
     return print_function_call;
@@ -456,7 +455,6 @@ ast_node_print_id_function_call *create_print_id_function_call_node(sym_ptr symb
 
     print_function_call->node_type = AST_NODE_PRINT_ID_FUNCTION_CALL;
     print_function_call->add_newline = add_newline;
-    
     print_function_call->symbol_handle = symbol_handle;
 
     return print_function_call;
