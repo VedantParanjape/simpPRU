@@ -16,7 +16,7 @@ jobs:
             - name: postconfig
               run: |
                 amd64__filename__=$(echo $(ls build | grep ..amd64.deb) | tr -d '\n')
-                echo "::set-env name=amd64__filename__::$amd64__filename__"
+                echo "amd64__filename__=$amd64__filename__" >> $GITHUB_ENV
             - name: upload amd64 package to artifacts
               uses: actions/upload-artifact@v2
               with:
@@ -36,7 +36,7 @@ jobs:
             - name: postconfig
               run: |
                 arm32__filename__=$(echo $(ls build | grep ..armhf.deb) | tr -d '\n')
-                echo "::set-env name=arm32__filename__::$arm32__filename__"
+                echo "arm32__filename__=$arm32__filename__" >> $GITHUB_ENV
             - name: upload arm32 package to artifacts
               uses: actions/upload-artifact@v2
               with:
@@ -66,10 +66,10 @@ jobs:
                 foo_filename_=$(echo $(ls ${{steps.amd64-artifact-download.outputs.download-path}} | grep ..amd64.deb) | tr -d '\n');version__name__=${foo_filename_#*-};version__=$(echo ${version__name__%-*} | tr -d '\n')   
                 arm32__filename__=$(echo $(ls ${{steps.amd64-artifact-download.outputs.download-path}} | grep ..armhf.deb) | tr -d '\n')
                 amd64__filename__=$(echo $(ls ${{steps.amd64-artifact-download.outputs.download-path}} | grep ..amd64.deb) | tr -d '\n')
-                echo "::set-env name=name__::$name__"
-                echo "::set-env name=version__::$version__"
-                echo "::set-env name=arm32__filename__::$arm32__filename__"
-                echo "::set-env name=amd64__filename__::$amd64__filename__" 
+                echo "name__=$name__" >> $GITHUB_ENV
+                echo "version__=$version__" >> $GITHUB_ENV
+                echo "arm32__filename__=$arm32__filename__" >> $GITHUB_ENV
+                echo "amd64__filename__=$amd64__filename__" >> $GITHUB_ENV 
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
