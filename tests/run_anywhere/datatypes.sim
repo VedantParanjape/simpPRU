@@ -1,0 +1,19 @@
+int a;
+bool b;
+if: a == 0 {
+    println("Initialized by default to 0");
+}
+if: not b  {
+    println("Initialized by default to false");
+}
+a := 2;
+if: (a == 2) {
+    println("Now 2");
+}
+if: (a == 2) {
+    println("Still 2");
+    b := true;
+}
+if: b {
+    println("true");
+}

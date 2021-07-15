@@ -1,0 +1,16 @@
+int a := 3;
+bool b := false;
+
+if: a == 3 and not b {
+    println("inside if");
+}
+
+if: a > 3 {
+    println("should not be printed");
+}
+elif: a == 3 {
+    println("should be printed");
+}
+else {
+    println("should not be printed");
+}
