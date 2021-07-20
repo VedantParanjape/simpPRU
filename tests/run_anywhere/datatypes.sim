@@ -34,3 +34,6 @@ ch := chi;
 println(ch);
 char ch2 := 66;
 println(ch2);
+uint8 byte := 8;
+int integer := byte;
+println(integer);

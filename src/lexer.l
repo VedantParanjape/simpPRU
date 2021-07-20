@@ -25,7 +25,7 @@ integer              ([0-9]+|(("0x"|"0X")[a-fA-F0-9]+))
 bool                 ("true"|"false")
 char                 ("'"([ -~]|\t|\n|\r|\0)"'")
 string               (\"(\\.|[^"\\])*\")
-datatype             ("int"|"bool"|"char")
+datatype             ("int"|"bool"|"char"|"uint8")
 conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
 arithmetic_operators ("+"|"-"|"*"|"/"|"%")
@@ -142,6 +142,10 @@ comma                ([,])
     return DT_BOOL;
   }
   else if (!strcmp(yytext, "char"))
+  {
+    return DT_CHAR;
+  }
+  else if (!strcmp(yytext, "uint8"))
   {
     return DT_CHAR;
   }
