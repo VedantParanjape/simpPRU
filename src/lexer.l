@@ -21,6 +21,7 @@ whitespace           (\t|" "|\r)
 newline              (\n)
 braces               ("{"|"}")
 parenthesis          ("("|")")
+squares              ("["|"]")
 integer              ([0-9]+|(("0x"|"0X")[a-fA-F0-9]+))
 bool                 ("true"|"false")
 char                 ("'"([ -~]|\t|\n|\r|\0)"'")
@@ -98,6 +99,17 @@ comma                ([,])
   else if (!strcmp(yytext, ")"))
   {
     return RPAREN;
+  }
+}
+
+{squares}               {
+  if (!strcmp(yytext, "["))
+  {
+    return LSQUARE;
+  }
+  else if (!strcmp(yytext, "]"))
+  {
+    return RSQUARE;
   }
 }
 
@@ -414,6 +426,18 @@ comma                ([,])
     else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_CHAR_)
     {
       return CHAR_IDENTIFIER;
+    }
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_INT_ARR)
+    {
+      return INT_ARR_IDENTIFIER;
+    }
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_CHAR_ARR)
+    {
+      return CHAR_ARR_IDENTIFIER;
+    }
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_BOOL_ARR)
+    {
+      return BOOL_ARR_IDENTIFIER;
     }
   }
 

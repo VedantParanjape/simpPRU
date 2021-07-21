@@ -52,7 +52,9 @@
 
 void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle, int is_func_def);
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);
+void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE* handle);
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle);
+void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE *handle);
 void ast_expression_printer(ast_node_expression *node, FILE* handle);
 void ast_conditional_if_printer(ast_node_conditional_if *node, FILE* handle);
 void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle);

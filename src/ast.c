@@ -32,8 +32,16 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.declaration = child;
             break;    
         
+        case AST_NODE_ARRAY_DECLARATION:
+            stmt->child_nodes.array_declaration = child;
+            break;
+        
         case AST_NODE_ASSIGNMENT:
             stmt->child_nodes.assignment = child;
+            break;
+
+        case AST_NODE_ARRAY_ASSIGNMENT:
+            stmt->child_nodes.array_assignment = child;
             break;
         
         case AST_NODE_CONDITIONAL_IF:
@@ -113,6 +121,19 @@ ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expressio
     return decl;
 }
 
+ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string)
+{
+    printf("create declaration node called\n");
+    ast_node_array_declaration *decl = (ast_node_array_declaration*)malloc(sizeof(ast_node_array_declaration));
+
+    decl->node_type = AST_NODE_ARRAY_DECLARATION;
+    decl->initial_string = initial_string;
+    decl->size = size;
+    decl->symbol_entry = symbol;
+
+    return decl;
+}
+
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp)
 {
     ast_node_assignment *assgn = (ast_node_assignment*)malloc(sizeof(ast_node_assignment));
@@ -122,6 +143,19 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
     assgn->symbol_entry = symbol;
 
     return assgn;
+}
+
+ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp)
+{
+    printf("create assignment node called\n");
+    ast_node_array_assignment *assign = (ast_node_array_assignment*)malloc(sizeof(ast_node_array_assignment));
+
+    assign->node_type = AST_NODE_ARRAY_ASSIGNMENT;
+    assign->expression = exp;
+    assign->index = index;
+    assign->symbol_entry = symbol;
+
+    return assign;
 }
 
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right)
@@ -524,8 +558,16 @@ void ast_node_type(int node_type)
             printf("ast declaration");
             break;
 
+        case AST_NODE_ARRAY_DECLARATION:
+            printf("ast array declaration");
+            break;
+
         case AST_NODE_ASSIGNMENT:
             printf("ast assignment");
+            break;
+
+        case AST_NODE_ARRAY_ASSIGNMENT:
+            printf("ast array assignment");
             break;
 
         case AST_NODE_ARITHMETIC_EXP:
@@ -550,6 +592,10 @@ void ast_node_type(int node_type)
 
         case AST_NODE_CONSTANT:
             printf("ast constant");
+            break;
+
+        case AST_NODE_CONSTANT_CHAR:
+            printf("ast_constant_char");
             break;
 
         case AST_NODE_VARIABLE:

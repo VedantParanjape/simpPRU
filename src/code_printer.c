@@ -20,9 +20,17 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
             case AST_NODE_DECLARATION:
                 ast_declaration_printer(((ast_node_statements*)temp)->child_nodes.declaration, handle);
                 break;
+
+            case AST_NODE_ARRAY_DECLARATION:
+                ast_array_declaration_printer(((ast_node_statements*)temp)->child_nodes.array_declaration, handle);
+                break;
             
             case AST_NODE_ASSIGNMENT:
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
+                break;
+
+            case AST_NODE_ARRAY_ASSIGNMENT:
+                ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
             
             case AST_NODE_CONDITIONAL_IF:
@@ -123,6 +131,39 @@ void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
     }
 }
 
+void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE *handle)
+{
+    printf("ast_declaration printer called\n");
+    if (decl != NULL && handle != NULL)
+    {
+        if (decl->initial_string == NULL)
+        {
+            if (decl->symbol_entry->data_type == DT_INT_ARR || decl->symbol_entry->data_type == DT_BOOL_ARR)
+            {
+                fprintf(handle, "\t%s %s[", "int", decl->symbol_entry->identifier);
+                ast_expression_printer(decl->size, handle);
+                fprintf(handle, "];\n");
+            }
+            else if (decl->symbol_entry->data_type == DT_CHAR_ARR)
+            {
+                fprintf(handle, "\t%s %s[", "char", decl->symbol_entry->identifier);
+                ast_expression_printer(decl->size, handle);
+                fprintf(handle, "];\n");
+            }
+        }
+        else
+        {
+            fprintf(handle, "\t%s %s[", "char", decl->symbol_entry->identifier);
+            ast_expression_printer(decl->size, handle);
+            fprintf(handle, "] = %s;\n", decl->initial_string);
+        }
+    }
+    else
+    {
+        printf("NULL!!\n");
+    }
+}
+
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle)
 {
     if (assg != NULL && handle != NULL)
@@ -132,6 +173,19 @@ void ast_assignment_printer(ast_node_assignment *assg, FILE* handle)
         fprintf(handle, "%s", ";\n");
     }
     
+}
+
+void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handle)
+{
+    printf("ast_assignment_printer called\n");
+    if (assign != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s[", assign->symbol_entry->identifier);
+        ast_expression_printer(assign->index, handle);
+        fprintf(handle, "] = ");
+        ast_expression_printer(assign->expression, handle);
+        fprintf(handle, ";\n");
+    }
 }
 
 void ast_expression_printer(ast_node_expression* node, FILE* handle)
@@ -584,9 +638,17 @@ int code_printer(ast_node* ast, int pru_id, int test)
             case AST_NODE_DECLARATION:
                 ast_declaration_printer(((ast_node_statements*)temp)->child_nodes.declaration, handle);
                 break;
+
+            case AST_NODE_ARRAY_DECLARATION:
+                ast_array_declaration_printer(((ast_node_statements*)temp)->child_nodes.array_declaration, handle);
+                break;
             
             case AST_NODE_ASSIGNMENT:
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
+                break;
+            
+            case AST_NODE_ARRAY_ASSIGNMENT:
+                ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
             
             case AST_NODE_CONDITIONAL_IF:
