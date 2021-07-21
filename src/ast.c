@@ -123,7 +123,6 @@ ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expressio
 
 ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string)
 {
-    printf("create declaration node called\n");
     ast_node_array_declaration *decl = (ast_node_array_declaration*)malloc(sizeof(ast_node_array_declaration));
 
     decl->node_type = AST_NODE_ARRAY_DECLARATION;
@@ -147,7 +146,6 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
 
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp)
 {
-    printf("create assignment node called\n");
     ast_node_array_assignment *assign = (ast_node_array_assignment*)malloc(sizeof(ast_node_array_assignment));
 
     assign->node_type = AST_NODE_ARRAY_ASSIGNMENT;
@@ -156,6 +154,17 @@ ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node
     assign->symbol_entry = symbol;
 
     return assign;
+}
+
+ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index)
+{
+    ast_node_array_access *access = (ast_node_array_access*)malloc(sizeof(ast_node_array_access));
+
+    access->node_type = AST_NODE_ARRAY_ACCESS;
+    access->index = index;
+    access->symbol_entry = symbol;
+
+    return access;
 }
 
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right)

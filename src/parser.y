@@ -34,6 +34,7 @@ ast_node *ast = NULL;
     struct ast_node_array_declaration *array_declaration;
     struct ast_node_assignment *assignment;
     struct ast_node_array_assignment *array_assignment;
+    struct ast_node_array_access *array_access;
     struct ast_node_expression *expression;
     struct ast_node_range_expression *range_expression;
     struct ast_node_constant *constant;
@@ -107,6 +108,7 @@ ast_node *ast = NULL;
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
+%type <array_access> arithmetic_array_access boolean_array_access
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -497,6 +499,67 @@ array_assignment: INT_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE OPR_A
                 }
                 ;
 
+arithmetic_array_access: INT_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_INT_ARR;
+                $$ = create_array_access_node($1, $3);
+            }
+            | CHAR_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_CHAR_ARR;
+                $$ = create_array_access_node($1, $3);
+            }
+            ;
+
+boolean_array_access: BOOL_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_BOOL_ARR;
+                $$ = create_array_access_node($1, $3);
+            }
+            ;
+
 arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, $1, NULL, NULL);
           }
@@ -536,6 +599,9 @@ arithmetic_expression: CONST_INT {
                       yyerror("bool variable not allowed with int/char");
                   }
               }
+          }
+          | arithmetic_array_access {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_ARRAY_ACCESS, 0, (ast_node*)$1, NULL);
           }
           | int_function_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
@@ -610,6 +676,9 @@ boolean_expression: CONST_BOOL {
                       yyerror("int variable not allowed with bool");
                   }
               }
+          }
+          | boolean_array_access {
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_ARRAY_ACCESS, 0, (ast_node*)$1, NULL);
           }
           | bool_function_call {
               $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);

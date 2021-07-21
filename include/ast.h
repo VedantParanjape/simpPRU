@@ -15,6 +15,7 @@
 #define AST_NODE_ARRAY_DECLARATION   2000
 #define AST_NODE_ASSIGNMENT          7
 #define AST_NODE_ARRAY_ASSIGNMENT    2001
+#define AST_NODE_ARRAY_ACCESS        2002
 #define AST_NODE_ARITHMETIC_EXP      8
 #define AST_NODE_BOOLEAN_EXP         9
 #define AST_NODE_RELATIONAL_EXP      10
@@ -94,6 +95,7 @@ struct ast_node_declaration;
 struct ast_node_array_declaration;
 struct ast_node_assignment;
 struct ast_node_array_assignment;
+struct ast_node_array_access;
 struct ast_node_expression;
 struct ast_node_range_expression;
 struct ast_node_constant;
@@ -118,6 +120,7 @@ typedef struct ast_node_declaration ast_node_declaration;
 typedef struct ast_node_array_declaration ast_node_array_declaration;
 typedef struct ast_node_assignment ast_node_assignment;
 typedef struct ast_node_array_assignment ast_node_array_assignment;
+typedef struct ast_node_array_access ast_node_array_access;
 typedef struct ast_node_expression ast_node_expression;
 typedef struct ast_node_range_expression ast_node_range_expression;
 typedef struct ast_node_constant ast_node_constant;
@@ -203,6 +206,14 @@ struct ast_node_array_assignment
     sym_ptr symbol_entry;
     ast_node_expression *index;
     ast_node_expression *expression;
+};
+
+struct ast_node_array_access
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *index;
 };
 
  struct ast_node_expression
@@ -346,6 +357,7 @@ ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expressio
 ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp);
+ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index);
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right);
 ast_node_range_expression *create_range_expression_node(ast_node_expression *start, ast_node_expression *stop, ast_node_expression *increment);
 ast_node_constant *create_constant_node(int data_type, int value);

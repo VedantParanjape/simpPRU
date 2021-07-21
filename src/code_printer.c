@@ -133,7 +133,6 @@ void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
 
 void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE *handle)
 {
-    printf("ast_declaration printer called\n");
     if (decl != NULL && handle != NULL)
     {
         if (decl->initial_string == NULL)
@@ -177,7 +176,6 @@ void ast_assignment_printer(ast_node_assignment *assg, FILE* handle)
 
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handle)
 {
-    printf("ast_assignment_printer called\n");
     if (assign != NULL && handle != NULL)
     {
         fprintf(handle, "\t%s[", assign->symbol_entry->identifier);
@@ -185,6 +183,16 @@ void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handl
         fprintf(handle, "] = ");
         ast_expression_printer(assign->expression, handle);
         fprintf(handle, ";\n");
+    }
+}
+
+void ast_array_access_printer(ast_node_array_access *access, FILE* handle)
+{
+    if (access != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s[", access->symbol_entry->identifier);
+        ast_expression_printer(access->index, handle);
+        fprintf(handle, "]");
     }
 }
 
@@ -299,6 +307,11 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
                 fprintf(handle, " %s ", ((ast_node_variable*)node->left)->symbol_entry->identifier);
             }
             
+        }
+
+        if (node->opt == AST_NODE_ARRAY_ACCESS)
+        {
+            ast_array_access_printer((ast_node_array_access*)node->left, handle);
         }
 
         if (node->opt == AST_NODE_FUNC_CALL)
