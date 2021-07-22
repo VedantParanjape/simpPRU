@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
     build_simppru_job:
         runs-on: ubuntu-latest
-        name: This will build simppru using autotools on arm32 machine
+        name: This will build simppru on arm32 machine
         steps: 
             - name: Checkout
               uses: actions/checkout@v2

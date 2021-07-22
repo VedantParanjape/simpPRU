@@ -1,0 +1,19 @@
+int sum := 0;
+
+for : i in 1:4 {
+    sum := sum + 1;
+}
+println(sum);
+
+int b;
+for: i in 1:5 {
+    b := i;
+    print(b);
+}
+println("");
+
+int a := 4;
+for: i in 1:10 {
+    a := a + i;
+}
+println(a);
