@@ -26,7 +26,7 @@ for file in os.listdir("tests/run_anywhere"):
     if fnmatch(file, "*.sim"):
         print("Running test ", file)
 
-        transpile_output = subprocess.run(f"bin/simppru -c -t tests/run_anywhere/{file}", shell=True, capture_output=True)
+        transpile_output = subprocess.run(f"bin/simppru --preprocess -t tests/run_anywhere/{file}", shell=True, capture_output=True)
 
         if transpile_output.returncode != 0:
             print(f"**** ****TEST FAILED**** ****: {file}")
