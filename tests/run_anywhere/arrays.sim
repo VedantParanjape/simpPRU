@@ -1,0 +1,27 @@
+int[16] arr;
+for: i in 0:16 {
+	arr[i] := 0;
+}
+if : arr[2] == 0 {
+	println("ok");
+}
+char[13] charr := "Hello World!";
+bool[4] boolarr;
+boolarr[0] := true;
+boolarr[1] := false;
+boolarr[2] := true;
+boolarr[3] := false;
+
+print(charr[0]);
+print(boolarr[1]);
+print(charr[2]);
+
+int a := arr[2];
+boolarr[1] := boolarr[0] or boolarr[2];
+
+def func : int : int a {
+	return a;
+}
+
+int b := func(charr[1]);
+println(b);
