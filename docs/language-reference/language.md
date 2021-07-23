@@ -33,6 +33,7 @@
 * Only Integer constants can be used with Arithmetic and Bitwise operators.
 * Only Integer constants can be used with Comparison operators.
 * Only Boolean constants can be used with Logical operators.
+* Operators are evaluated following these [precedence rules](https://en.cppreference.com/w/c/language/operator_precedence).
 
 ```cpp
 Correct: bool out := 5 > 6;
@@ -122,23 +123,28 @@ Detailed info: [https://www.includehelp.com/c/identifier-variable-naming-convent
 
 ### Arithmetic expressions
 
-```python
-int a := (9 + 8) * 2 + -1;
-int p := 11 % 3;
-int q := 5 % p;
-int x := 2 * 6 << 2 + 1;
-int y := ~0xFFFFFFFF;
+```cpp
+=> (9 + 8) * 2 + -1;
+33
+=> 11 % 3;
+2
+=> 2 * 6 << 2 + 1;
+96
+=> ~0xFFFFFFFF;
+0
 ```
 
 ### Boolean expressions
 
-```python
-bool a := 9 > 2 or 8 != 2 and not( 2 >= 5 or 9 <= 5 ) or 9 != 7;
-bool b := 0xFFFFFFFF != 0XFFFFFFFF;
+```cpp
+=> 9 > 2 or 8 != 2 and not( 2 >= 5 or 9 <= 5 ) or 9 != 7;
+true
+=> 0xFFFFFFFF != 0XFFFFFFFF;
+false
 ```
 
 !!! Note
-    Expressions are evaluated following the [operator precedence](https://en.cppreference.com/w/c/language/operator_precedence)
+    Expressions are evaluated following the [operator precedence](#operators)
 
 ## If-else statement
 
