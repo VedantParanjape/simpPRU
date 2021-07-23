@@ -31,8 +31,8 @@
 #define AST_NODE_FUNC_RETURN         23
 #define AST_NODE_FUNC_ARGS           24
 
-#define AST_OPR_LFT        25 // <<
-#define AST_OPR_RGT        26 // >>
+#define AST_OPR_BW_LFT     25 // <<
+#define AST_OPR_BW_RGT     26 // >>
 #define AST_OPR_ADD        27 // + 
 #define AST_OPR_SUB        28 // -
 #define AST_OPR_MUL        29 // *

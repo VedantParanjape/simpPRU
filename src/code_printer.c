@@ -130,17 +130,17 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
 {
     if (node != NULL && handle != NULL)
     {
-        if (node->opt >= AST_OPR_LFT && node->opt <= AST_OPR_LGL_OR)
+        if (node->opt >= AST_OPR_BW_LFT && node->opt <= AST_OPR_LGL_OR)
         {
             fprintf(handle, "%s", "(");
             ast_expression_printer((ast_node_expression*)node->left, handle);
             switch (node->opt)
             {
-                case AST_OPR_LFT:
+                case AST_OPR_BW_LFT:
                     fprintf(handle, "%s", _OPR_LFT);
                     break;
 
-                case AST_OPR_RGT:
+                case AST_OPR_BW_RGT:
                     fprintf(handle, "%s", _OPR_RGT);
                     break;
 
