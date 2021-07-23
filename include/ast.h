@@ -80,7 +80,7 @@
 #define AST_NODE_RECV_RPMSG_CALL            59
 #define AST_NODE_SEND_RPMSG_CALL            60
 #define AST_NODE_PRINT_STRING_FUNCTION_CALL 61
-#define AST_NODE_PRINT_ID_FUNCTION_CALL     62
+#define AST_NODE_PRINT_EXP_FUNCTION_CALL    62
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
@@ -111,7 +111,7 @@ struct ast_node_function_call;
 struct ast_node_arguments;
 struct ast_node_utility_function_call;
 struct ast_node_print_string_function_call;
-struct ast_node_print_id_function_call;
+struct ast_node_print_expression_function_call;
 
 typedef struct ast_node ast_node;
 typedef struct ast_node_statements ast_node_statements;
@@ -136,7 +136,7 @@ typedef struct ast_node_function_call ast_node_function_call;
 typedef struct ast_node_arguments ast_node_arguments;
 typedef struct ast_node_utility_function_call ast_node_utility_function_call;
 typedef struct ast_node_print_string_function_call ast_node_print_string_function_call;
-typedef struct ast_node_print_id_function_call ast_node_print_id_function_call;
+typedef struct ast_node_print_expression_function_call ast_node_print_expression_function_call;
 
 struct ast_node 
 {
@@ -163,7 +163,7 @@ struct ast_node
         ast_node_function_call *function_call;
         ast_node_utility_function_call *utility_function_call;
         ast_node_print_string_function_call *print_string_function_call;
-        ast_node_print_id_function_call *print_id_function_call;
+        ast_node_print_expression_function_call *print_expression_function_call;
     }child_nodes;
 };
 
@@ -341,11 +341,11 @@ struct ast_node_print_string_function_call
     char *string;
 };
 
-struct ast_node_print_id_function_call
+struct ast_node_print_expression_function_call
 {
     int node_type;
     int add_newline;
-    sym_ptr symbol_handle;
+    ast_node_expression *expression;
 };
 
 ast_node *create_translation_unit();
@@ -385,7 +385,7 @@ ast_node_utility_function_call *create_init_rpmsg_call_node();
 ast_node_utility_function_call *create_recv_rpmsg_call_node();
 ast_node_utility_function_call *create_send_rpmsg_call_node(ast_node_expression *rpmsg_data);
 ast_node_print_string_function_call *create_print_string_function_call_node(char *string, int add_newline);
-ast_node_print_id_function_call *create_print_id_function_call_node(sym_ptr symbol_handle, int add_newline);
+ast_node_print_expression_function_call *create_print_expression_function_call_node(ast_node_expression *expression, int add_newline);
 
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);

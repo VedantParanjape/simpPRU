@@ -85,8 +85,8 @@ ast_node_statements *create_statement_node(int node_type, void *child)
         case AST_NODE_PRINT_STRING_FUNCTION_CALL:
             stmt->child_nodes.print_string_function_call = child;
             break;
-        case AST_NODE_PRINT_ID_FUNCTION_CALL:
-            stmt->child_nodes.print_id_function_call = child;
+        case AST_NODE_PRINT_EXP_FUNCTION_CALL:
+            stmt->child_nodes.print_expression_function_call = child;
             break;
     }
 
@@ -511,13 +511,14 @@ ast_node_print_string_function_call *create_print_string_function_call_node(char
     return print_function_call;
 }
 
-ast_node_print_id_function_call *create_print_id_function_call_node(sym_ptr symbol_handle, int add_newline)
+ast_node_print_expression_function_call *create_print_expression_function_call_node(ast_node_expression *expression, int add_newline)
 {
-    ast_node_print_id_function_call *print_function_call = (ast_node_print_id_function_call*)malloc(sizeof(ast_node_print_id_function_call));
+    ast_node_print_expression_function_call *print_function_call = (ast_node_print_expression_function_call*)malloc(sizeof(ast_node_print_expression_function_call));
 
-    print_function_call->node_type = AST_NODE_PRINT_ID_FUNCTION_CALL;
+    print_function_call->node_type = AST_NODE_PRINT_EXP_FUNCTION_CALL;
     print_function_call->add_newline = add_newline;
-    print_function_call->symbol_handle = symbol_handle;
+    
+    print_function_call->expression = expression;
 
     return print_function_call;
 }
@@ -695,8 +696,8 @@ void ast_node_type(int node_type)
             printf("print_string function call");
             break;
 
-        case AST_NODE_PRINT_ID_FUNCTION_CALL:
-            printf("print_id function call");
+        case AST_NODE_PRINT_EXP_FUNCTION_CALL:
+            printf("print_expression function call");
             break;
 
         default:

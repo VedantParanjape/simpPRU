@@ -50,7 +50,7 @@ ast_node *ast = NULL;
     struct ast_node_arguments *arguments;
     struct ast_node_utility_function_call *util_function_call;
     struct ast_node_print_string_function_call *print_string_function_call;
-    struct ast_node_print_id_function_call *print_id_function_call;
+    struct ast_node_print_expression_function_call *print_expression_function_call;
 }
 
 %left LBRACE RBRACE
@@ -120,7 +120,7 @@ ast_node *ast = NULL;
 %type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call 
 %type <util_function_call> init_rpmsg_call recv_rpmsg_call send_rpmsg_call 
 %type <print_string_function_call> print_string_call
-%type <print_id_function_call> print_id_call
+%type <print_expression_function_call> print_expression_call
 %type <arguments> function_call_parameters
 %start start
 %%
@@ -248,8 +248,8 @@ statement: compound_statement {
          | print_string_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_PRINT_STRING_FUNCTION_CALL, (void*)$1);
          }
-         | print_id_call SEMICOLON {
-             $$ = create_statement_node(AST_NODE_PRINT_ID_FUNCTION_CALL, (void*)$1);
+         | print_expression_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_PRINT_EXP_FUNCTION_CALL, (void*)$1);
          }
          ;
 
@@ -1090,24 +1090,18 @@ print_string_call:  KW_PRINT LPAREN CONST_STRING RPAREN {
                     }
                     ;
 
-print_id_call:  KW_PRINT LPAREN INT_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 0);
-                }
-                | KW_PRINT LPAREN BOOL_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 0);
-                }
-                | KW_PRINT LPAREN CHAR_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 0);
-                }
-                | KW_PRINTLN LPAREN INT_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 1);
-                }
-                | KW_PRINTLN LPAREN BOOL_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 1);
-                }
-                | KW_PRINTLN LPAREN CHAR_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 1);
-                }
-                ;
+print_expression_call:  KW_PRINT LPAREN arithmetic_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 0);
+                        }
+                        | KW_PRINT LPAREN boolean_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 0);
+                        }
+                        | KW_PRINTLN LPAREN arithmetic_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 1);
+                        }
+                        | KW_PRINTLN LPAREN boolean_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 1);
+                        }
+                        ;
 
 %%
