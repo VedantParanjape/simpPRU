@@ -11,6 +11,10 @@ simppru [OPTION...] FILE
                              be compiled
       --verbose              Enable verbose mode (dump symbol table and ast
                              graph
+      --preprocess           Stop after generating the intermediate C
+                             file (located at /tmp/temp.c)
+  -t  --test                 Use stub functions for PRU specific functions and
+                             enable the print functions, useful for testing and debugging
   -?, --help                 Give this help list
       --usage                Give a short usage message
   -V, --version              Print program version

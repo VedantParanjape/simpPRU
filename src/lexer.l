@@ -19,15 +19,15 @@ whitespace           (\t|" "|\r)
 newline              (\n)
 braces               ("{"|"}")
 parenthesis          ("("|")")
-integer              ([0-9]+)
+integer              ([0-9]+|(("0x"|"0X")[a-fA-F0-9]+))
 bool                 ("true"|"false")
 string               (\"(\\.|[^"\\])*\")
 datatype             ("int"|"bool")
 conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
-arithmetic_operators ("+"|"-"|"*"|"/")
+arithmetic_operators ("+"|"-"|"*"|"/"|"%")
 relational_operators (">"|">="|"<"|"<="|"=="|"!=")
-bitwise_operators    ("~"|"&"|"|")
+bitwise_operators    ("~"|"&"|"|"|">>"|"<<")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
@@ -85,7 +85,8 @@ comma                ([,])
 }
 
 {integer}               {
-  yylval.integer = atoi(yytext);
+  /*octal if first digit is 0, hexadecimal if first two characters are 0x or 0X, decimal otherwise*/
+  yylval.integer = strtol(yytext, NULL, 0);
   return CONST_INT;
 }
 
@@ -178,6 +179,10 @@ comma                ([,])
   {
     return OPR_DIV;
   }
+  else if (!strcmp(yytext, "%"))
+  {
+    return OPR_MOD;
+  }
 }
 
 {relational_operators}  {
@@ -219,6 +224,14 @@ comma                ([,])
   else if (!strcmp(yytext, "|"))
   {
     return OPR_BW_OR;
+  }
+  else if (!strcmp(yytext, "<<"))
+  {
+    return OPR_BW_LFT;
+  }
+  else if (!strcmp(yytext, ">>"))
+  {
+    return OPR_BW_RGT;
   }
 }
 
