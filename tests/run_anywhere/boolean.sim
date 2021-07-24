@@ -1,0 +1,12 @@
+bool a := (2 > 1);
+bool b := 3 > 1 and not false;
+bool c := 2 == 2 or true;
+bool d := 9 > 2 or 8 != 2 and not( 2 >= 5 or 9 <= 5 ) or 9 != 7;
+bool e := not not true;
+bool f := 0xFFFFFFFF != 0XFFFFFFFF;
+println(a);
+println(b);
+println(c);
+println(d);
+println(e);
+println(f);

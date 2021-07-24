@@ -9,10 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define _OPR_LFT " << "
+#define _OPR_RGT " >> "
 #define _OPR_ADD " + " 
 #define _OPR_SUB " - " 
 #define _OPR_MUL " * " 
 #define _OPR_DIV " / " 
+#define _OPR_MOD " % "
 
 #define _OPR_GT " > "  
 #define _OPR_LT " < " 
