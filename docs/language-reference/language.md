@@ -264,8 +264,8 @@ while : tag < 30 {
 
 ## Control statements
 
-!!! Warning
-    `break` and `continue` should only be used inside looping statements
+!!! Note
+    `break` and `continue` can only be used inside looping statements
 
 ### break
 
