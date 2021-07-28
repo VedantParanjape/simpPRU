@@ -299,9 +299,9 @@ void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle)
 
         fprintf(handle, "\nfor (int %s = ", node->init->symbol_entry->identifier);
         ast_expression_printer(node->start_condition, handle);
-        fprintf(handle, "; %s < ", node->init->symbol_entry->identifier);
+        fprintf(handle, ";%s <", node->init->symbol_entry->identifier);
         ast_expression_printer(node->end_condition, handle);
-        fprintf(handle, "; %s += ", node->init->symbol_entry->identifier);
+        fprintf(handle, ";%s +=", node->init->symbol_entry->identifier);
         ast_expression_printer(node->increment_condition, handle);
         fprintf(handle, ")\n");
 
@@ -309,9 +309,9 @@ void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle)
 
         fprintf(handle, "for (int %s = ", node->init->symbol_entry->identifier);
         ast_expression_printer(node->start_condition, handle);
-        fprintf(handle, "; %s > ", node->init->symbol_entry->identifier);
+        fprintf(handle, ";%s >", node->init->symbol_entry->identifier);
         ast_expression_printer(node->end_condition, handle);
-        fprintf(handle, "; %s += ", node->init->symbol_entry->identifier);
+        fprintf(handle, ";%s +=", node->init->symbol_entry->identifier);
         ast_expression_printer(node->increment_condition, handle);
         fprintf(handle, ")\n");
         
