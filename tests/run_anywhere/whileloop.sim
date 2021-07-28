@@ -35,3 +35,8 @@ while: true {
 }
 print("Now a is ");
 println(a);
+
+while: true {
+    println("runs only once");
+    break;
+}

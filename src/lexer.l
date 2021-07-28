@@ -7,6 +7,8 @@
   int assignment_flag = 0;
   int for_loop_flag = 0;
   int function_flag = 0;
+  int inside_loop = 0;
+  int brackets = 0;
 
   void yyerror(char* s);
   int yylex();
@@ -62,12 +64,26 @@ comma                ([,])
     {
       increment_scope();
     }
+
+    if (inside_loop)
+    {
+      brackets += 1;
+    }
   
     return LBRACE;
   }
   else if (!strcmp(yytext, "}"))
   {
     decrement_scope();
+
+    if (inside_loop)
+    {
+      brackets -= 1;
+      if (brackets == 0)
+      {
+        inside_loop = 0;
+      }
+    }
 
     return RBRACE;
   }
@@ -140,6 +156,7 @@ comma                ([,])
   if (!strcmp(yytext, "for"))
   {
     for_loop_flag = 1;
+    inside_loop = 1;
     increment_scope();
 
     return KW_FOR;
@@ -150,14 +167,23 @@ comma                ([,])
   }
   else if (!strcmp(yytext, "while"))
   {
+    inside_loop = 1;
     return KW_WHILE;
   }
   else if (!strcmp(yytext, "break"))
   {
+    if (!inside_loop)
+    {
+      yyerror("cannot call break outside loops");
+    }
     return KW_BREAK;
   }
   else if (!strcmp(yytext, "continue"))
   {
+    if (!inside_loop)
+    {
+      yyerror("cannot call break outside loops");
+    }
     return KW_CONTINUE;
   }
 }
