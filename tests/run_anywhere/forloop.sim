@@ -72,3 +72,8 @@ for: i in 100:0:-10 {
     }
 }
 println("");
+
+for: i in 10 {
+    print(i);
+}
+println("");
