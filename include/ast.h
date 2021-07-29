@@ -17,6 +17,7 @@
 #define AST_NODE_BOOLEAN_EXP         9
 #define AST_NODE_RELATIONAL_EXP      10
 #define AST_NODE_LOGICAL_EXP         11
+#define AST_NODE_RANGE_EXP           1000
 #define AST_NODE_CONSTANT            12
 #define AST_NODE_VARIABLE            13
 #define AST_NODE_CONDITIONAL_IF      14
@@ -88,6 +89,7 @@ struct ast_node_compound_statement;
 struct ast_node_declaration;
 struct ast_node_assignment;
 struct ast_node_expression;
+struct ast_node_range_expression;
 struct ast_node_constant;
 struct ast_node_variable;
 struct ast_node_conditional_if;
@@ -109,6 +111,7 @@ typedef struct ast_node_compound_statement ast_node_compound_statement;
 typedef struct ast_node_declaration ast_node_declaration;
 typedef struct ast_node_assignment ast_node_assignment;
 typedef struct ast_node_expression ast_node_expression;
+typedef struct ast_node_range_expression ast_node_range_expression;
 typedef struct ast_node_constant ast_node_constant;
 typedef struct ast_node_variable ast_node_variable;
 typedef struct ast_node_conditional_if ast_node_conditional_if;
@@ -184,6 +187,15 @@ struct ast_node
     ast_node *right;
 };
 
+struct ast_node_range_expression
+{
+    int node_type;
+
+    ast_node_expression *start;
+    ast_node_expression *stop;
+    ast_node_expression *increment;
+};
+
  struct ast_node_constant
 {
     int node_type;
@@ -222,9 +234,7 @@ struct ast_node
     int node_type;
 
     ast_node_variable *init;
-    ast_node_expression *start_condition;
-    ast_node_expression *end_condition;
-    ast_node_expression *increment_condition;
+    ast_node_range_expression *range;
     ast_node_compound_statement *body;
 };
 
@@ -307,12 +317,13 @@ ast_node_compound_statement *add_compound_statement_node(ast_node_compound_state
 ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right);
+ast_node_range_expression *create_range_expression_node(ast_node_expression *start, ast_node_expression *stop, ast_node_expression *increment);
 ast_node_constant *create_constant_node(int data_type, int value);
 ast_node_variable *create_variable_node(int data_type, sym_ptr symbol);
 ast_node_conditional_if *create_conditional_if_node(ast_node_expression *condition, ast_node_compound_statement *body, ast_node_conditional_else_if *else_if, ast_node_compound_statement *else_node);
 ast_node_conditional_else_if *create_else_if_node();
 ast_node_conditional_else_if *add_else_if_node(ast_node_conditional_else_if *parent, ast_node_expression *condition, ast_node_compound_statement *body);
-ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_expression *start, ast_node_expression *end, ast_node_expression *increment, ast_node_compound_statement *body);
+ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_range_expression *range, ast_node_compound_statement *body);
 ast_node_loop_while *create_loop_while_node(ast_node_expression *condition, ast_node_compound_statement *body);
 ast_node_loop_control *create_loop_control_node(int node_type);
 ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_param *params, ast_node_compound_statement *body, ast_node_expression *return_stmt);
