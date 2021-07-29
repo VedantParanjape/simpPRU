@@ -205,6 +205,18 @@ for : var in start:stop {
 
 * Here, for loop is a range based loop, value of integer variable `var` will vary from `start` to `stop - 1`. Value of `var` does not equal `stop`. Here, `increment` is assumed to be 1, so `start` will have to less than `stop`.
 
+* Optionally, `start` can be skipped, and it will automatically start from 0, like this:
+
+```python
+for : var in stop {
+    statement 1
+    ....
+    ....
+}
+```
+
+* Optionally, `increment` can also be specified like this. Here, `stop` can be less than `start` if `increment` is negative.
+
 ```python
 for : var in start:stop:increment {
     statement 1
@@ -212,8 +224,6 @@ for : var in start:stop:increment {
     ....
 }
 ```
-
-* Here, `stop` can be less than `start` if `increment` is negative.
 
 !!! Note
     **var** is a **integer**, and **start, stop, increment** can be **arithmetic expression, integer variable or integer constant**.
