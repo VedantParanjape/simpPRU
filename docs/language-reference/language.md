@@ -208,7 +208,7 @@ for : var in start:stop {
 * Optionally, `start` can be skipped, and it will automatically start from 0, like this:
 
 ```python
-for : var in stop {
+for : var in :stop {
     statement 1
     ....
     ....

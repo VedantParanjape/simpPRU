@@ -505,8 +505,8 @@ loop_statement_for: KW_FOR COLON IDENTIFIER {
                   }
                   ;
 
-range_expression: arithmetic_expression {
-                        $$ = create_range_expression_node(NULL, $1, NULL);
+range_expression: COLON arithmetic_expression {
+                        $$ = create_range_expression_node(NULL, $2, NULL);
                     }
                     | arithmetic_expression COLON arithmetic_expression {
                         $$ = create_range_expression_node($1, $3, NULL);
