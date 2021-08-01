@@ -290,15 +290,32 @@ void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle)
 {
     if (node != NULL && handle != NULL)
     {
-        fprintf(handle, "%s", "{\n");
-        fprintf(handle, "\t%s %s;\n", "int", node->init->symbol_entry->identifier);
-        fprintf(handle, "\t%s(%s =","for", node->init->symbol_entry->identifier);
-        ast_expression_printer(node->start_condition, handle);
+        /*
+        {
+            for (int %identifier = %start; %identifier < %end; %identifier += %increment) %compound
+            for (int %identifier = %start; %identifier > %end; %identifier += %increment) %compound
+        }
+        */
+
+        fprintf(handle, "\nfor (int %s = ", node->init->symbol_entry->identifier);
+        ast_expression_printer(node->range->start, handle);
         fprintf(handle, ";%s <", node->init->symbol_entry->identifier);
-        ast_expression_printer(node->end_condition, handle);
-        fprintf(handle, ";%s++)\n", node->init->symbol_entry->identifier);
+        ast_expression_printer(node->range->stop, handle);
+        fprintf(handle, ";%s +=", node->init->symbol_entry->identifier);
+        ast_expression_printer(node->range->increment, handle);
+        fprintf(handle, ")\n");
+
         ast_compound_statement_printer(node->body, handle, 0);
-        fprintf(handle, "%s", "}\n");
+
+        fprintf(handle, "for (int %s = ", node->init->symbol_entry->identifier);
+        ast_expression_printer(node->range->start, handle);
+        fprintf(handle, ";%s >", node->init->symbol_entry->identifier);
+        ast_expression_printer(node->range->stop, handle);
+        fprintf(handle, ";%s +=", node->init->symbol_entry->identifier);
+        ast_expression_printer(node->range->increment, handle);
+        fprintf(handle, ")\n");
+        
+        ast_compound_statement_printer(node->body, handle, 0);
     }
 }
 

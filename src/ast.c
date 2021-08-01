@@ -137,6 +137,26 @@ ast_node_expression *create_expression_node(int node_type, int opt, int value, a
     return exp;
 }
 
+ast_node_range_expression *create_range_expression_node(ast_node_expression *start, ast_node_expression *stop, ast_node_expression *increment)
+{
+    ast_node_range_expression *exp = (ast_node_range_expression*)malloc(sizeof(ast_node_range_expression));
+
+    exp->node_type = AST_NODE_RANGE_EXP;
+    if (!start)
+    {
+        start = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, 0, NULL, NULL);
+    }
+    exp->start = start;
+    exp->stop = stop;
+    if (!increment)
+    {
+        increment = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, 1, NULL, NULL);
+    }
+    exp->increment = increment;
+
+    return exp;
+}
+
 ast_node_constant *create_constant_node(int data_type, int value)
 {
     ast_node_constant *cnst = (ast_node_constant*)malloc(sizeof(ast_node_constant)); 
@@ -197,14 +217,13 @@ ast_node_conditional_else_if *add_else_if_node(ast_node_conditional_else_if *par
     return parent;
 }
 
-ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_expression *start, ast_node_expression *end, ast_node_compound_statement *body)
+ast_node_loop_for *create_loop_for_node(ast_node_variable *init, ast_node_range_expression *range, ast_node_compound_statement *body)
 {
     ast_node_loop_for *loop_for = (ast_node_loop_for*)malloc(sizeof(ast_node_loop_for));
 
     loop_for->node_type = AST_NODE_LOOP_FOR;
     loop_for->init = init;
-    loop_for->start_condition = start;
-    loop_for->end_condition = end;
+    loop_for->range = range;
     loop_for->body = body;
 
     return loop_for;
@@ -523,6 +542,10 @@ void ast_node_type(int node_type)
 
         case AST_NODE_LOGICAL_EXP:
             printf("ast logical expression");
+            break;
+
+        case AST_NODE_RANGE_EXP:
+            printf("ast node range expression");
             break;
 
         case AST_NODE_CONSTANT:
