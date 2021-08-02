@@ -196,17 +196,37 @@ For loop is a range based for loop. Range variable is a local variable with scop
 ### Syntax
 
 ```python
-for : var in range_1:range_2 {
+for : var in start:stop {
     statement 1
     ....
     ....
 }
 ```
 
-* Here, for loop is a range based loop, value of integer variable `var` will vary from `range_1` to `range_2 - 1`. Value of `var` doesnot equal `range_2`. As of now range can't be reversed,i.e., `range_1 < range_2`
-  
+* Here, for loop is a range based loop, value of integer variable `var` will vary from `start` to `stop - 1`. Value of `var` does not equal `stop`. Here, `increment` is assumed to be 1, so `start` will have to less than `stop`.
+
+* Optionally, `start` can be skipped, and it will automatically start from 0, like this:
+
+```python
+for : var in :stop {
+    statement 1
+    ....
+    ....
+}
+```
+
+* Optionally, `increment` can also be specified like this. Here, `stop` can be less than `start` if `increment` is negative.
+
+```python
+for : var in start:stop:increment {
+    statement 1
+    ....
+    ....
+}
+```
+
 !!! Note
-    **var** is a **integer**, and **range_1, range_2** can be **arithmetic expression, integer variable or integer constant**.
+    **var** is a **integer**, and **start, stop, increment** can be **arithmetic expression, integer variable or integer constant**.
 
 ### Examples
 
@@ -224,6 +244,14 @@ int nt;
 
 for : j in 2:mx-10 {
     nt := nt + j;
+}
+```
+
+```python
+int sum := 0;
+
+for : i in in 10:1:-2 { /*10, 8, 6, 4, 2*/
+    sum = sum + i;
 }
 ```
 
