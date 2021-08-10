@@ -40,3 +40,10 @@ println(aa);
 println(bb);
 println(cc);
 println(dd);
+
+char ch1 := 'c';
+int c3 := ch1 + 1;
+char ch2 := c3 - (4 >> 2);
+print(ch1);
+print(c3);
+println(ch2);

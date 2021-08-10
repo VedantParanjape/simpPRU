@@ -9,6 +9,7 @@
 #define DT_INTEGER 1
 #define DT_BOOLEAN 2
 #define DT_VOID_ 3
+#define DT_CHAR_ 4
 
 typedef vec_t(struct symbol*) param;
 typedef struct symbol
