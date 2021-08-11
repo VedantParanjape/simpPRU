@@ -101,12 +101,20 @@ void ast_declaration_printer(ast_node_declaration *decl, FILE* handle)
             {
                 fprintf(handle, "\t%s %s = 0;\n", "int", decl->symbol_entry->identifier);
             }
+            else if (decl->symbol_entry->data_type == DT_CHAR_)
+            {
+                fprintf(handle, "\t%s %s = 0;\n", "char", decl->symbol_entry->identifier);
+            }
         }
         else if (decl->expression != NULL)
         {
             if (decl->symbol_entry->data_type == DT_INTEGER || decl->symbol_entry->data_type == DT_BOOLEAN)
             {
                 fprintf(handle, "\t%s %s = ", "int", decl->symbol_entry->identifier);
+            }
+            else if (decl->symbol_entry->data_type == DT_CHAR_)
+            {
+                fprintf(handle, "\t%s %s = ", "char", decl->symbol_entry->identifier);
             }
             ast_expression_printer(decl->expression, handle);
             fprintf(handle, "%s", ";\n");
@@ -219,6 +227,11 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
         if (node->opt == AST_NODE_CONSTANT)
         {
             fprintf(handle, " %d ", node->value);
+        }
+
+        if (node->opt == AST_NODE_CONSTANT_CHAR)
+        {
+            fprintf(handle, " '%c' ", node->value);
         }
 
         if (node->opt == AST_NODE_VARIABLE)
@@ -473,6 +486,10 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
                 fprintf(handle, "%s ", _DT_INT_);
                 break;
 
+            case DT_CHAR_:
+                fprintf(handle, "%s ", _DT_CHAR_);
+                break;
+
             case DT_VOID_:
                 fprintf(handle, "%s ", _DT_VOID_);
                 break;
@@ -490,6 +507,10 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
                     case DT_INTEGER:
                     case DT_BOOLEAN:
                         fprintf(handle, "%s ", _DT_INT_);
+                        break;
+
+                    case DT_CHAR_:
+                        fprintf(handle, "%s ", _DT_CHAR_);
                         break;
                 }
                 fprintf(handle, "%s", temp->symbol_entry->identifier);

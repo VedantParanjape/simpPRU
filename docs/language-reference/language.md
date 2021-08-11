@@ -9,11 +9,13 @@
 
 * `int` - Integer datatype
 * `bool` - Boolean datatype
+* `char` / `uint8` - Character / Unsigned 8 bit integer datatype
 * `void` - Void datatype, can only be used a return type for functions
 
 ## Constants
 
 * `<any_integer>` - Integer constant. Integers can be decimal, hexadecimal (start with 0x or 0X) or octal (start with 0)
+* `'<any character>'` - Character constant. These can be assigned to both int and char/uint8 variables
 * `true` - Boolean constant (True)
 * `false` - Boolean constant (False)
 * `Px_yz` - Pin mapping constants are Integer constant, where x is 1,2 or 8,9 and yz are the header pin numbers. For further details refer to [this](io.md)
@@ -30,6 +32,7 @@
 
 * Result of Arithmetic and Bitwise operators is Integer constant.
 * Result of Comparison and Logical operators is Boolean constant.
+* Characters are treated as integers when used in Arithmetic expressions.
 * Only Integer constants can be used with Arithmetic and Bitwise operators.
 * Only Integer constants can be used with Comparison operators.
 * Only Boolean constants can be used with Logical operators.
@@ -44,14 +47,15 @@ Wrong:   int yy := 5 > 6;
 
 * Datatype of variable needs to be specified during compile time.
 * Variables can be assigned values after declarations.
-* If variable is not assigned a value after declaration, it is set to `0` for `integer` and to `false` for `boolean` by default.  
-* Variables can be assigned other variables of same datatype.
+* If variable is not assigned a value after declaration, it is set to `0` for `integer` and `char/uint8` and to `false` for `boolean` by default.  
+* Variables can be assigned other variables of same datatype. `int`s and `char`s can be assigned to each other.
 * Variables can be assigned expressions whose output is of same datatype.
 
 ### Declaration
   
 ```cpp
 int var;
+char char_var;
 bool test_var;
 ```
 
@@ -59,6 +63,8 @@ bool test_var;
 
 ```cpp
 int var := 99;
+char char_var := 'a';
+uint8 short_var := 255;
 bool test_var := false;
 ```
 
@@ -66,12 +72,13 @@ bool test_var := false;
 
 ```cpp
 var := 45;
+short_var := var;
 test_var := true;
 ```
 
 * Variables to be assigned must be declared earlier.
 * Datatype of the variables cannot change. Only appropriate expressions/constants of their respective datatypes can be assigned to the variables.
-* Integer variable can be assigned only Integer expression/constant.
+* Integer and Character variable can be assigned only Integer expression/Integer constant/Character constant.
 * Boolean variable can be assigned only Boolean expression/constant.
 
 ## Comments
@@ -141,6 +148,8 @@ Detailed info: [https://www.includehelp.com/c/identifier-variable-naming-convent
 true
 => 0xFFFFFFFF != 0XFFFFFFFF;
 false
+=> 'a' < 'b';
+true
 ```
 
 !!! Note
@@ -226,7 +235,7 @@ for : var in start:stop:increment {
 ```
 
 !!! Note
-    **var** is a **integer**, and **start, stop, increment** can be **arithmetic expression, integer variable or integer constant**.
+    **var** is a **integer**, and **start, stop, increment** can be **arithmetic expression, integer or character variable, or integer or character constant**.
 
 ### Examples
 
@@ -402,6 +411,15 @@ Examples according to return types
     }
     ```
 
+=== "Character"
+    ```python
+    def next_char : char : char ch, int inc {
+        char chinc := ch + inc;
+
+        return chinc;
+    }
+    ```
+
 === "Boolean"
     ```python
     def compare : bool : int val {
@@ -452,6 +470,12 @@ We will consider functions defined in earlier [subsection](#examples_5)
     int ret_val := test_func(4, a);
     ```
 
+=== "Character"
+    ```python
+    char a := 'a';
+    char b := next_char(a, 1);
+    ```
+
 === "Boolean"
     ```python
     bool val := compare(22);
@@ -470,7 +494,7 @@ For testing or debugging code, use the --test or -t flag to enable print, printl
 
 #### Print functions
 
-print can take either a string (double quoted) or any `int` / `bool` identifier.
+print can take either a string (double quoted) or any `int` / `char` / `bool` identifier.
 
 println is similar to print but also prints a newline (`\n`).
 

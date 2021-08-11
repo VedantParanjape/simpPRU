@@ -39,3 +39,12 @@ bool res := less_than(2, 3);
 println(res);
 res := less_than(3, 2);
 println(res);
+
+def char_func: char: char ch, int inc {
+    char result := ch + inc;
+    return result;
+}
+
+char chtest := 'A';
+char chresult := char_func(chtest, 1);
+println(chresult);

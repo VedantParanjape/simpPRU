@@ -23,8 +23,9 @@ braces               ("{"|"}")
 parenthesis          ("("|")")
 integer              ([0-9]+|(("0x"|"0X")[a-fA-F0-9]+))
 bool                 ("true"|"false")
+char                 ("'"([ -~]|\t|\n|\r|\0)"'")
 string               (\"(\\.|[^"\\])*\")
-datatype             ("int"|"bool")
+datatype             ("int"|"bool"|"char"|"uint8")
 conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
 arithmetic_operators ("+"|"-"|"*"|"/"|"%")
@@ -119,6 +120,11 @@ comma                ([,])
   return CONST_BOOL;
 }
 
+{char}                  {
+  yylval.integer = (int)yytext[1];
+  return CONST_CHAR;
+}
+
 {string}                {
   yylval.string = strdup(yytext);
   return CONST_STRING;
@@ -134,6 +140,14 @@ comma                ([,])
   else if (!strcmp(yytext, "bool"))
   {
     return DT_BOOL;
+  }
+  else if (!strcmp(yytext, "char"))
+  {
+    return DT_CHAR;
+  }
+  else if (!strcmp(yytext, "uint8"))
+  {
+    return DT_CHAR;
   }
 }
 
@@ -396,6 +410,10 @@ comma                ([,])
     else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_VOID_)
     {
       return VOID_IDENTIFIER;
+    }
+    else if (yylval.symbol_handle != NULL && yylval.symbol_handle->data_type == DT_CHAR_)
+    {
+      return CHAR_IDENTIFIER;
     }
   }
 

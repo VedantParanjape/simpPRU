@@ -19,6 +19,7 @@
 #define AST_NODE_LOGICAL_EXP         11
 #define AST_NODE_RANGE_EXP           1000
 #define AST_NODE_CONSTANT            12
+#define AST_NODE_CONSTANT_CHAR       10000
 #define AST_NODE_VARIABLE            13
 #define AST_NODE_CONDITIONAL_IF      14
 #define AST_NODE_CONDITIONAL_ELSE_IF 15
@@ -63,6 +64,7 @@
 #define AST_DT_INT  48 // DATA TYPE INT
 #define AST_DT_BOOL 49 // DATA TYPE BOOL
 #define AST_DT_VOID 50 // DATA TYPE VOID
+#define AST_DT_CHAR 10001 // DATA TYPE CHAR
 
 #define AST_NODE_DIGITAL_READ_CALL          51 
 #define AST_NODE_DIGITAL_WRITE_CALL         52
