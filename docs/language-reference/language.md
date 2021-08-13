@@ -81,6 +81,53 @@ test_var := true;
 * Integer and Character variable can be assigned only Integer expression/Integer constant/Character constant.
 * Boolean variable can be assigned only Boolean expression/constant.
 
+## Arrays
+
+* Arrays are static - their size has to be known at compile time and this size cannot be changed later.
+* Arrays can be used with bool, int and char.
+* Arrays do not support any arithmetic / logical / comparison / bitwise operators, however these operators work fine on their elements.
+
+### Declaration and Assignment
+
+* The data type has to be specified as data_type[size].
+* Array of char can be initialized from a double quoted string, where the length of the array would be at least the length of the string plus 1.
+
+```cpp
+int[16] a; /* array of 16 integers */
+char[20] string1 := "I love BeagleBoards";
+```
+
+### Indexing:
+
+* Arrays are zero-indexed.
+* The index can be either a char or an int or an expression involving chars and ints.
+
+* Accessing elements of an array:
+
+```cpp
+int a := arr[4]; /* Copy the 5th element of arr to a */
+```
+
+* Changing elements of an array:
+
+```cpp
+arr[4] := 5; /* The 5th element of arr is now 5 */
+
+int i := 4;
+arr[i] := 6; /* The 5th element of arr is now 6 */
+
+char j := 4;
+arr[j] := 7; /* The 5th element of arr is now 7 */
+
+arr[i+j] := 1; /* The 9th element of arr is now 1 */
+
+/* Declaring and initializing an array with all zeros */
+int[16] arr;
+for: i in 0:16 {
+    arr[i] := 0;
+}
+```
+
 ## Comments
 
 * simpPRU supports C style multiline comments.
