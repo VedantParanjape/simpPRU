@@ -90,7 +90,8 @@ ast_node *ast = NULL;
 %token KW_RETURN KW_DEF
 
 %token KW_DIGITAL_READ KW_DIGITAL_WRITE KW_DELAY KW_PWM KW_START_COUNTER KW_STOP_COUNTER KW_READ_COUNTER
-%token KW_INIT_RPMSG KW_RECV_RPMSG KW_SEND_RPMSG
+%token KW_INIT_RPMSG KW_RECV_RPMSG
+%token KW_SEND_RPMSG_INT KW_SEND_RPMSG_CHAR KW_SEND_RPMSG_BOOL KW_SEND_RPMSG_INTS KW_SEND_RPMSG_CHARS KW_SEND_RPMSG_BOOLS
 %token KW_PRINT KW_PRINTLN
 
 %token <integer> CONST_INT CONST_CHAR
@@ -371,6 +372,7 @@ array_declaration_assignment: DT_CHAR LSQUARE arithmetic_expression RSQUARE IDEN
                                 $5->array_size = $3->value;
                                 $$ = create_array_declaration_node($5, $3, $7);
                             }
+                            ;
 
 assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($1 == NULL)
@@ -1077,8 +1079,23 @@ recv_rpmsg_call: KW_RECV_RPMSG LPAREN RPAREN {
                 }
                 ;
 
-send_rpmsg_call: KW_SEND_RPMSG LPAREN arithmetic_expression RPAREN {
-                    $$ = create_send_rpmsg_call_node($3);
+send_rpmsg_call: KW_SEND_RPMSG_INT LPAREN arithmetic_expression RPAREN {
+                    $$ = create_send_rpmsg_call_node(AST_NODE_SEND_INT_RPMSG_CALL, $3);
+                }
+                | KW_SEND_RPMSG_CHAR LPAREN arithmetic_expression RPAREN {
+                    $$ = create_send_rpmsg_call_node(AST_NODE_SEND_CHAR_RPMSG_CALL, $3);
+                }
+                | KW_SEND_RPMSG_BOOL LPAREN boolean_expression RPAREN {
+                    $$ = create_send_rpmsg_call_node(AST_NODE_SEND_BOOL_RPMSG_CALL, $3);
+                }
+                | KW_SEND_RPMSG_INTS LPAREN INT_ARR_IDENTIFIER RPAREN {
+                    $$ = create_send_rpmsg_call_node_arrays(AST_NODE_SEND_INTS_RPMSG_CALL, $3);
+                }
+                | KW_SEND_RPMSG_CHARS LPAREN CHAR_ARR_IDENTIFIER RPAREN {
+                    $$ = create_send_rpmsg_call_node_arrays(AST_NODE_SEND_CHARS_RPMSG_CALL, $3);
+                }
+                | KW_SEND_RPMSG_BOOLS LPAREN BOOL_ARR_IDENTIFIER RPAREN {
+                    $$ = create_send_rpmsg_call_node_arrays(AST_NODE_SEND_BOOLS_RPMSG_CALL, $3);
                 }
                 ;
 

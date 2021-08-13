@@ -35,7 +35,7 @@ bitwise_operators    ("~"|"&"|"|"|">>"|"<<")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
-io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter"|"init_message_channel"|"receive_message"|"send_message")
+io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter"|"init_message_channel"|"receive_message"|"send_message"|"send_int"|"send_char"|"send_bool"|"send_ints"|"send_chars"|"send_bools")
 print                ("print"|"println")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
@@ -362,7 +362,31 @@ comma                ([,])
   }
   else if (!strcmp(yytext, "send_message"))
   {
-    return KW_SEND_RPMSG;
+    return KW_SEND_RPMSG_INT;
+  }
+  else if (!strcmp(yytext, "send_int"))
+  {
+    return KW_SEND_RPMSG_INT;
+  }
+  else if (!strcmp(yytext, "send_char"))
+  {
+    return KW_SEND_RPMSG_CHAR;
+  }
+  else if (!strcmp(yytext, "send_bool"))
+  {
+    return KW_SEND_RPMSG_BOOL;
+  }
+  else if (!strcmp(yytext, "send_ints"))
+  {
+    return KW_SEND_RPMSG_INTS;
+  }
+  else if (!strcmp(yytext, "send_chars"))
+  {
+    return KW_SEND_RPMSG_CHARS;
+  }
+  else if (!strcmp(yytext, "send_bools"))
+  {
+    return KW_SEND_RPMSG_BOOLS;
   }
 }
 
