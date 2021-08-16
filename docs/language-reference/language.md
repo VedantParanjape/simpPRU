@@ -414,32 +414,6 @@ def <function_name> : <data_type> : <data_type> <param_name>, <data_type> <param
 !!! Note
     If return data type is void, then return statement is not needed, and if still it is added, it must be return nothing, i.e., something like this `return ;`
 
-!!! Warning
-    `return` can only be present in the body of the function only once, that too at the end of the function, not inside any compound statements.
-    
-!!! fail "Wrong"
-    * `return` inside a compound statement, this syntax is not allowed.
-    ```python
-    def test : int : int a {
-        if : a < 4 {
-            return a;
-        }
-    }
-    ```
-
-!!! done "Correct"
-    * `return` is not inside compound statments, It should be placed only at the end of function definition
-    ```python
-    def test : int : int a {
-        int gf := 8;
-        if : a < 4 {
-            gf := 4;
-        }
-
-        return gf;
-    }
-    ```
-
 
 #### Examples
 
@@ -470,13 +444,12 @@ Examples according to return types
 === "Boolean"
     ```python
     def compare : bool : int val {
-        bool ret := false;
 
         if : val < 0 {
-            ret := true;
+            return true;
         }
 
-        return ret;
+        return false;
     }
     ```
 
