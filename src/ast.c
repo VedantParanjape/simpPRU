@@ -292,7 +292,7 @@ ast_node_loop_control *create_loop_control_node(int node_type)
     return loop_control;
 }
 
-ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_param *params, ast_node_compound_statement *body, ast_node_expression *return_stmt)
+ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_param *params, ast_node_compound_statement *body)
 {
     ast_node_function_def *function_def = (ast_node_function_def*)malloc(sizeof(ast_node_function_def));
 
@@ -300,7 +300,6 @@ ast_node_function_def *create_function_def_node(sym_ptr symbol_entry, ast_node_p
     function_def->symbol_entry = symbol_entry;
     function_def->params = params;
     function_def->body = body;
-    function_def->return_statment = return_stmt;
 
     return function_def;
 }

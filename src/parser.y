@@ -782,96 +782,37 @@ function_definition: KW_DEF IDENTIFIER COLON DT_INT {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_INTEGER;} 
                    COLON parameters compound_statement {
-                       if (vec_last(&$8->child_nodes)->node_type == AST_NODE_FUNC_RETURN)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type == DT_VOID_)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, NULL);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type != DT_VOID_)
-                       {
-                           yyerror("return statement missing in a non void function");
-                       }
+                       $$ = create_function_def_node($2, $7, $8);
                        temp = NULL;
-                       
-                       if (check_function_definition($$) == -1)
-                       {
-                          yyerror("return statement different from return type");
-                       }
+
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_BOOL {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_BOOLEAN;} 
                    COLON parameters compound_statement {
-                       if (vec_last(&$8->child_nodes)->node_type == AST_NODE_FUNC_RETURN)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type == DT_VOID_)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, NULL);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type != DT_VOID_)
-                       {
-                           yyerror("return statement missing in a non void function");
-                       }
+                       $$ = create_function_def_node($2, $7, $8);
                        temp = NULL;
-                       
-                       if (check_function_definition($$) == -1)
-                       {
-                          yyerror("return statement different from return type");
-                       }
+
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_CHAR {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_CHAR_;} 
                    COLON parameters compound_statement {
-                       if (vec_last(&$8->child_nodes)->node_type == AST_NODE_FUNC_RETURN)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type == DT_VOID_)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, NULL);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type != DT_VOID_)
-                       {
-                           yyerror("return statement missing in a non void function");
-                       }
-                       temp = NULL;
                        
-                       if (check_function_definition($$) == -1)
-                       {
-                          yyerror("return statement different from return type");
-                       }
+                       $$ = create_function_def_node($2, $7, $8);
+                       temp = NULL;
+
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_VOID {
                        if ($2 == NULL){yyerror("function name already defined");}
                        temp = $2; temp->data_type = DT_VOID_;} 
                    COLON parameters compound_statement {
-                       if (vec_last(&$8->child_nodes)->node_type == AST_NODE_FUNC_RETURN)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, vec_pop(&$8->child_nodes)->child_nodes.return_statement);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type == DT_VOID_)
-                       {
-                           $$ = create_function_def_node($2, $7, $8, NULL);
-                       }
-                       else if (vec_last(&$8->child_nodes)->node_type != AST_NODE_FUNC_RETURN && $2->data_type != DT_VOID_)
-                       {
-                           yyerror("return statement missing in a non void function");
-                       }
+                       $$ = create_function_def_node($2, $7, $8);
                        temp = NULL;
-                       
-                       if (check_function_definition($$) == -1)
-                       {
-                          yyerror("return statement different from return type");
-                       }
+
                        printf("func\n");
                    }
                    ;

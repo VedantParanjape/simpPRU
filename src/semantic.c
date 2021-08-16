@@ -37,27 +37,3 @@ int check_function_call(ast_node_function_call *function_call)
 
     return -1;
 }
-
-int check_function_definition(ast_node_function_def *function_defs)
-{
-    if (function_defs->symbol_entry != NULL)
-    {
-        int expected_dt = function_defs->symbol_entry->data_type;
-
-        if (function_defs->return_statment == NULL && expected_dt == DT_VOID_)
-        {
-            return 1;
-        }
-        else if (function_defs->return_statment->node_type == AST_NODE_ARITHMETIC_EXP
-                && (expected_dt == DT_INTEGER || expected_dt == DT_CHAR_))
-        {
-            return 1;
-        }
-        else if (function_defs->return_statment->node_type == AST_NODE_BOOLEAN_EXP && expected_dt == DT_BOOLEAN)
-        {
-            return 1;
-        }
-    }
-
-    return -1;
-}
