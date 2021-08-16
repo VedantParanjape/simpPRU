@@ -48,3 +48,17 @@ def char_func: char: char ch, int inc {
 char chtest := 'A';
 char chresult := char_func(chtest, 1);
 println(chresult);
+
+def less_than_22: bool : int num {
+    if: num < 22 {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool b1 := less_than_22(21);
+bool b2 := less_than_22(23);
+print(b1);
+println(b2);
