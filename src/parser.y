@@ -31,7 +31,10 @@ ast_node *ast = NULL;
     struct ast_node_statements *statements;
     struct ast_node_compound_statement *compound_statement;
     struct ast_node_declaration *declaration;
+    struct ast_node_array_declaration *array_declaration;
     struct ast_node_assignment *assignment;
+    struct ast_node_array_assignment *array_assignment;
+    struct ast_node_array_access *array_access;
     struct ast_node_expression *expression;
     struct ast_node_range_expression *range_expression;
     struct ast_node_constant *constant;
@@ -47,12 +50,14 @@ ast_node *ast = NULL;
     struct ast_node_arguments *arguments;
     struct ast_node_utility_function_call *util_function_call;
     struct ast_node_print_string_function_call *print_string_function_call;
-    struct ast_node_print_id_function_call *print_id_function_call;
+    struct ast_node_print_expression_function_call *print_expression_function_call;
 }
 
 %left LBRACE RBRACE
 
 %left LPAREN RPAREN
+
+%left LSQUARE RSQUARE
 
 %left OPR_LGL_OR
 %left OPR_LGL_AND
@@ -92,15 +97,18 @@ ast_node *ast = NULL;
 %token <boolean> CONST_BOOL
 %token <string> CONST_STRING
 
-%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER CHAR_IDENTIFIER
+%token <symbol_handle> IDENTIFIER INT_IDENTIFIER BOOL_IDENTIFIER VOID_IDENTIFIER CHAR_IDENTIFIER INT_ARR_IDENTIFIER CHAR_ARR_IDENTIFIER BOOL_ARR_IDENTIFIER
 
 %type <node> translation_unit program
 %type <statements> statement
 %type <compound_statement> statement_list compound_statement conditional_statement_else
 %type <declaration> declaration declaration_assignment
+%type <array_declaration> array_declaration array_declaration_assignment
 %type <assignment> assignment
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
+%type <array_assignment> array_assignment
+%type <array_access> arithmetic_array_access boolean_array_access
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -112,7 +120,7 @@ ast_node *ast = NULL;
 %type <util_function_call> digital_read_call digital_write_call delay_call pwm_call start_counter_call stop_counter_call read_counter_call 
 %type <util_function_call> init_rpmsg_call recv_rpmsg_call send_rpmsg_call 
 %type <print_string_function_call> print_string_call
-%type <print_id_function_call> print_id_call
+%type <print_expression_function_call> print_expression_call
 %type <arguments> function_call_parameters
 %start start
 %%
@@ -162,11 +170,20 @@ statement: compound_statement {
          | declaration {
              $$ = create_statement_node(AST_NODE_DECLARATION, (void*)$1);
          }
+         | array_declaration {
+             $$ = create_statement_node(AST_NODE_ARRAY_DECLARATION, (void*)$1);
+         }
          | declaration_assignment {
              $$ = create_statement_node(AST_NODE_DECLARATION, (void*)$1);
          }
+         | array_declaration_assignment {
+             $$ = create_statement_node(AST_NODE_ARRAY_DECLARATION, (void*)$1);
+         }
          | assignment {
              $$ = create_statement_node(AST_NODE_ASSIGNMENT, (void*)$1);
+         }
+         | array_assignment {
+             $$ = create_statement_node(AST_NODE_ARRAY_ASSIGNMENT, (void*)$1);
          }
          | conditional_statement {
              $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);
@@ -231,8 +248,8 @@ statement: compound_statement {
          | print_string_call SEMICOLON {
              $$ = create_statement_node(AST_NODE_PRINT_STRING_FUNCTION_CALL, (void*)$1);
          }
-         | print_id_call SEMICOLON {
-             $$ = create_statement_node(AST_NODE_PRINT_ID_FUNCTION_CALL, (void*)$1);
+         | print_expression_call SEMICOLON {
+             $$ = create_statement_node(AST_NODE_PRINT_EXP_FUNCTION_CALL, (void*)$1);
          }
          ;
 
@@ -273,7 +290,39 @@ declaration: DT_INT IDENTIFIER SEMICOLON {
                $$ = create_declaration_node($2, NULL);
            }
            ;
-        
+
+array_declaration: DT_INT LSQUARE arithmetic_expression RSQUARE IDENTIFIER SEMICOLON {
+                    if ($5 == NULL)
+                    {
+                        yyerror("variable already defined");
+                    }
+
+                    $5->data_type = DT_INT_ARR;
+                    $5->array_size = $3->value;
+                    $$ = create_array_declaration_node($5, $3, NULL);
+                }
+                | DT_CHAR LSQUARE arithmetic_expression RSQUARE IDENTIFIER SEMICOLON {
+                    if ($5 == NULL)
+                    {
+                        yyerror("variable already defined");
+                    }
+
+                    $5->data_type = DT_CHAR_ARR;
+                    $5->array_size = $3->value;
+                    $$ = create_array_declaration_node($5, $3, NULL);
+                }
+                | DT_BOOL LSQUARE arithmetic_expression RSQUARE IDENTIFIER SEMICOLON {
+                    if ($5 == NULL)
+                    {
+                        yyerror("variable already defined");
+                    }
+
+                    $5->data_type = DT_BOOL_ARR;
+                    $5->array_size = $3->value;
+                    $$ = create_array_declaration_node($5, $3, NULL);
+                }
+                ;
+
 declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($2 == NULL)
                {
@@ -311,6 +360,17 @@ declaration_assignment: DT_INT IDENTIFIER OPR_ASSIGNMENT arithmetic_expression S
                 printf("%s := %c\n", $2->identifier, $2->value);
             }
             ;
+
+array_declaration_assignment: DT_CHAR LSQUARE arithmetic_expression RSQUARE IDENTIFIER OPR_ASSIGNMENT CONST_STRING SEMICOLON {
+                                if ($5 == NULL)
+                                {
+                                    yyerror("variable already defined");
+                                }
+
+                                $5->data_type = DT_CHAR_ARR;
+                                $5->array_size = $3->value;
+                                $$ = create_array_declaration_node($5, $3, $7);
+                            }
 
 assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($1 == NULL)
@@ -380,6 +440,126 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
             }
             ;
 
+array_assignment: INT_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+                    if ($1 == NULL)
+                    {
+                        yyerror("variable already defined");
+                    }
+
+                    if ($1->is_function == 1)
+                    {
+                        yyerror("identifier is a function, cannot assign value");
+                    }
+
+                    if ($1->is_constant == 1)
+                    {
+                        yyerror("identifier is a pin number constant, cannot assign value");
+                    }
+
+                    $1->data_type = DT_INT_ARR;
+                    $$ = create_array_assignment_node($1, $3, $6);
+                }
+                | CHAR_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
+                    if ($1 == NULL)
+                    {
+                        yyerror("variable already defined");
+                    }
+
+                    if ($1->is_function == 1)
+                    {
+                        yyerror("identifier is a function, cannot assign value");
+                    }
+
+                    if ($1->is_constant == 1)
+                    {
+                        yyerror("identifier is a pin number constant, cannot assign value");
+                    }
+
+                    $1->data_type = DT_CHAR_ARR;
+                    $$ = create_array_assignment_node($1, $3, $6);
+                }
+                | BOOL_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE OPR_ASSIGNMENT boolean_expression SEMICOLON {
+                    if ($1 == NULL)
+                    {
+                        yyerror("variable already defined");
+                    }
+
+                    if ($1->is_function == 1)
+                    {
+                        yyerror("identifier is a function, cannot assign value");
+                    }
+
+                    if ($1->is_constant == 1)
+                    {
+                        yyerror("identifier is a pin number constant, cannot assign value");
+                    }
+
+                    $1->data_type = DT_BOOL_ARR;
+                    $$ = create_array_assignment_node($1, $3, $6);
+                }
+                ;
+
+arithmetic_array_access: INT_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_INT_ARR;
+                $$ = create_array_access_node($1, $3);
+            }
+            | CHAR_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_CHAR_ARR;
+                $$ = create_array_access_node($1, $3);
+            }
+            ;
+
+boolean_array_access: BOOL_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_BOOL_ARR;
+                $$ = create_array_access_node($1, $3);
+            }
+            ;
+
 arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_CONSTANT, $1, NULL, NULL);
           }
@@ -419,6 +599,9 @@ arithmetic_expression: CONST_INT {
                       yyerror("bool variable not allowed with int/char");
                   }
               }
+          }
+          | arithmetic_array_access {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_ARRAY_ACCESS, 0, (ast_node*)$1, NULL);
           }
           | int_function_call {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
@@ -493,6 +676,9 @@ boolean_expression: CONST_BOOL {
                       yyerror("int variable not allowed with bool");
                   }
               }
+          }
+          | boolean_array_access {
+              $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_ARRAY_ACCESS, 0, (ast_node*)$1, NULL);
           }
           | bool_function_call {
               $$ = create_expression_node(AST_NODE_BOOLEAN_EXP, AST_NODE_FUNC_CALL, $1->symbol_entry->value, (ast_node*)$1, NULL);
@@ -904,24 +1090,18 @@ print_string_call:  KW_PRINT LPAREN CONST_STRING RPAREN {
                     }
                     ;
 
-print_id_call:  KW_PRINT LPAREN INT_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 0);
-                }
-                | KW_PRINT LPAREN BOOL_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 0);
-                }
-                | KW_PRINT LPAREN CHAR_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 0);
-                }
-                | KW_PRINTLN LPAREN INT_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 1);
-                }
-                | KW_PRINTLN LPAREN BOOL_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 1);
-                }
-                | KW_PRINTLN LPAREN CHAR_IDENTIFIER RPAREN {
-                    $$ = create_print_id_function_call_node($3, 1);
-                }
-                ;
+print_expression_call:  KW_PRINT LPAREN arithmetic_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 0);
+                        }
+                        | KW_PRINT LPAREN boolean_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 0);
+                        }
+                        | KW_PRINTLN LPAREN arithmetic_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 1);
+                        }
+                        | KW_PRINTLN LPAREN boolean_expression RPAREN {
+                            $$ = create_print_expression_function_call_node($3, 1);
+                        }
+                        ;
 
 %%

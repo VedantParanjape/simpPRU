@@ -17,3 +17,7 @@ if: b == 10 {
     print(b);
     println(" is the value of b");
 }
+
+int c := 2;
+int d := 2;
+println(c+d);
