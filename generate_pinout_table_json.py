@@ -19,6 +19,5 @@ for i in range(2):
         
     pinout["pru"+str(i)] = temp
 
-
-fhandle = open("src/pinout.json", "w+")
-json.dump(pinout, fhandle)
+with open("src/pinout.json", "w+") as fhandle:
+    json.dump(pinout, fhandle)

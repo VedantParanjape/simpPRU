@@ -35,6 +35,11 @@ int device_model()
         model_beaglebone__ = MODEL_BEAGLEBONE_BLACK;
         printf("Detected %s\n", model_name);
     }
+    else if (!strcmp(model_name, "TI AM335x BeagleBone Blue"))
+    {
+        model_beaglebone__ = MODEL_BEAGLEBONE_BLUE;
+        printf("Detected %s\n", model_name);
+    }
     else if (!strcmp(model_name, "TI AM335x PocketBeagle"))
     {
         model_beaglebone__ = MODEL_POCKETBEAGLE;

@@ -24,6 +24,10 @@ int config_pins(int pru_pin_number, int mode, char* pru_id)
             json_head = cJSON_Parse(BEAGLEBONEBLACK_PINOUT);
             break;
 
+        case MODEL_BEAGLEBONE_BLUE:
+            json_head = cJSON_Parse(BEAGLEBONEBLUE_PINOUT);
+            break;
+
         case MODEL_BEAGLEBONE_AI:
             json_head = cJSON_Parse(BEAGLEBONEAI_PINOUT);
             break;
@@ -150,6 +154,11 @@ int set_device_model(int model_bb)
         else if (!strcmp(model_name, "TI AM335x BeagleBone Black"))
         {
             model_beaglebone = MODEL_BEAGLEBONE_BLACK;
+            printf("Detected %s\n", model_name);
+        }
+        else if (!strcmp(model_name, "TI AM335x BeagleBone Blue"))
+        {
+            model_beaglebone = MODEL_BEAGLEBONE_BLUE;
             printf("Detected %s\n", model_name);
         }
         else if (!strcmp(model_name, "TI AM335x PocketBeagle"))
