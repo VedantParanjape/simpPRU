@@ -12,7 +12,10 @@
 #define AST_NODE_COMPOUND_STATEMENT  4
 #define AST_NODE_EMPTY_STATEMENT     5
 #define AST_NODE_DECLARATION         6
+#define AST_NODE_ARRAY_DECLARATION   2000
 #define AST_NODE_ASSIGNMENT          7
+#define AST_NODE_ARRAY_ASSIGNMENT    2001
+#define AST_NODE_ARRAY_ACCESS        2002
 #define AST_NODE_ARITHMETIC_EXP      8
 #define AST_NODE_BOOLEAN_EXP         9
 #define AST_NODE_RELATIONAL_EXP      10
@@ -77,7 +80,7 @@
 #define AST_NODE_RECV_RPMSG_CALL            59
 #define AST_NODE_SEND_RPMSG_CALL            60
 #define AST_NODE_PRINT_STRING_FUNCTION_CALL 61
-#define AST_NODE_PRINT_ID_FUNCTION_CALL     62
+#define AST_NODE_PRINT_EXP_FUNCTION_CALL    62
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;
@@ -89,7 +92,10 @@ struct ast_node;
 struct ast_node_statements;
 struct ast_node_compound_statement;
 struct ast_node_declaration;
+struct ast_node_array_declaration;
 struct ast_node_assignment;
+struct ast_node_array_assignment;
+struct ast_node_array_access;
 struct ast_node_expression;
 struct ast_node_range_expression;
 struct ast_node_constant;
@@ -105,13 +111,16 @@ struct ast_node_function_call;
 struct ast_node_arguments;
 struct ast_node_utility_function_call;
 struct ast_node_print_string_function_call;
-struct ast_node_print_id_function_call;
+struct ast_node_print_expression_function_call;
 
 typedef struct ast_node ast_node;
 typedef struct ast_node_statements ast_node_statements;
 typedef struct ast_node_compound_statement ast_node_compound_statement;
 typedef struct ast_node_declaration ast_node_declaration;
+typedef struct ast_node_array_declaration ast_node_array_declaration;
 typedef struct ast_node_assignment ast_node_assignment;
+typedef struct ast_node_array_assignment ast_node_array_assignment;
+typedef struct ast_node_array_access ast_node_array_access;
 typedef struct ast_node_expression ast_node_expression;
 typedef struct ast_node_range_expression ast_node_range_expression;
 typedef struct ast_node_constant ast_node_constant;
@@ -127,7 +136,7 @@ typedef struct ast_node_function_call ast_node_function_call;
 typedef struct ast_node_arguments ast_node_arguments;
 typedef struct ast_node_utility_function_call ast_node_utility_function_call;
 typedef struct ast_node_print_string_function_call ast_node_print_string_function_call;
-typedef struct ast_node_print_id_function_call ast_node_print_id_function_call;
+typedef struct ast_node_print_expression_function_call ast_node_print_expression_function_call;
 
 struct ast_node 
 {
@@ -143,7 +152,9 @@ struct ast_node
     {
         ast_node_compound_statement *compound_statement;
         ast_node_declaration *declaration;
+        ast_node_array_declaration *array_declaration;
         ast_node_assignment *assignment;
+        ast_node_array_assignment *array_assignment;
         ast_node_conditional_if *if_else;
         ast_node_loop_for *loop_for;
         ast_node_loop_while *loop_while;
@@ -152,7 +163,7 @@ struct ast_node
         ast_node_function_call *function_call;
         ast_node_utility_function_call *utility_function_call;
         ast_node_print_string_function_call *print_string_function_call;
-        ast_node_print_id_function_call *print_id_function_call;
+        ast_node_print_expression_function_call *print_expression_function_call;
     }child_nodes;
 };
 
@@ -171,12 +182,38 @@ struct ast_node
     ast_node_expression *expression;
 };
 
+struct ast_node_array_declaration
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *size;
+    char *initial_string;
+};
+
  struct ast_node_assignment
 {
     int node_type;
 
     sym_ptr symbol_entry;
     ast_node_expression *expression;
+};
+
+struct ast_node_array_assignment
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *index;
+    ast_node_expression *expression;
+};
+
+struct ast_node_array_access
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *index;
 };
 
  struct ast_node_expression
@@ -304,11 +341,11 @@ struct ast_node_print_string_function_call
     char *string;
 };
 
-struct ast_node_print_id_function_call
+struct ast_node_print_expression_function_call
 {
     int node_type;
     int add_newline;
-    sym_ptr symbol_handle;
+    ast_node_expression *expression;
 };
 
 ast_node *create_translation_unit();
@@ -317,7 +354,10 @@ ast_node_statements *create_statement_node(int node_type, void *child);
 ast_node_compound_statement *create_compound_statement_node();
 ast_node_compound_statement *add_compound_statement_node(ast_node_compound_statement *parent, ast_node_statements *child);
 ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expression *exp);
+ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
+ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp);
+ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index);
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right);
 ast_node_range_expression *create_range_expression_node(ast_node_expression *start, ast_node_expression *stop, ast_node_expression *increment);
 ast_node_constant *create_constant_node(int data_type, int value);
@@ -345,7 +385,7 @@ ast_node_utility_function_call *create_init_rpmsg_call_node();
 ast_node_utility_function_call *create_recv_rpmsg_call_node();
 ast_node_utility_function_call *create_send_rpmsg_call_node(ast_node_expression *rpmsg_data);
 ast_node_print_string_function_call *create_print_string_function_call_node(char *string, int add_newline);
-ast_node_print_id_function_call *create_print_id_function_call_node(sym_ptr symbol_handle, int add_newline);
+ast_node_print_expression_function_call *create_print_expression_function_call_node(ast_node_expression *expression, int add_newline);
 
 void ast_node_dump(ast_node* ast);
 void ast_node_type(int node_type);

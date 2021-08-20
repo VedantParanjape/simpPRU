@@ -22,6 +22,7 @@
 #define MODEL_BEAGLEBONE_BLACK 2
 #define MODEL_BEAGLEBONE_BLACK_WIRELESS 3
 #define MODEL_BEAGLEBONE_AI 4
+#define MODEL_BEAGLEBONE_BLUE 5
 
 using namespace ftxui;
 class console : public ComponentBase

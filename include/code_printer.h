@@ -52,7 +52,10 @@
 
 void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE* handle, int is_func_def);
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);
+void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE* handle);
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle);
+void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE *handle);
+void ast_array_access_printer(ast_node_array_access *access, FILE* handle);
 void ast_expression_printer(ast_node_expression *node, FILE* handle);
 void ast_conditional_if_printer(ast_node_conditional_if *node, FILE* handle);
 void ast_loop_for_printer(ast_node_loop_for *node, FILE* handle);
@@ -60,7 +63,7 @@ void ast_loop_while_printer(ast_node_loop_while *node, FILE* handle);
 void ast_function_call_printer(ast_node_function_call *fc, FILE* handle);
 void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE* handle);
 void ast_print_string_function_call_printer(ast_node_print_string_function_call *pfc, FILE* handle);
-void ast_print_id_function_call_printer(ast_node_print_id_function_call *pfc, FILE *handle);
+void ast_print_expression_function_call_printer(ast_node_print_expression_function_call *pfc, FILE *handle);
 void ast_function_definition(ast_node_function_def *def, FILE* handle);
 int code_printer(ast_node* ast, int pru_id, int test);
 
