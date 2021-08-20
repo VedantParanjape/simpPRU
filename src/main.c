@@ -205,7 +205,7 @@ int main(int argc, char** argv)
             snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
             if (system(command) == -1)
             {
-                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call gcc-pru\n");
             }
         }
     }
