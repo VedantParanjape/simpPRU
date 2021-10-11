@@ -396,15 +396,28 @@ else {
 
 ## Send message
 
-`send_message` is a function which is used to send messages to ARM core from PRU, messages can only be `integers`. It uses RPMSG channel setup by `init_message_channel` to send messages from PRU to the ARM core.
+There are six functions which are used to send messages to ARM core from PRU, messages can be `integers`, `characters`, `bools`, `integer arrays`, `character arrays`, and `boolean arrays`. It uses RPMSG channel setup by `init_message_channel` to send messages from PRU to the ARM core.
+
+For sending arrays, arrays are automatically converted to a string, for example, [1, 2, 3, 4] would become "1 2 3 4".
 
 ### Syntax
 
-`send_message(message)`
+* `send_int(expression)`
+* `send_char(expression)`
+* `send_bool(expression)`
+* `send_ints(identifier)`
+* `send_chars(identifier)`
+* `send_bools(identifier)`
+
+* `send_message` is an alias for `send_int` to preserve backwards compatibility.
 
 #### Parameters
 
-* `message` is an integer, number passed to it is sent to the ARM core, through RPMSG.
+* For `send_int` and `send_char`, `expression` would be an arithmetic expression.
+* For `send_bool`, `expression` would be a boolean expression
+* For `send_ints`, `identifier` should be an identifier for an integer array.
+* For `send_chars`, `identifier` should be an identifier for a character array.
+* For `send_bools`, `identifier` should be an identifier for a boolean array.
 
 ### Example
 
@@ -412,9 +425,9 @@ else {
 init_message_channel();
 
 if : digital_read(P1_29) {
-    send_message(1);
+    send_bool(true);
 }
 else {
-    send_message(0);
+    send_int(0);
 }
 ```

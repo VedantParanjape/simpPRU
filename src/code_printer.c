@@ -506,12 +506,47 @@ void ast_utility_function_call_printer(ast_node_utility_function_call *ufc, FILE
                 fprintf(handle, "%s()", "receive_rpmsg");
                 break;
 
-            case AST_NODE_SEND_RPMSG_CALL:
+            case AST_NODE_SEND_INT_RPMSG_CALL:
                 rpmsg_artifact_found = 1;
 
-                fprintf(handle, "%s(", "send_rpmsg");
+                fprintf(handle, "%s(", "send_int_rpmsg");
                 ast_expression_printer(ufc->rpmsg_data, handle);
                 fprintf(handle, "%s", ")");
+                break;
+
+            case AST_NODE_SEND_CHAR_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "%s(", "send_char_rpmsg");
+                ast_expression_printer(ufc->rpmsg_data, handle);
+                fprintf(handle, "%s", ")");
+                break;
+
+            case AST_NODE_SEND_BOOL_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "%s(", "send_bool_rpmsg");
+                ast_expression_printer(ufc->rpmsg_data, handle);
+                fprintf(handle, "%s", ")");
+                break;
+
+            // for arrays, we need to pass the length: sizeof(array) / sizeof(datatype)
+            case AST_NODE_SEND_INTS_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "send_ints_rpmsg( %s, sizeof( %s ) / sizeof(int) )", ufc->symbol_entry->identifier, ufc->symbol_entry->identifier);
+                break;
+
+            case AST_NODE_SEND_CHARS_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "send_chars_rpmsg( %s, sizeof( %s ) / sizeof(char) )", ufc->symbol_entry->identifier, ufc->symbol_entry->identifier);
+                break;
+
+            case AST_NODE_SEND_BOOLS_RPMSG_CALL:
+                rpmsg_artifact_found = 1;
+
+                fprintf(handle, "send_bools_rpmsg( %s, sizeof( %s ) / sizeof(bool) )", ufc->symbol_entry->identifier, ufc->symbol_entry->identifier);
                 break;
         }
     }
