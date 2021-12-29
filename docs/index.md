@@ -19,6 +19,7 @@ This can be achieved by implementing a language on top of PRU C. It will directl
 Currently this only supports am335x systems: PocketBeagle, BeagleBone Black and BeagleBone Black Wireless:
 
 * `gcc-pru`
+* `gnuprumcu`
 * beaglebone image with official support for remoteproc: `ti-4.19+ kernel`
 * `config-pin` utility
 
