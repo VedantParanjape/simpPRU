@@ -6,6 +6,7 @@
 * bison
 * gcc
 * gcc-pru
+* gnuprumcu
 * cmake
 
 ## Build 

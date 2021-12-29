@@ -127,6 +127,7 @@ For example codes, please check example [page](https://simppru.readthedocs.io/en
 * bison
 * gcc
 * gcc-pru
+* [gnuprumcu](https://github.com/dinuxbg/gnuprumcu)
 * cmake
 
 ### Build

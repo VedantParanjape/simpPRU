@@ -3,6 +3,7 @@
 ## Dependencies
   
 * gcc-pru
+* gnuprumcu
 * config-pin utility (for autoconfig)
 
 ## amd64
