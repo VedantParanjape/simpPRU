@@ -103,6 +103,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             {
                 arguments->device_id = MODEL_BEAGLEBONE_AI;
             }
+            else if (!strcmp(arg, "bbblue"))
+            {
+                arguments->device_id = MODEL_BEAGLEBONE_BLUE;
+            }
             else
             {
                 fprintf(stderr, "\e[31mfatal error:\e[0m incorrect beagleboard model\n");
