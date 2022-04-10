@@ -1,0 +1,10 @@
+int a := 5;
+int b := 2;
+c := a^b;
+print(c);
+
+int d := 12;
+int e := 25;
+f := d^e;
+printn(c);
+print(f);
