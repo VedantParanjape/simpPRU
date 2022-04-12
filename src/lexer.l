@@ -29,7 +29,7 @@ string               (\"(\\.|[^"\\])*\")
 datatype             ("int"|"bool"|"char"|"uint8")
 conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
-arithmetic_operators ("+"|"-"|"*"|"/"|"%")
+arithmetic_operators ("+"|"-"|"*"|"^"|"/"|"%")
 relational_operators (">"|">="|"<"|"<="|"=="|"!=")
 bitwise_operators    ("~"|"&"|"|"|">>"|"<<")
 logical_operators    ("not"|"and"|"or")
@@ -276,6 +276,10 @@ comma                ([,])
   else if (!strcmp(yytext, "|"))
   {
     return OPR_BW_OR;
+  }
+  else if (!strcmp(yytext, "^"))
+  {
+    return OPR_BW_XOR;
   }
   else if (!strcmp(yytext, "<<"))
   {

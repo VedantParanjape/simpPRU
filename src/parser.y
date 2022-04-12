@@ -64,6 +64,7 @@ ast_node *ast = NULL;
 
 %left OPR_BW_OR
 %left OPR_BW_AND
+%left OPR_BW_XOR
 
 %left OPR_EQ OPR_NE
 %left OPR_GT OPR_LT OPR_GE OPR_LE
