@@ -31,7 +31,7 @@ conditional          ("if"|"elif"|"else")
 loops                ("for"|"in"|"while"|"break"|"continue")
 arithmetic_operators ("+"|"-"|"*"|"/"|"%")
 relational_operators (">"|">="|"<"|"<="|"=="|"!=")
-bitwise_operators    ("~"|"&"|"|"|">>"|"<<")
+bitwise_operators    ("~"|"&"|"|"|"^"|">>"|"<<")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
@@ -276,6 +276,10 @@ comma                ([,])
   else if (!strcmp(yytext, "|"))
   {
     return OPR_BW_OR;
+  }
+  else if (!strcmp(yytext, "^"))
+  {
+    return OPR_BW_XOR;
   }
   else if (!strcmp(yytext, "<<"))
   {

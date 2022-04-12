@@ -268,6 +268,10 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
 
                 case AST_OPR_BW_OR:  
                     fprintf(handle, "%s", _OPR_BW_OR);
+                    break;
+
+                case AST_OPR_BW_XOR:  
+                    fprintf(handle, "%s", _OPR_BW_XOR);
                     break;     
  
                 case AST_OPR_LGL_NOT: 

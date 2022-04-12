@@ -54,6 +54,7 @@
 #define AST_OPR_BW_NOT     38 // ~
 #define AST_OPR_BW_AND     39 // &
 #define AST_OPR_BW_OR      40 // |
+#define AST_OPR_BW_XOR     2003 // ^
 #define AST_OPR_LGL_NOT    41 // not
 #define AST_OPR_LGL_AND    42 // and
 #define AST_OPR_LGL_OR     43 // or
