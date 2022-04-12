@@ -64,6 +64,7 @@ ast_node *ast = NULL;
 
 %left OPR_BW_OR
 %left OPR_BW_AND
+%left OPR_BW_XOR
 
 %left OPR_EQ OPR_NE
 %left OPR_GT OPR_LT OPR_GE OPR_LE
@@ -622,6 +623,9 @@ arithmetic_expression: CONST_INT {
           }
           | arithmetic_expression OPR_BW_AND arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
+          | arithmetic_expression OPR_BW_XOR arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_AND, $1->value ^ $3->value, (ast_node*)$1, (ast_node*)$3);
           }
           | arithmetic_expression OPR_BW_LFT arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_LFT, $1->value << $3->value, (ast_node*)$1, (ast_node*)$3);
