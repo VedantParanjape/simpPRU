@@ -32,7 +32,7 @@
 #define _OPR_LGL_OR  " | " 
 
 #define _OPR_ASSIGNMENT " = " 
-
+#define _OPR_SUB_ASSIGNMENT " -= " 
 #define _DT_INT_ "int"
 #define _DT_VOID_ "void"
 #define _DT_BOOL_ "bool"
@@ -54,6 +54,7 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);
 void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE* handle);
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle);
+void ast_sub_assignment_printer(ast_node_sub_assignment *sub_assg, FILE* handle);
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE *handle);
 void ast_array_access_printer(ast_node_array_access *access, FILE* handle);
 void ast_expression_printer(ast_node_expression *node, FILE* handle);
