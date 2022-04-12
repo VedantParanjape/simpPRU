@@ -40,6 +40,10 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.assignment = child;
             break;
 
+        case AST_NODE_SUB_ASSIGNMENT:
+            stmt->child_nodes.sub_assignment = child;
+            break;
+
         case AST_NODE_ARRAY_ASSIGNMENT:
             stmt->child_nodes.array_assignment = child;
             break;
@@ -142,6 +146,17 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
     assgn->symbol_entry = symbol;
 
     return assgn;
+}
+
+ast_node_sub_assignment *create_sub_assignment_node(sym_ptr symbol, ast_node_expression *exp)
+{
+    ast_node_sub_assignment *sub_assgn = (ast_node_sub_assignment*)malloc(sizeof(ast_node_sub_assignment));
+
+    sub_assgn->node_type = AST_NODE_ASSIGNMENT;
+    sub_assgn->expression = exp;
+    sub_assgn->symbol_entry = symbol;
+
+    return sub_assgn;
 }
 
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp)
