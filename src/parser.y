@@ -621,6 +621,9 @@ arithmetic_expression: CONST_INT {
           | arithmetic_expression OPR_BW_OR arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_OR, $1->value | $3->value, (ast_node*)$1, (ast_node*)$3);
           }
+          | arithmetic_expression OPR_BW_XOR arithmetic_expression {
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_XOR, $1->value ^ $3->value, (ast_node*)$1, (ast_node*)$3);
+          }
           | arithmetic_expression OPR_BW_AND arithmetic_expression {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_BW_AND, $1->value & $3->value, (ast_node*)$1, (ast_node*)$3);
           }
