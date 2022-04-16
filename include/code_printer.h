@@ -26,8 +26,8 @@
 
 #define _OPR_BW_NOT  " ~ " 
 #define _OPR_BW_AND  " & " 
-#define _OPR_BW_OR   " | " 
 #define _OPR_BW_XOR  " ^ " 
+#define _OPR_BW_OR   " | " 
 #define _OPR_LGL_NOT " ! " 
 #define _OPR_LGL_AND " && " 
 #define _OPR_LGL_OR  " | " 
