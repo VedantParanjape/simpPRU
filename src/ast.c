@@ -40,6 +40,14 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.assignment = child;
             break;
 
+        case AST_NODE_MUL_ASSIGNMENT:
+            stmt->child_nodes.mul_assignment = child;
+            break;
+
+        case AST_NODE_DIV_ASSIGNMENT:
+            stmt->child_nodes.div_assignment = child;
+            break;          
+
         case AST_NODE_ARRAY_ASSIGNMENT:
             stmt->child_nodes.array_assignment = child;
             break;
@@ -142,6 +150,27 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
     assgn->symbol_entry = symbol;
 
     return assgn;
+}
+ast_node_mul_assignment *create_mul_assignment_node(sym_ptr symbol, ast_node_expression *exp)
+{
+    ast_node_mul_assignment *mul_assgn = (ast_node_mul_assignment*)malloc(sizeof(ast_node_mul_assignment));
+
+    mul_assgn->node_type = AST_NODE_MUL_ASSIGNMENT;
+    mul_assgn->expression = exp;
+    mul_assgn->symbol_entry = symbol;
+
+    return mul_assgn;
+}
+
+ast_node_div_assignment *create_div_assignment_node(sym_ptr symbol, ast_node_expression *exp)
+{
+    ast_node_div_assignment *div_assgn = (ast_node_div_assignment*)malloc(sizeof(ast_node_div_assignment));
+
+    div_assgn->node_type = AST_NODE_DIV_ASSIGNMENT;
+    div_assgn->expression = exp;
+    div_assgn->symbol_entry = symbol;
+
+    return div_assgn;
 }
 
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp)
@@ -598,8 +627,12 @@ void ast_node_type(int node_type)
             printf("ast array declaration");
             break;
 
-        case AST_NODE_ASSIGNMENT:
-            printf("ast assignment");
+        case AST_NODE_DIV_ASSIGNMENT:
+            printf("ast division assignment");
+            break;
+
+        case AST_NODE_MUL_ASSIGNMENT:
+            printf("ast multiplication assignment");
             break;
 
         case AST_NODE_ARRAY_ASSIGNMENT:

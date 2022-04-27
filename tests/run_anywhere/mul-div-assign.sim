@@ -1,0 +1,4 @@
+int a:= 9;
+int b:= 10;
+b*=a;
+print(b);

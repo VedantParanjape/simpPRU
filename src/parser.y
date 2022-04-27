@@ -33,6 +33,8 @@ ast_node *ast = NULL;
     struct ast_node_declaration *declaration;
     struct ast_node_array_declaration *array_declaration;
     struct ast_node_assignment *assignment;
+    struct ast_node_mul_assignment *mul_assignment;
+    struct ast_node_div_assignment *div_assignment;
     struct ast_node_array_assignment *array_assignment;
     struct ast_node_array_access *array_access;
     struct ast_node_expression *expression;
@@ -75,6 +77,8 @@ ast_node *ast = NULL;
 %right OPR_BW_NOT OPR_LGL_NOT
 
 %token OPR_ASSIGNMENT
+%token OPR_MUL_ASSIGNMENT
+%token OPR_DIV_ASSIGNMENT
 
 %token SEMICOLON COLON COMMA
 
@@ -106,6 +110,8 @@ ast_node *ast = NULL;
 %type <declaration> declaration declaration_assignment
 %type <array_declaration> array_declaration array_declaration_assignment
 %type <assignment> assignment
+%type <mul_assignment> mul_assignment
+%type <div_assignment> div_assignment
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
@@ -182,6 +188,12 @@ statement: compound_statement {
          }
          | assignment {
              $$ = create_statement_node(AST_NODE_ASSIGNMENT, (void*)$1);
+         }
+         | mul_assignment {
+             $$ = create_statement_node(AST_NODE_MUL_ASSIGNMENT, (void*)$1);
+         }
+         | div_assignment {
+             $$ = create_statement_node(AST_NODE_DIV_ASSIGNMENT, (void*)$1);
          }
          | array_assignment {
              $$ = create_statement_node(AST_NODE_ARRAY_ASSIGNMENT, (void*)$1);
@@ -435,13 +447,155 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                 }
 
                 $1->data_type = DT_CHAR_;
-                $1->value = $3->value;
+                $1->value =  $3->value ;
                 $$ = create_assignment_node($1, $3);
 
                 printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
+mul_assignment: INT_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLON {
+               if ($1 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+               
+               if ($1->is_function == 1)
+               {
+                   yyerror("identifier is a function, cannot assign value");
+               }
+               
+               if ($1->is_constant == 1)
+               {
+                   yyerror("identifer is a pin number constant, cannot assign value");
+               }
 
+               $1->data_type = DT_INTEGER;
+               $1->value =  $1->value * $3->value;
+               $$ = create_mul_assignment_node($1, $3);
+
+               printf("%s *= %d\n", $1->identifier, $1->value);
+            }
+            | BOOL_IDENTIFIER OPR_MUL_ASSIGNMENT boolean_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+                
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+                
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifer is a pin number constant, cannot assign value");
+                }
+                
+                $1->data_type = DT_BOOLEAN;  
+                $1->value =  $1->value * $3->value;
+                $$ = create_mul_assignment_node($1, $3);
+
+               printf("%s *= %d\n", $1->identifier, $1->value);
+            }
+            | CHAR_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_CHAR_;
+                $1->value = $1->value *$3->value;
+                $$ = create_mul_assignment_node($1, $3);
+
+                printf("%s *= %c\n", $1->identifier, $1->value);
+            }
+            ;
+div_assignment: INT_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLON {
+               if ($1 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+               
+               if ($1->is_function == 1)
+               {
+                   yyerror("identifier is a function, cannot assign value");
+               }
+               
+               if ($1->is_constant == 1)
+               {
+                   yyerror("identifer is a pin number constant, cannot assign value");
+               }
+                if ($3->value == 0)
+                {
+                    yyerror("division by 0");
+                } 
+               $1->data_type = DT_INTEGER;
+               $1->value =  $1->value / $3->value;
+               $$ = create_div_assignment_node($1, $3);
+
+               printf("%s /= %d\n", $1->identifier, $1->value);
+            }
+            | BOOL_IDENTIFIER OPR_DIV_ASSIGNMENT boolean_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+                
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+                
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifer is a pin number constant, cannot assign value");
+                }
+                if ($3->value == 0)
+                {
+                    yyerror("division by 0");
+                }               
+                $1->data_type = DT_BOOLEAN;  
+                $1->value =  $1->value / $3->value;
+                $$ = create_div_assignment_node($1, $3);
+
+               printf("%s /= %d\n", $1->identifier, $1->value);
+            }
+            | CHAR_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+                if ($3->value == 0)
+                {
+                    yyerror("division by 0");
+                } 
+                $1->data_type = DT_CHAR_;
+                $1->value = $1->value / $3->value;
+                $$ = create_div_assignment_node($1, $3);
+
+                printf("%s /= %c\n", $1->identifier, $1->value);
+            }
+            ;
 array_assignment: INT_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                     if ($1 == NULL)
                     {
