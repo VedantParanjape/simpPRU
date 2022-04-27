@@ -36,57 +36,60 @@
 #define AST_NODE_FUNC_RETURN         23
 #define AST_NODE_FUNC_ARGS           24
 
-#define AST_OPR_BW_LFT     25 // <<
-#define AST_OPR_BW_RGT     26 // >>
-#define AST_OPR_ADD        27 // + 
-#define AST_OPR_SUB        28 // -
-#define AST_OPR_MUL        29 // *
-#define AST_OPR_DIV        30 // /
-#define AST_OPR_MOD        31 // %
+#define AST_OPR_IC         25 // ++
+#define AST_OPR_DC         26 // --
+#define AST_OPR_BW_LFT     27 // <<
+#define AST_OPR_BW_RGT     28 // >>
+#define AST_OPR_ADD        29 // + 
+#define AST_OPR_SUB        30 // -
+#define AST_OPR_MUL        31 // *
+#define AST_OPR_DIV        32 // /
+#define AST_OPR_MOD        33 // %
 
-#define AST_OPR_GT         32 // > 
-#define AST_OPR_LT         33 // <
-#define AST_OPR_EQ         34 // =
-#define AST_OPR_NE         35 // !=
-#define AST_OPR_GE         36 // >=
-#define AST_OPR_LE         37 // <=
+#define AST_OPR_GT         34 // > 
+#define AST_OPR_LT         35 // <
+#define AST_OPR_EQ         36 // =
+#define AST_OPR_NE         37 // !=
+#define AST_OPR_GE         38 // >=
+#define AST_OPR_LE         39 // <=
 
-#define AST_OPR_BW_NOT     38 // ~
-#define AST_OPR_BW_AND     39 // &
-#define AST_OPR_BW_OR      40 // |
-#define AST_OPR_LGL_NOT    41 // not
-#define AST_OPR_LGL_AND    42 // and
-#define AST_OPR_LGL_OR     43 // or
+#define AST_OPR_BW_NOT     40 // ~
+#define AST_OPR_BW_AND     41 // &
+#define AST_OPR_BW_OR      42 // |
+#define AST_OPR_LGL_NOT    43 // not
+#define AST_OPR_LGL_AND    44 // and
+#define AST_OPR_LGL_OR     45 // or
 
-#define AST_OPR_ASSIGNMENT 44 // :=
 
-#define AST_CONST_INT  45 // INT CONSTANT
-#define AST_CONST_BOOL 46 // BOOL CONSTANT
-#define AST_IDENTIFIER 47 // IDENTIFIER
+#define AST_OPR_ASSIGNMENT 46 // :=
 
-#define AST_DT_INT  48 // DATA TYPE INT
-#define AST_DT_BOOL 49 // DATA TYPE BOOL
-#define AST_DT_VOID 50 // DATA TYPE VOID
+#define AST_CONST_INT  47 // INT CONSTANT
+#define AST_CONST_BOOL 48 // BOOL CONSTANT
+#define AST_IDENTIFIER 49 // IDENTIFIER
+
+#define AST_DT_INT  50 // DATA TYPE INT
+#define AST_DT_BOOL 51 // DATA TYPE BOOL
+#define AST_DT_VOID 52 // DATA TYPE VOID
 #define AST_DT_CHAR 10001 // DATA TYPE CHAR
 
-#define AST_NODE_DIGITAL_READ_CALL          51 
-#define AST_NODE_DIGITAL_WRITE_CALL         52
-#define AST_NODE_DELAY_CALL                 53
-#define AST_NODE_PWM_CALL                   54
-#define AST_NODE_START_COUNTER_CALL         55
-#define AST_NODE_STOP_COUNTER_CALL          56
-#define AST_NODE_READ_COUNTER_CALL          57
-#define AST_NODE_INIT_RPMSG_CALL            58
-#define AST_NODE_RECV_RPMSG_CALL            59
-#define AST_NODE_SEND_RPMSG_CALL            60
-#define AST_NODE_SEND_INT_RPMSG_CALL        61
-#define AST_NODE_SEND_CHAR_RPMSG_CALL       62
-#define AST_NODE_SEND_BOOL_RPMSG_CALL       63
-#define AST_NODE_SEND_INTS_RPMSG_CALL       64
-#define AST_NODE_SEND_CHARS_RPMSG_CALL      65
-#define AST_NODE_SEND_BOOLS_RPMSG_CALL      66
-#define AST_NODE_PRINT_STRING_FUNCTION_CALL 67
-#define AST_NODE_PRINT_EXP_FUNCTION_CALL    68
+#define AST_NODE_DIGITAL_READ_CALL          53 
+#define AST_NODE_DIGITAL_WRITE_CALL         54
+#define AST_NODE_DELAY_CALL                 55
+#define AST_NODE_PWM_CALL                   56
+#define AST_NODE_START_COUNTER_CALL         57
+#define AST_NODE_STOP_COUNTER_CALL          58
+#define AST_NODE_READ_COUNTER_CALL          59
+#define AST_NODE_INIT_RPMSG_CALL            60
+#define AST_NODE_RECV_RPMSG_CALL            61
+#define AST_NODE_SEND_RPMSG_CALL            62
+#define AST_NODE_SEND_INT_RPMSG_CALL        63
+#define AST_NODE_SEND_CHAR_RPMSG_CALL       64
+#define AST_NODE_SEND_BOOL_RPMSG_CALL       65
+#define AST_NODE_SEND_INTS_RPMSG_CALL       66
+#define AST_NODE_SEND_CHARS_RPMSG_CALL      67
+#define AST_NODE_SEND_BOOLS_RPMSG_CALL      68
+#define AST_NODE_PRINT_STRING_FUNCTION_CALL 69
+#define AST_NODE_PRINT_EXP_FUNCTION_CALL    70
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;

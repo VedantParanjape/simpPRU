@@ -33,6 +33,7 @@ arithmetic_operators ("+"|"-"|"*"|"/"|"%")
 relational_operators (">"|">="|"<"|"<="|"=="|"!=")
 bitwise_operators    ("~"|"&"|"|"|">>"|"<<")
 logical_operators    ("not"|"and"|"or")
+unary_operators      ("++"|"--")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
 io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter"|"init_message_channel"|"receive_message"|"send_message"|"send_int"|"send_char"|"send_bool"|"send_ints"|"send_chars"|"send_bools")
@@ -299,6 +300,17 @@ comma                ([,])
   else if (!strcmp(yytext, "or"))
   {
     return OPR_LGL_OR;
+  }
+}
+
+{unary_operators}       {
+  if (!strcmp(yytext, "++"))
+  {
+    return OPR_IC;
+  }
+  else if (!strcmp(yytext, "--"))
+  {
+    return OPR_DC;
   }
 }
 

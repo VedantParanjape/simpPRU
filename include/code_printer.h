@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define _OPR_IC " ++ "
+#define _OPR_DC " -- "
 #define _OPR_LFT " << "
 #define _OPR_RGT " >> "
 #define _OPR_ADD " + " 
