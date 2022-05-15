@@ -514,7 +514,7 @@ mul_assignment: INT_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLO
                 }
 
                 $1->data_type = DT_CHAR_;
-                $1->value = $1->value *$3->value;
+                $1->value = $1->value * $3->value;
                 $$ = create_mul_assignment_node($1, $3);
 
                 printf("%s *= %c\n", $1->identifier, $1->value);

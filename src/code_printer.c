@@ -724,7 +724,15 @@ int code_printer(ast_node* ast, int pru_id, int test)
             case AST_NODE_ASSIGNMENT:
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
-            
+
+            case AST_NODE_MUL_ASSIGNMENT:
+                ast_mul_assignment_printer(((ast_node_statements*)temp)->child_nodes.mul_assignment, handle);
+                break;
+
+            case AST_NODE_DIV_ASSIGNMENT:
+                ast_div_assignment_printer(((ast_node_statements*)temp)->child_nodes.div_assignment, handle);
+                break;
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
