@@ -627,13 +627,17 @@ void ast_node_type(int node_type)
             printf("ast array declaration");
             break;
 
-/*        case AST_NODE_DIV_ASSIGNMENT:
+        case AST_NODE_ASSIGNMENT:
+            printf("ast assignment");
+            break;
+          
+        case AST_NODE_DIV_ASSIGNMENT:
             printf("ast division assignment");
             break;
 
         case AST_NODE_MUL_ASSIGNMENT:
             printf("ast multiplication assignment");
-            break; */
+            break; 
 
         case AST_NODE_ARRAY_ASSIGNMENT:
             printf("ast array assignment");
