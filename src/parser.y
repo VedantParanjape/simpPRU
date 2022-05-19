@@ -657,10 +657,10 @@ arithmetic_expression: CONST_INT {
               $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_SUB, -1*$2->value, NULL, (ast_node*)$2);
           } 
           | OPR_IC arithmetic_expression {
-              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_IC, ++$2->value, NULL, (ast_node*)$2);
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_IC, ++ $2->value, NULL, (ast_node*)$2);
           } 
           | OPR_DC arithmetic_expression {
-              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_DC, --$2->value, NULL, (ast_node*)$2);
+              $$ = create_expression_node(AST_NODE_ARITHMETIC_EXP, AST_OPR_DC, -- $2->value, NULL, (ast_node*)$2);
           } 
           | LPAREN arithmetic_expression RPAREN {
               $$ = $2;
