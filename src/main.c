@@ -220,7 +220,7 @@ int main(int argc, char** argv)
     }
     total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
     printf("Total time taken by CPU: %f\n", total_t  );
-    fprintf("Total time taken by CPU: %f\n", total_t  );
+   
     
     if (arguments.load == 1)
     {
