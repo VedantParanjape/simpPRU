@@ -7,6 +7,7 @@
 #include "ast.h"
 #include "pin_config.h"
 #include "firmware_loader.h"
+#include <time.h>
 
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
@@ -148,6 +149,8 @@ struct argp_option options[] = {
 
 int main(int argc, char** argv)
 {
+    clock_t start_t, end_t;
+    double total_t;    
     struct arguments arguments;
     arguments.device_id = MODEL_AUTODETECT;
     sprintf(arguments.input_filename, "%s", "");
@@ -188,11 +191,15 @@ int main(int argc, char** argv)
         {
             if (arguments.pruid == 2 || arguments.pruid == 3)
             {
+                start_t = clock();
                 snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+                end_t = clock();
             }
             else
             {
+                start_t = clock();
                 snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                end_t = clock();
             }
             
             if (system(command) == -1)
@@ -202,14 +209,19 @@ int main(int argc, char** argv)
         }
         else
         {
+            start_t = clock();
             snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            end_t = clock();
             if (system(command) == -1)
             {
                 fprintf(stderr, "\e[31mfatal error:\e[0m unable to call gcc-pru\n");
             }
         }
     }
-
+    total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+    printf("Total time taken by CPU: %f\n", total_t  );
+    fprintf("Total time taken by CPU: %f\n", total_t  );
+    
     if (arguments.load == 1)
     {
         if (arguments.preprocess == 0 && arguments.test == 0)
