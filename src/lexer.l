@@ -12,6 +12,26 @@
 
   void yyerror(char* s);
   int yylex();
+  #define YY_USER_ACTION update_loc();
+  static void update_loc(){
+  static int curr_line = 1;
+  static int curr_col  = 1;
+
+  yylloc.first_line   = curr_line;
+  yylloc.first_column = curr_col;
+
+  {char * s; for(s = yytext; *s != '\0'; s++){
+    if(*s == '\n'){
+      curr_line++;
+      curr_col = 1;
+    }else{
+      curr_col++;
+    }
+  }}
+
+  yylloc.last_line   = curr_line;
+  yylloc.last_column = curr_col-1;
+}
 %}
 
 %option noyywrap
