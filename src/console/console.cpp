@@ -3,6 +3,11 @@
 #include <string>
 #include <errno.h>
 #include "console.hpp"
+#include "ftxui/component/component.hpp"       
+#include "ftxui/component/component_base.hpp" 
+#include "ftxui/component/screen_interactive.hpp" 
+#include "ftxui/dom/elements.hpp" 
+#include "ftxui/screen/color.hpp" 
 
 static int model_beaglebone__ = 0;
 static int rpmsg_fd = -1;
@@ -318,6 +323,7 @@ console::console()
             }
         }
     };
+    
 }
   
 Element console::Render() 
@@ -340,7 +346,7 @@ Element console::Render()
             }) | border,
         }) | flex,
         
-        // Input box and PRU start/stop
+        // Input box , PRU start/stop
         vbox({
             hbox({
                 text(L" send : "),
@@ -369,7 +375,7 @@ int main(int argc, const char* argv[])
     stop_pru(3);
 
     auto screen = ScreenInteractive::Fullscreen();
-
+   
     std::thread update([&screen]() {
     for (;;) {
       using namespace std::chrono_literals;
@@ -381,6 +387,13 @@ int main(int argc, const char* argv[])
       }
     }
     });
+    auto quit_button = Button("Quit", screen.ExitLoopClosure());
+    auto renderer = Renderer(quit_button, [&] {
+      return quit_button->Render() | bold | color(Color::Red);
+    });
+      screen.Loop(Container::Horizontal({
+      renderer,
+    }));
 
     screen.Loop(ftxui::Make<console>());
 }
