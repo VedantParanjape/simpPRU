@@ -12,6 +12,7 @@ std::mutex output_box_mutex;
 std::atomic_bool stop_read_signal(false);
 std::atomic_bool update_screen(false);
 FILE *fd = NULL;
+int k=0;
 
 int device_model()
 {
@@ -256,6 +257,7 @@ console::console()
       Container::Horizontal({
         input_box,
         pru_start_top,
+        button,
       }),
     });
     Add(container);
@@ -308,6 +310,7 @@ console::console()
                 read_rpmsg_thread = std::thread(receive_rpmsg_data, pru_id, std::ref(output_box));
                 read_rpmsg_thread.detach();
             }
+            k=1;
         }
         else if (started == 1)
         {
@@ -318,6 +321,10 @@ console::console()
             }
         }
     };
+    if (k==1)
+    button->Render() | bold | color(Color::Green) ;
+    else
+    button->Render() | bold | color(Color::Red) ;
 }
   
 Element console::Render() 
@@ -347,10 +354,13 @@ Element console::Render()
                 input_box->Render(),
                 separator(),
                 pru_start_top->Render(),
+                separator(),
+                button->Render(),
             }),
         }) | border,
     }));
 }
+
 
 int main(int argc, const char* argv[]) 
 {
