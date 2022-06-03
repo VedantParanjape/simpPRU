@@ -33,6 +33,10 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_bwl_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwl_assignment, handle);
                 break;
 
+            case AST_NODE_BWR_ASSIGNMENT:
+                ast_bwr_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwr_assignment, handle);
+                break;
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
@@ -183,6 +187,17 @@ void ast_bwl_assignment_printer(ast_node_bwl_assignment *assg, FILE* handle)
     if (assg != NULL && handle != NULL)
     {
         fprintf(handle, "\t%s <<= ", assg->symbol_entry->identifier);
+        ast_expression_printer(assg->expression, handle);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
+void ast_bwr_assignment_printer(ast_node_bwr_assignment *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s >>= ", assg->symbol_entry->identifier);
         ast_expression_printer(assg->expression, handle);
         fprintf(handle, "%s", ";\n");
     }
@@ -714,6 +729,10 @@ int code_printer(ast_node* ast, int pru_id, int test)
 
             case AST_NODE_BWL_ASSIGNMENT:
                 ast_bwl_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwl_assignment, handle);
+                break;
+
+            case AST_NODE_BWR_ASSIGNMENT:
+                ast_bwr_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwr_assignment, handle);
                 break;
             
             case AST_NODE_ARRAY_ASSIGNMENT:

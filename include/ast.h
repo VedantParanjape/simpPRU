@@ -15,6 +15,7 @@
 #define AST_NODE_ARRAY_DECLARATION   2000
 #define AST_NODE_ASSIGNMENT          7
 #define AST_NODE_BWL_ASSIGNMENT      9999
+#define AST_NODE_BWR_ASSIGNMENT      9997
 #define AST_NODE_ARRAY_ASSIGNMENT    2001
 #define AST_NODE_ARRAY_ACCESS        2002
 #define AST_NODE_ARITHMETIC_EXP      8
@@ -61,6 +62,7 @@
 
 #define AST_OPR_ASSIGNMENT 44 // :=
 #define AST_OPR_BWL_ASSIGNMENT 9998 // <<=
+#define AST_OPR_BWR_ASSIGNMENT 9996 // <<=
 
 #define AST_CONST_INT  45 // INT CONSTANT
 #define AST_CONST_BOOL 46 // BOOL CONSTANT
@@ -103,6 +105,7 @@ struct ast_node_declaration;
 struct ast_node_array_declaration;
 struct ast_node_assignment;
 struct ast_node_bwl_assignment;
+struct ast_node_bwr_assignment;
 struct ast_node_array_assignment;
 struct ast_node_array_access;
 struct ast_node_expression;
@@ -129,6 +132,7 @@ typedef struct ast_node_declaration ast_node_declaration;
 typedef struct ast_node_array_declaration ast_node_array_declaration;
 typedef struct ast_node_assignment ast_node_assignment;
 typedef struct ast_node_bwl_assignment ast_node_bwl_assignment;
+typedef struct ast_node_bwr_assignment ast_node_bwr_assignment;
 typedef struct ast_node_array_assignment ast_node_array_assignment;
 typedef struct ast_node_array_access ast_node_array_access;
 typedef struct ast_node_expression ast_node_expression;
@@ -165,6 +169,7 @@ struct ast_node
         ast_node_array_declaration *array_declaration;
         ast_node_assignment *assignment;
         ast_node_bwl_assignment *bwl_assignment;
+        ast_node_bwr_assignment *bwr_assignment;
         ast_node_array_assignment *array_assignment;
         ast_node_conditional_if *if_else;
         ast_node_loop_for *loop_for;
@@ -211,6 +216,14 @@ struct ast_node_array_declaration
 };
 
  struct ast_node_bwl_assignment
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
+    ast_node_expression *expression;
+};
+
+ struct ast_node_bwr_assignment
 {
     int node_type;
 
@@ -377,6 +390,7 @@ ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expressio
 ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_bwl_assignment *create_bwl_assignment_node(sym_ptr symbol, ast_node_expression *exp);
+ast_node_bwr_assignment *create_bwr_assignment_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp);
 ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index);
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right);
