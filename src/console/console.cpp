@@ -363,6 +363,7 @@ Element console::Render()
 
 int main(int argc, const char* argv[]) 
 {
+    Component quit_button;
     fd = fopen("/tmp/log.txt", "w+");
 
     int model = device_model();
@@ -387,10 +388,11 @@ int main(int argc, const char* argv[])
       {
           update_screen.store(false, std::memory_order_relaxed);
           screen.PostEvent(Event::Custom);
+          Component quit_button = Button("Quit", screen.ExitLoopClosure());
       }
     }
     });
     screen.Loop(ftxui::Make<console>());
-    Component quit_button = Button("Quit", screen.ExitLoopClosure());
+    
 
 }

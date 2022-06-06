@@ -17,6 +17,12 @@
 #include <ftxui/component/container.hpp>
 #include <ftxui/component/input.hpp>
 #include <ftxui/component/toggle.hpp>
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/component.hpp"       
+#include "ftxui/component/component_base.hpp" 
+#include "ftxui/component/screen_interactive.hpp" 
+#include "ftxui/dom/elements.hpp" 
+#include "ftxui/screen/color.hpp" 
 
 #define MODEL_POCKETBEAGLE 1
 #define MODEL_BEAGLEBONE_BLACK 2
@@ -43,7 +49,7 @@ class console : public ComponentBase
         Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
 
         Component quit_button ;
-        
+
         int started = 0;
         Elements output_box;
         int data_sent = 0;
