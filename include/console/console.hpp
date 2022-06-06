@@ -48,7 +48,7 @@ class console : public ComponentBase
         std::vector<std::wstring> pru_start_top_entries;
         Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
 
-        Component quit_button ;
+        Component quit_button = Button("Quit", NULL);
 
         int started = 0;
         Elements output_box;

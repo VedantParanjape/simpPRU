@@ -388,7 +388,6 @@ int main(int argc, const char* argv[])
       {
           update_screen.store(false, std::memory_order_relaxed);
           screen.PostEvent(Event::Custom);
-          Component quit_button = Button("Quit", screen.ExitLoopClosure());
       }
     }
     });
