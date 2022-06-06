@@ -261,6 +261,7 @@ console::console()
       Container::Horizontal({
         input_box,
         pru_start_top,
+        quit_button,
       }),
     });
     Add(container);
@@ -353,6 +354,8 @@ Element console::Render()
                 input_box->Render(),
                 separator(),
                 pru_start_top->Render(),
+                separator(),
+                quit_button->Render() | bold | color(Color::Red),
             }),
         }) | border,
     }));
@@ -387,13 +390,12 @@ int main(int argc, const char* argv[])
       }
     }
     });
-    auto quit_button = Button("Quit", screen.ExitLoopClosure());
+    Component quit_button = Button("Quit", screen.ExitLoopClosure());
     auto renderer = Renderer(quit_button, [&] {
       return quit_button->Render() | bold | color(Color::Red);
     });
-      screen.Loop(Container::Horizontal({
-      renderer,
+    screen.Loop(Container::Horizontal({
+    renderer,
     }));
-
     screen.Loop(ftxui::Make<console>());
 }
