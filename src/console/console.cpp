@@ -376,7 +376,7 @@ int main(int argc, const char* argv[])
     stop_pru(1);
     stop_pru(2);
     stop_pru(3);
-
+    
     auto screen = ScreenInteractive::Fullscreen();
    
     std::thread update([&screen]() {
@@ -390,12 +390,7 @@ int main(int argc, const char* argv[])
       }
     }
     });
-    Component quit_button = Button("Quit", screen.ExitLoopClosure());
-    auto renderer = Renderer(quit_button, [&] {
-      return quit_button->Render() | bold | color(Color::Red);
-    });
-    screen.Loop(Container::Horizontal({
-    renderer,
-    }));
     screen.Loop(ftxui::Make<console>());
+    Component quit_button = Button("Quit", screen.ExitLoopClosure());
+
 }
