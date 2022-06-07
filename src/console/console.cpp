@@ -363,7 +363,6 @@ Element console::Render()
 
 int main(int argc, const char* argv[]) 
 {
-    Component quit_button;
     fd = fopen("/tmp/log.txt", "w+");
 
     int model = device_model();
@@ -379,7 +378,8 @@ int main(int argc, const char* argv[])
     stop_pru(3);
     
     auto screen = ScreenInteractive::Fullscreen();
-   
+    Component quit_button = Button("Quit", screen.ExitLoopClosure());
+    
     std::thread update([&screen]() {
     for (;;) {
       using namespace std::chrono_literals;
