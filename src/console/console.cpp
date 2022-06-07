@@ -337,7 +337,7 @@ console::console()
 Element console::Render() 
 {
     std::lock_guard<std::mutex> output_box_lock(output_box_mutex);
-    
+    if (k==1)
     return border(vbox({
         // Console and PRU selection
         hbox({
@@ -362,7 +362,36 @@ Element console::Render()
                 separator(),
                 pru_start_top->Render(),
                 separator(),
-                button->Render(),
+                button->Render() | bold | color(Color::Green),
+            }),
+        }) | border,
+    }));
+    else
+        return border(vbox({
+        // Console and PRU selection
+        hbox({
+            hbox({
+                vbox({
+                    vbox({output_box}),
+                    text(L"   ") | ftxui::select,
+                }) | frame,                                        
+            }) | flex | border,
+            vbox({
+                hcenter(bold(text(L"PRU"))),
+                separator(),
+                pru_id_menu->Render(),
+            }) | border,
+        }) | flex,
+        
+        // Input box and PRU start/stop
+        vbox({
+            hbox({
+                text(L" send : "),
+                input_box->Render(),
+                separator(),
+                pru_start_top->Render(),
+                separator(),
+                button->Render() | bold | color(Color::Red),
             }),
         }) | border,
     }));
