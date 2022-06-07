@@ -182,7 +182,7 @@ int start_pru(int pru_id)
 
     if (!strcmp(state, "offline") && bits_read > 0)
     {
-        k=1;
+        k=0;
     }
     if (!strcmp(state, "offline") && bits_read > 0)
     {
@@ -234,7 +234,7 @@ int stop_pru(int pru_id)
 
     if (!strcmp(state, "running") && bits_read > 0)
     {
-        k=0;
+        k=1;
     }
     if (!strcmp(state, "running") && bits_read > 0)
     {
@@ -328,7 +328,6 @@ console::console()
             }
         }
     };
-
 }
   
 Element console::Render() 
