@@ -182,6 +182,10 @@ int start_pru(int pru_id)
 
     if (!strcmp(state, "offline") && bits_read > 0)
     {
+        k=0;
+    }
+    if (!strcmp(state, "offline") && bits_read > 0)
+    {
         if (write(remoteproc_start, "start", 6*sizeof(char)) > 0)
         {
             close(remoteproc_start);
@@ -228,6 +232,10 @@ int stop_pru(int pru_id)
     char state[20] = " ";
     int bits_read = read(remoteproc_stop, state, sizeof(char)*7);
 
+    if (!strcmp(state, "running") && bits_read > 0)
+    {
+        k=1;
+    }
     if (!strcmp(state, "running") && bits_read > 0)
     {
         if (write(remoteproc_stop, "stop", 5*sizeof(char)) > 0)
@@ -310,7 +318,6 @@ console::console()
                 read_rpmsg_thread = std::thread(receive_rpmsg_data, pru_id, std::ref(output_box));
                 read_rpmsg_thread.detach();
             }
-            k=1;
         }
         else if (started == 1)
         {
