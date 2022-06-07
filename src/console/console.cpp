@@ -324,7 +324,7 @@ console::console()
             }
         }
     };
- 
+    
 }
   
 Element console::Render() 
@@ -363,7 +363,6 @@ Element console::Render()
 
 int main(int argc, const char* argv[]) 
 {
-
     fd = fopen("/tmp/log.txt", "w+");
 
     int model = device_model();
@@ -379,7 +378,6 @@ int main(int argc, const char* argv[])
     stop_pru(3);
     
     auto screen = ScreenInteractive::Fullscreen();
- 
     std::thread update([&screen]() {
     for (;;) {
       using namespace std::chrono_literals;
@@ -389,13 +387,8 @@ int main(int argc, const char* argv[])
           update_screen.store(false, std::memory_order_relaxed);
           screen.PostEvent(Event::Custom);
       }
-      std::function<void()> on_button_clicked_;
-      {
-        Component quit_button = Button("Quit", screen.ExitLoopClosure());
-      }
     }
     });
     screen.Loop(ftxui::Make<console>());
-    
 
 }

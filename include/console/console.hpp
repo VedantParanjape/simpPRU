@@ -17,18 +17,19 @@
 #include <ftxui/component/container.hpp>
 #include <ftxui/component/input.hpp>
 #include <ftxui/component/toggle.hpp>
-#include "ftxui/component/component.hpp"
-#include "ftxui/component/component.hpp"       
+#include "ftxui/component/component.hpp"      
 #include "ftxui/component/component_base.hpp" 
-#include "ftxui/component/screen_interactive.hpp" 
 #include "ftxui/dom/elements.hpp" 
 #include "ftxui/screen/color.hpp" 
+#include "console.hpp"
+
 
 #define MODEL_POCKETBEAGLE 1
 #define MODEL_BEAGLEBONE_BLACK 2
 #define MODEL_BEAGLEBONE_BLACK_WIRELESS 3
 #define MODEL_BEAGLEBONE_AI 4
 #define MODEL_BEAGLEBONE_BLUE 5
+
 
 using namespace ftxui;
 class console : public ComponentBase
@@ -47,9 +48,11 @@ class console : public ComponentBase
         int pru_start_top_selected = 0;
         std::vector<std::wstring> pru_start_top_entries;
         Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
-
-        Component quit_button ;
-
+        
+        std::string button_label = "Quit";
+        std::function<void()> on_button_clicked_;
+        Component quit_button = Button(&button_label , screen.ExitLoopClosure());
+        
         int started = 0;
         Elements output_box;
         int data_sent = 0;
