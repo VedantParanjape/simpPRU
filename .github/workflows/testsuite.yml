@@ -1,10 +1,7 @@
-name: Python tests
+name: Python testsuite
 
-on:
-  push:
-    branches: [ testsuite ]
-  pull_request:
-    branches: [ testsuite ]
+on: [push, pull_request]
+
     
 jobs:
     test_simppru_job1:
