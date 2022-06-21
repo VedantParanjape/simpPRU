@@ -1,0 +1,18 @@
+on: [push, pull_request]
+
+jobs:
+    build_simppru_job:
+        strategy:
+          matrix:
+            arch: ["./.github/action_build_amd64", "./.github/action_build_arm32"]
+        runs-on: ubuntu-latest
+        name: This will build simppru on x86 machines
+        steps: 
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: preconfig
+              run: sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+            - name: build inside docker amd64
+              uses: ${{ matrix.arch }}
+            - name: postconfig
+              run: ls build -l
