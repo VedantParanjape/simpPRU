@@ -184,10 +184,15 @@ int start_pru(int pru_id)
     {
         k=0;
     }
+    else
+    {
+        k=1;
+    }
     if (!strcmp(state, "offline") && bits_read > 0)
     {
         if (write(remoteproc_start, "start", 6*sizeof(char)) > 0)
         {
+            k=1;
             close(remoteproc_start);
             return 1;
         }
@@ -236,10 +241,15 @@ int stop_pru(int pru_id)
     {
         k=1;
     }
+    else
+    {
+        k=0;
+    }
     if (!strcmp(state, "running") && bits_read > 0)
     {
         if (write(remoteproc_stop, "stop", 5*sizeof(char)) > 0)
         {
+            k=0;
             close(remoteproc_stop);
             return 1;
         }

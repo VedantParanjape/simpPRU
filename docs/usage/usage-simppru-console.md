@@ -17,6 +17,15 @@ Use these button to start/stop the selected PRU. If PRU is already running, on s
 
 ![](images/stop_screen.png)
 
+### Status for PRU
+
+It shows the status of PRU(whether its on or off).It is an auto-toggle button which changes its status with respect to the PRU.
+
+!!! Warning
+    Do not click this button as it is in sync with the PRU and would exit on manual click.
+
+![](images/pru_status.png)
+
 ### Send message to PRU
 
 Use this text box to send data to the PRU, only *Integers* are supported. On pressing enter, the typed message is sent.
