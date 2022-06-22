@@ -21,6 +21,7 @@ except OSError:
 import subprocess
 from fnmatch import fnmatch
 import os
+import sys
 
 for file in os.listdir("tests/run_anywhere"):
     if fnmatch(file, "*.sim"):
@@ -32,7 +33,7 @@ for file in os.listdir("tests/run_anywhere"):
             print(f"**** ****TEST FAILED**** ****: {file}")
             print("stdout:\n", transpile_output.stdout.decode("utf-8"), sep='')
             print("stderr:\n", transpile_output.stderr.decode("utf-8"), sep='')
-            continue
+            sys.exit(1)
 
         compile_output = subprocess.run(f"gcc -o tests/run_anywhere/{file}.out /tmp/temp.c", shell=True, capture_output=True)
 
@@ -40,7 +41,7 @@ for file in os.listdir("tests/run_anywhere"):
             print(f"**** ****TEST FAILED**** ****: {file}")
             print("stdout:\n", compile_output.stdout.decode("utf-8"), sep='')
             print("stderr:\n", compile_output.stderr.decode("utf-8"), sep='')
-            continue
+            sys.exit(1)
 
         run_output = subprocess.run(f"tests/run_anywhere/{file}.out", shell=True, capture_output=True)
 
@@ -48,7 +49,7 @@ for file in os.listdir("tests/run_anywhere"):
             print(f"**** ****TEST FAILED**** ****: {file}")
             print("stdout:\n", run_output.stdout.decode("utf-8"), sep='')
             print("stderr:\n", run_output.stderr.decode("utf-8"), sep='')
-            continue
+            sys.exit(1)
         else:
             output = run_output.stdout
         
@@ -57,5 +58,6 @@ for file in os.listdir("tests/run_anywhere"):
 
         if output != expected_output:
             print(f"**** ****TEST FAILED**** ****: {file}")
+            sys.exit(1)
         else:
             print(f"Test {file} passed")
