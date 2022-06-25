@@ -1,0 +1,13 @@
+def add_subtract: int: int a, int b, bool control {
+    int c;
+    if: control {
+        c := a + b;
+        return c;
+    }
+    else {
+        c := a * b;
+        return c;
+    }
+}
+result := add_subtract(3, 4, true);
+print(result);

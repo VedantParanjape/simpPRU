@@ -51,6 +51,12 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 fprintf(handle, "%s", ";\n");
                 break;
 
+            case AST_NODE_FUNC_RETURN:
+                fprintf(handle, "\t%s ", "return");
+                ast_expression_printer(((ast_node_statements*)temp)->child_nodes.return_statement, handle);
+                fprintf(handle, "%s", ";\n");
+                break;
+            
             case AST_NODE_LOOP_BREAK:
                 if (((ast_node_statements*)temp)->child_nodes.loop_control->node_type == AST_NODE_LOOP_BREAK)
                 {
@@ -626,13 +632,6 @@ void ast_function_definition(ast_node_function_def *def, FILE* handle)
         }
         fprintf(handle, "%s", ")\n");
         ast_compound_statement_printer(def->body, handle, 1);
-        
-        if (def->return_statment != NULL)
-        {
-            fprintf(handle, "\t%s ", "return");
-            ast_expression_printer(def->return_statment, handle);
-            fprintf(handle, "%s", ";\n");
-        }
         fprintf(handle, "%s", "}\n");
     }
 }
