@@ -200,7 +200,6 @@ void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handl
     }
 }
 
-
 void ast_array_access_printer(ast_node_array_access *access, FILE* handle)
 {
     if (access != NULL && handle != NULL)
