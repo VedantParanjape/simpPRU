@@ -1,7 +1,9 @@
 int a := 2 + 2 - 196 * 3;
 int b := 91 / 13 + 23;
 int c := (9 + 8) * 2 + -1;
-int d := 1 - -1;
+int d := 1 + 1;
+++ d ;
+
 println(a);
 println(b);
 println(c);

@@ -14,6 +14,7 @@
 #define AST_NODE_DECLARATION         6
 #define AST_NODE_ARRAY_DECLARATION   2000
 #define AST_NODE_ASSIGNMENT          7
+#define AST_NODE_UNARY_INC           7070
 #define AST_NODE_ARRAY_ASSIGNMENT    2001
 #define AST_NODE_ARRAY_ACCESS        2002
 #define AST_NODE_ARITHMETIC_EXP      8
@@ -103,6 +104,7 @@ struct ast_node_compound_statement;
 struct ast_node_declaration;
 struct ast_node_array_declaration;
 struct ast_node_assignment;
+struct ast_node_unary_increment;
 struct ast_node_array_assignment;
 struct ast_node_array_access;
 struct ast_node_expression;
@@ -124,6 +126,7 @@ struct ast_node_print_expression_function_call;
 
 typedef struct ast_node ast_node;
 typedef struct ast_node_statements ast_node_statements;
+typedef struct ast_node_unary_increment ast_node_unary_increment;
 typedef struct ast_node_compound_statement ast_node_compound_statement;
 typedef struct ast_node_declaration ast_node_declaration;
 typedef struct ast_node_array_declaration ast_node_array_declaration;
@@ -162,6 +165,7 @@ struct ast_node
         ast_node_compound_statement *compound_statement;
         ast_node_declaration *declaration;
         ast_node_array_declaration *array_declaration;
+        ast_node_unary_increment *unary_increment;
         ast_node_assignment *assignment;
         ast_node_array_assignment *array_assignment;
         ast_node_conditional_if *if_else;
@@ -206,6 +210,13 @@ struct ast_node_array_declaration
 
     sym_ptr symbol_entry;
     ast_node_expression *expression;
+};
+
+ struct ast_node_unary_increment
+{
+    int node_type;
+
+    sym_ptr symbol_entry;
 };
 
 struct ast_node_array_assignment
@@ -366,6 +377,7 @@ ast_node_compound_statement *add_compound_statement_node(ast_node_compound_state
 ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
+ast_node_unary_increment *create_unary_increment_node(sym_ptr symbol);
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp);
 ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index);
 ast_node_expression *create_expression_node(int node_type, int opt, int value, ast_node *left, ast_node *right);

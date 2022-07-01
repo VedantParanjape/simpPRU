@@ -29,6 +29,7 @@ ast_node *ast = NULL;
     struct symbol* symbol_handle;
     struct ast_node *node;
     struct ast_node_statements *statements;
+    struct ast_node_unary_ic *unary_increment;    
     struct ast_node_compound_statement *compound_statement;
     struct ast_node_declaration *declaration;
     struct ast_node_array_declaration *array_declaration;
@@ -108,6 +109,7 @@ ast_node *ast = NULL;
 %type <declaration> declaration declaration_assignment
 %type <array_declaration> array_declaration array_declaration_assignment
 %type <assignment> assignment
+%type <unary_increment> unary_increment
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
@@ -185,6 +187,9 @@ statement: compound_statement {
          | assignment {
              $$ = create_statement_node(AST_NODE_ASSIGNMENT, (void*)$1);
          }
+         | unary_increment {
+             $$ = create_statement_node(AST_NODE_UNARY_INC, (void*)$1);
+         }         
          | array_assignment {
              $$ = create_statement_node(AST_NODE_ARRAY_ASSIGNMENT, (void*)$1);
          }
@@ -260,6 +265,17 @@ empty_statement: SEMICOLON {
               printf ("blank statement\n");
             }
             ;
+
+unary_increment: OPR_IC IDENTIFIER SEMICOLON {
+                if ($2 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+                    $2->data_type = DT_INT_ARR;
+                    $2->value= $2->value + 1;
+                    $$ = create_unary_increment_node($2);                          
+                }
+                ;
 
 declaration: DT_INT IDENTIFIER SEMICOLON { 
                if ($2 == NULL)

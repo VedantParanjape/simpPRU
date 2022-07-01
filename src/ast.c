@@ -40,6 +40,10 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.assignment = child;
             break;
 
+        case AST_NODE_UNARY_INC:
+            stmt->child_nodes.unary_increment= child;
+            break;            
+
         case AST_NODE_ARRAY_ASSIGNMENT:
             stmt->child_nodes.array_assignment = child;
             break;
@@ -139,6 +143,16 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
 
     assgn->node_type = AST_NODE_ASSIGNMENT;
     assgn->expression = exp;
+    assgn->symbol_entry = symbol;
+
+    return assgn;
+}
+
+ast_node_unary_increment *create_unary_increment_node(sym_ptr symbol)
+{
+    ast_node_unary_increment *assgn = (ast_node_unary_increment*)malloc(sizeof(ast_node_unary_increment));
+
+    assgn->node_type = AST_NODE_UNARY_INC;
     assgn->symbol_entry = symbol;
 
     return assgn;
@@ -601,6 +615,10 @@ void ast_node_type(int node_type)
         case AST_NODE_ASSIGNMENT:
             printf("ast assignment");
             break;
+
+        case AST_NODE_UNARY_INC:
+            printf("ast unary increment");
+            break;                        
 
         case AST_NODE_ARRAY_ASSIGNMENT:
             printf("ast array assignment");
