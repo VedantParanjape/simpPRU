@@ -33,6 +33,10 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_unary_increment_printer(((ast_node_statements*)temp)->child_nodes.unary_increment, handle);
                 break;                
 
+            case AST_NODE_UNARY_DC:
+                ast_unary_decrement_printer(((ast_node_statements*)temp)->child_nodes.unary_decrement, handle);
+                break;   
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
@@ -188,6 +192,15 @@ void ast_unary_increment_printer(ast_node_unary_increment *assg, FILE* handle)
     
 }
 
+void ast_unary_decrement_printer(ast_node_unary_decrement *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t -- %s  ", assg->symbol_entry->identifier);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handle)
 {
     if (assign != NULL && handle != NULL)
@@ -722,6 +735,10 @@ int code_printer(ast_node* ast, int pru_id, int test)
             case AST_NODE_UNARY_INC:
                 ast_unary_increment_printer(((ast_node_statements*)temp)->child_nodes.unary_increment, handle);
                 break;    
+
+            case AST_NODE_UNARY_DC:
+                ast_unary_decrement_printer(((ast_node_statements*)temp)->child_nodes.unary_decrement, handle);
+                break; 
 
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);

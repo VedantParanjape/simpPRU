@@ -57,6 +57,7 @@ void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);
 void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE* handle);
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle);
 void ast_unary_increment_printer(ast_node_unary_increment *assg, FILE* handle);
+void ast_unary_decrement_printer(ast_node_unary_decrement *assg, FILE* handle);
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE *handle);
 void ast_array_access_printer(ast_node_array_access *access, FILE* handle);
 void ast_expression_printer(ast_node_expression *node, FILE* handle);
