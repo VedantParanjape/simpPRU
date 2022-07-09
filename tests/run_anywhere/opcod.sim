@@ -1,0 +1,5 @@
+int a:=10;
+bool b:=true;
+bool c:=false;
+(a>5)? b : c;
+

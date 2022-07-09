@@ -39,6 +39,7 @@ ast_node *ast = NULL;
     struct ast_node_range_expression *range_expression;
     struct ast_node_constant *constant;
     struct ast_node_variable *variable;
+    struct ast_node_conditional_operator *conditional_operator;
     struct ast_node_conditional_if *conditional_if;
     struct ast_node_conditional_else_if *conditional_else_if;
     struct ast_node_loop_for *loop_for;
@@ -76,7 +77,7 @@ ast_node *ast = NULL;
 
 %token OPR_ASSIGNMENT
 
-%token SEMICOLON COLON COMMA
+%token SEMICOLON COLON COMMA QUESTION
 
 %token DT_INT
 %token DT_BOOL
@@ -110,6 +111,7 @@ ast_node *ast = NULL;
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
 %type <array_access> arithmetic_array_access boolean_array_access
+%type <conditional_operator> conditional_operator
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -187,8 +189,11 @@ statement: compound_statement {
              $$ = create_statement_node(AST_NODE_ARRAY_ASSIGNMENT, (void*)$1);
          }
          | conditional_statement {
-             $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);
+             $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);         
          }
+         | conditional_operator {
+             $$ = create_statement_node(AST_NODE_CONDITIONAL_OPERATOR, (void*)$1);
+         }         
          | loop_statement_for {
              $$ = create_statement_node(AST_NODE_LOOP_FOR, (void*)$1);
          }
@@ -656,7 +661,7 @@ arithmetic_expression: CONST_INT {
           } 
           | LPAREN arithmetic_expression RPAREN {
               $$ = $2;
-          }
+          }      
           ;
 
 boolean_expression: CONST_BOOL {
@@ -695,7 +700,7 @@ boolean_expression: CONST_BOOL {
               $$ = $1;
           }
           | LPAREN boolean_expression RPAREN {
-              $$ = $2;
+             $$ = $2;
           }
           ;
 
@@ -914,6 +919,17 @@ parameter: DT_INT IDENTIFIER {
             $$ = create_variable_node(AST_DT_CHAR, $2);
          }
          ;
+
+conditional_operator: boolean_expression QUESTION INT_IDENTIFIER COLON INT_IDENTIFIER SEMICOLON {
+                $$ = create_conditional_operator_node($1,$3,$5);
+                }
+                | boolean_expression QUESTION CHAR_IDENTIFIER COLON CHAR_IDENTIFIER SEMICOLON {
+                $$ = create_conditional_operator_node($1,$3,$5);
+                }
+                | boolean_expression QUESTION BOOL_IDENTIFIER COLON BOOL_IDENTIFIER SEMICOLON {
+                $$ = create_conditional_operator_node($1,$3,$5);
+                }
+                ;
 
 return_statement: KW_RETURN boolean_expression SEMICOLON {
                     $$ = $2;
