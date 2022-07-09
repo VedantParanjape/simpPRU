@@ -107,11 +107,11 @@ ast_node *ast = NULL;
 %type <declaration> declaration declaration_assignment
 %type <array_declaration> array_declaration array_declaration_assignment
 %type <assignment> assignment
+%type <conditional_operator> conditional_operator
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
 %type <array_access> arithmetic_array_access boolean_array_access
-%type <conditional_operator> conditional_operator
 %type <conditional_if> conditional_statement
 %type <conditional_else_if> conditional_statement_else_if
 %type <loop_for> loop_statement_for
@@ -920,14 +920,11 @@ parameter: DT_INT IDENTIFIER {
          }
          ;
 
-conditional_operator: boolean_expression QUESTION INT_IDENTIFIER COLON INT_IDENTIFIER SEMICOLON {
-                $$ = create_conditional_operator_node($1,$3,$5);
+conditional_operator: arithmetic_expression OPR_ASSIGNMENT boolean_expression QUESTION arithmetic_expression COLON arithmetic_expression SEMICOLON {
+                $$ = create_conditional_operator_node($1,$3,$5,$7);
                 }
-                | boolean_expression QUESTION CHAR_IDENTIFIER COLON CHAR_IDENTIFIER SEMICOLON {
-                $$ = create_conditional_operator_node($1,$3,$5);
-                }
-                | boolean_expression QUESTION BOOL_IDENTIFIER COLON BOOL_IDENTIFIER SEMICOLON {
-                $$ = create_conditional_operator_node($1,$3,$5);
+                | boolean_expression OPR_ASSIGNMENT boolean_expression QUESTION boolean_expression COLON boolean_expression SEMICOLON {
+                $$ = create_conditional_operator_node($1,$3,$5,$7);
                 }
                 ;
 

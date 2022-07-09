@@ -275,9 +275,11 @@ struct ast_node_range_expression
 {
     int node_type;
 
+    ast_node_expression  *body1;
     ast_node_expression *condition;
-    sym_ptr symbol_entry_1;
-    sym_ptr symbol_entry_2;
+    ast_node_expression  *body2;
+    ast_node_expression  *body3;
+
 };
 
  struct ast_node_conditional_else_if
@@ -375,7 +377,7 @@ ast_node_compound_statement *create_compound_statement_node();
 ast_node_compound_statement *add_compound_statement_node(ast_node_compound_statement *parent, ast_node_statements *child);
 ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string);
-ast_node_conditional_operator *create_conditional_operator_node(ast_node_expression *condition, sym_ptr exp1, sym_ptr exp2);
+ast_node_conditional_operator *create_conditional_operator_node(ast_node_expression *body1,ast_node_expression *condition,ast_node_expression *body2,ast_node_expression *body3);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp);
 ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index);

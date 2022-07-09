@@ -167,16 +167,19 @@ void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE *handl
     }
 }
 
-void ast_conditional_operator_printer( ast_node_conditional_operator *opcod, FILE* handle)
+void ast_conditional_operator_printer(ast_node_conditional_operator *opcod, FILE* handle)
 {
  if(opcod!=NULL && handle != NULL)
  {
-    fprintf(handle, "(");
+    ast_expression_printer(opcod->body1, handle);
+    fprintf(handle, "%s"," = "); 
+    fprintf(handle, "("); 
     ast_expression_printer(opcod->condition, handle);
-    fprintf(handle, "%s", ") ?"); 
-    fprintf(handle, " %s : ", opcod->symbol_entry_1->identifier);
-    fprintf(handle, "%s  ", opcod->symbol_entry_2->identifier);
-    fprintf(handle, ";\n");
+    fprintf(handle, "%s", ") ? "); 
+    ast_expression_printer(opcod->body2, handle);
+    fprintf(handle, "%s", ":");
+    ast_expression_printer(opcod->body3, handle);
+    fprintf(handle, "%s", ";\n");
  }
 }
 

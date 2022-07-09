@@ -160,14 +160,15 @@ ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node
     return assign;
 }
 
-ast_node_conditional_operator *create_conditional_operator_node(ast_node_expression *condition, sym_ptr exp1, sym_ptr exp2)
+ast_node_conditional_operator *create_conditional_operator_node( ast_node_expression *body1,ast_node_expression *condition, ast_node_expression *body2, ast_node_expression *body3)
 {
     ast_node_conditional_operator *cond_operator = (ast_node_conditional_operator*)malloc(sizeof(ast_node_conditional_operator));
 
     cond_operator->node_type = AST_NODE_CONDITIONAL_OPERATOR;
     cond_operator->condition = condition;
-    cond_operator->symbol_entry_1 = exp1;
-    cond_operator->symbol_entry_2 = exp2;
+    cond_operator->body1 = body1;
+    cond_operator->body2 = body2;
+    cond_operator->body3 = body3;
 
     return cond_operator;
 }
