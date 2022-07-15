@@ -115,7 +115,7 @@ comma                ([,])
 
 {integer}               {
   /*octal if first digit is 0, hexadecimal if first two characters are 0x or 0X, decimal otherwise*/
-  yylval.integer = strtol(yytext, NULL, 0);
+  yylval.integer = strtoll(yytext, NULL, 0);
   return CONST_INT;
 }
 
