@@ -28,7 +28,7 @@ for file in os.listdir("tests/run_anywhere"):
         print(f"    ")
         print("Running test ", file)
 
-        transpile_output = subprocess.run(f"bin/simppru-1.4 --preprocess -t tests/run_anywhere/{file}", shell=True, capture_output=True)
+        transpile_output = subprocess.run(f"bin/simppru --preprocess -t tests/run_anywhere/{file}", shell=True, capture_output=True)
 
         if transpile_output.returncode != 0:
             print(f"**** ****TEST FAILED**** ****: {file}")

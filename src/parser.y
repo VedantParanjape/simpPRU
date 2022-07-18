@@ -471,7 +471,7 @@ bwa_assignment: INT_IDENTIFIER OPR_BWA_ASSIGNMENT arithmetic_expression SEMICOLO
                }
 
                $1->data_type = DT_INTEGER;
-               $1->value = $1->value  & $3->value;
+               $1->value = $1->value & $3->value;
                $$ = create_bwa_assignment_node($1, $3);
 
                printf("%s &= %d\n", $1->identifier, $1->value);
