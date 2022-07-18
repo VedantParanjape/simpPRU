@@ -279,7 +279,6 @@ struct ast_node_range_expression
     ast_node_expression *condition;
     ast_node_expression  *body2;
     ast_node_expression  *body3;
-
 };
 
  struct ast_node_conditional_else_if

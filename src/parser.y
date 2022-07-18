@@ -21,6 +21,7 @@ ast_node *ast = NULL;
 
 %define parse.error verbose
 %glr-parser 
+%expect 6
 
 %union{
     int integer;
@@ -661,7 +662,7 @@ arithmetic_expression: CONST_INT {
           } 
           | LPAREN arithmetic_expression RPAREN {
               $$ = $2;
-          }      
+          }
           ;
 
 boolean_expression: CONST_BOOL {
