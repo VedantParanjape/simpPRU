@@ -221,20 +221,9 @@ int main(int argc, char** argv)
         {
             if (arguments.pruid == 2 || arguments.pruid == 3)
             {
-            
                 start_t = clock();
                 snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__",arguments.flags, TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
                 end_t = clock();
-            if(popen(command,"r")==NULL)
-                {
-                    fputs("ERROR\n",stderr);
-                }
-            else{
-                    while(fgets(buff,9999,popen(command,"r"))!=NULL){
-                        printf("OUTPUT: %s",buff);
-                    }
-                }
-                pclose(popen(command,"r"));       
             }
             else
             {     
@@ -248,19 +237,18 @@ int main(int argc, char** argv)
             start_t = clock();
             snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.flags,arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
             end_t = clock();
-
-            if(popen(command,"r")==NULL)
-                {
-                    fputs("ERROR\n",stderr);
-                }
-            else{
-                while(fgets(buff,9999,popen(command,"r"))!=NULL)
-                {
-                printf("OUTPUT: %s",buff);
-                }
-                }
-                pclose(popen(command,"r"));        
         }
+            if(popen(command,"r")==NULL)
+            {
+            fputs("ERROR\n",stderr);
+            }
+            else
+            {
+            while(fgets(buff,9999,popen(command,"r"))!=NULL){
+            printf("OUTPUT: %s",buff);
+            }
+            }
+            pclose(popen(command,"r"));
 
     total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
     printf("Total time taken by CPU: %f\n", total_t  );
