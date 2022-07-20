@@ -176,6 +176,8 @@ struct argp_option options[] = {
 
 int main(int argc, char** argv)
 {
+    FILE *output;
+    char buff[10000];
     clock_t start_t, end_t;
     double total_t;    
     struct arguments arguments;
@@ -220,52 +222,34 @@ int main(int argc, char** argv)
         {
             if (arguments.pruid == 2 || arguments.pruid == 3)
             {
+            if(arguments.flags== 0)
+            {
+                start_t = clock();
+                snprintf(command, 700, "pru-gcc -O0 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+                output=popen("pru-gcc -O1 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__","r");
+                end_t = clock();
+            }   
+
             if(arguments.flags== 1)
             {
                 start_t = clock();
                 snprintf(command, 700, "pru-gcc -O1 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+                output=popen("pru-gcc -O1 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__","r");
                 end_t = clock();
-            }
-            else
-            {
-                start_t = clock();
-                snprintf(command, 700, "pru-gcc -O1 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
-                end_t = clock();
-            }
-            
-            if (system(command) == -1)
-            {
-                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
-            }
-            
+            }            
             if(arguments.flags== 2)
             {
                 start_t = clock();
                 snprintf(command, 700, "pru-gcc -O2 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+                output=popen("pru-gcc -O2 /tmp/temp.c -L/simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I/simpPRU/include/pru/ -I/simpPRU/include/pru/am355x  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__","r");
                 end_t = clock();
-            }
-            else
-            {
-                start_t = clock();
-                snprintf(command, 700, "pru-gcc -O2 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
-                end_t = clock();
-            }
-            
-            if (system(command) == -1)
-            {
-                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
             }
             
             if(arguments.flags== 3)
             {
                 start_t = clock();
                 snprintf(command, 700, "pru-gcc -O3 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
-                end_t = clock();
-            }
-            else
-            {
-                start_t = clock();
-                snprintf(command, 700, "pru-gcc -O3 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                output=popen("pru-gcc -O3 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__","r");
                 end_t = clock();
             }
             
@@ -274,26 +258,107 @@ int main(int argc, char** argv)
                 fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
             }
             }
+            else
+            {
+                if(arguments.flags== 0)
+                {   
+                    if(arguments.pruid==1)
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -O0 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O0 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                    else
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -O0 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O0 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg0  -mmcu=am335x.pru0  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                }
+                if(arguments.flags== 1)
+                {   
+                    if(arguments.pruid==1)
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -O1 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O1 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                    else
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -O1 /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O1 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg0  -mmcu=am335x.pru0  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                }
+                if(arguments.flags== 2)
+                {   
+                    if(arguments.pruid==1)
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -Os /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O2 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                    else
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -Os /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O2 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg0  -mmcu=am335x.pru0  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                }
+                if(arguments.flags== 3)
+                {
+                    if(arguments.pruid==1)
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -Ofast /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O3 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }
+                    else
+                    {
+                    start_t = clock();
+                    snprintf(command, 700, "pru-gcc -Ofast /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                    output=popen("pru-gcc -O3 /tmp/temp.c -L../../simpPRU/lib/ -lprurpmsg0  -mmcu=am335x.pru0  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=1 ","r");
+                    end_t = clock();
+                    }    
+                }                          
+            }
             
         }
         else
         {
+            if(arguments.flags== 0)
+            {
+            start_t = clock();
+            snprintf(command, 700, "pru-gcc -O0 /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            output=popen("pru-gcc -O0 /tmp/temp.c -L/simpPRU/lib/ -lprurpmsg0 -mmcu=am335x.pru0  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=0 ","r");
+            end_t = clock();
+            }
             if(arguments.flags== 1)
             {
             start_t = clock();
             snprintf(command, 700, "pru-gcc -O1 /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            output=popen("pru-gcc -O1 /tmp/temp.c -L/simpPRU/lib/ -lprurpmsg0 -mmcu=am335x.pru0  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=0 ","r");
             end_t = clock();
             }
             if(arguments.flags== 2)
             {
             start_t = clock();
-            snprintf(command, 700, "pru-gcc -O2 /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            snprintf(command, 700, "pru-gcc -Os /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            output=popen("pru-gcc -O2 /tmp/temp.c -L/simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=0","r");
             end_t = clock();
             }
             if(arguments.flags== 3)
             {
             start_t = clock();
-            snprintf(command, 700, "pru-gcc -O3 /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            snprintf(command, 700, "pru-gcc -Ofast /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
+            output=popen("pru-gcc -O3 /tmp/temp.c -L/simpPRU/lib/ -lprurpmsg1  -mmcu=am335x.pru1  -I../../simpPRU/include/pru/  -DCONFIG_ENABLE_RPMSG=0 ","r");
             end_t = clock();
             }
             if (system(command) == -1)
@@ -301,6 +366,16 @@ int main(int argc, char** argv)
                 fprintf(stderr, "\e[31mfatal error:\e[0m unable to call gcc-pru\n");
             }
         }
+                if(output==NULL)
+                {
+                    fputs("ERROR\n",stderr);
+                }
+                else{
+                    while(fgets(buff,9999,output)!=NULL){
+                        printf("OUTPUT: %s",buff);
+                    }
+                }
+                pclose(output);        
     }
     total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
     printf("Total time taken by CPU: %f\n", total_t  );

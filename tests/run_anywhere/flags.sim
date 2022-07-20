@@ -1,7 +1,0 @@
-init_message_channel();
-int c:=10;
-while:true {
-    send_message(c);
-    c:=c+1;
-    delay(1000);
-}
