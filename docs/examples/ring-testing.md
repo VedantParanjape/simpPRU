@@ -22,7 +22,7 @@ else
 }
 ```
 
-* This is the code for ring-testing with simpPRU on PocketBeagle,the pinout giving works well for this.
+* This is the code for ring-testing with simpPRU on PocketBeagle,the pinout given works well for this testing.
 
 ## Explaination
 The above code is in simpPRU which is equivalent to [PRU C](https://github.com/beagleboard/cloud9-examples/blob/v2020.01/PocketBeagle/pru/ring.pru0.c).
