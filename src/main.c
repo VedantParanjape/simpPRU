@@ -126,10 +126,6 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             {
                 arguments->device_id = MODEL_BEAGLEBONE_AI;
             }
-            else if (!strcmp(arg, "bbblue"))
-            {
-                arguments->device_id = MODEL_BEAGLEBONE_BLUE;
-            }            
             else
             {
                 fprintf(stderr, "\e[31mfatal error:\e[0m incorrect beagleboard model\n");
@@ -227,9 +223,9 @@ int main(int argc, char** argv)
             }
             else
             {     
-                    start_t = clock();
-                    snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", arguments.flags,TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
-                    end_t = clock();
+                start_t = clock();
+                snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", arguments.flags,TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
+                end_t = clock();
             }
         }
         else
