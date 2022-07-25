@@ -785,6 +785,7 @@ function_definition: KW_DEF IDENTIFIER COLON DT_INT {
                        temp = $2; temp->data_type = DT_INTEGER;} 
                    COLON parameters compound_statement {
                        $$ = create_function_def_node($2, $7, $8);
+                       temp = NULL;
                        printf("func\n");
                    }
                    | KW_DEF IDENTIFIER COLON DT_BOOL {
