@@ -9,5 +9,5 @@ def add_subtract: int: int a, int b, bool control {
         return c;
     }
 }
-result := add_subtract(3, 4, true);
+int result := add_subtract(3, 4, true);
 print(result);
