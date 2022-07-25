@@ -7,7 +7,6 @@
 #include "ast.h"
 #include "pin_config.h"
 #include "firmware_loader.h"
-#include <time.h>
 
 #define VAL(str) #str
 #define TOSTRING(str) VAL(str)
@@ -35,7 +34,7 @@ struct arguments
     int load;
     int preprocess;
     int test;
-    int flags;
+    int compiler_flags;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -88,27 +87,6 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             }
             break;
 
-        case 'f':
-            if (!strcmp(arg, "-O1"))
-            {
-                arguments->flags = 1;
-            }
-            else if (!strcmp(arg, "-O2"))
-            {
-                arguments->flags = 2;
-            }
-            else if (!strcmp(arg, "-O3"))
-            {
-                arguments->flags = 3;
-            }  
-            else
-            {
-                fprintf(stderr, "\e[31mfatal error:\e[0m incorrect flag \n");
-                argp_usage(state);
-            }
-            break;
-                    
-
         case 888:
             if (!strcmp(arg, "pocketbeagle"))
             {
@@ -149,6 +127,26 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             arguments->test = 1;
             break;
 
+        case 'O':
+            if (atoi(arg) == 1)
+            {
+                arguments->compiler_flags = 1;
+            }
+            else if (atoi(arg) == 2)
+            {
+                arguments->compiler_flags = 2;
+            }
+            else if (atoi(arg) == 3)
+            {
+                arguments->compiler_flags = 3;
+            }
+            else
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m incorrect flag\n");
+                argp_usage(state);
+            }
+            break;
+
         default:
             return ARGP_ERR_UNKNOWN;
             break;
@@ -160,7 +158,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 struct argp_option options[] = {
     {"output", 'o', "<file>", 0, "Place the output into <file>"},
     {"pru", 'p', "<pru_id>", 0, "Select which pru id (0/1) for which program is to be compiled"},
-    {"flags",'f',"<compiler_flags>",0,"Select the compiler flag -O1,-O2,-O3"},
+    {"compiler_flags", 'O', "<compiler_flags>", 0, "Select the compiler flag -O1,-O2,-O3"},
     {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (pocketbeagle, bbb, bbbwireless, bbai)"},
     {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
     {"load", 1111, 0, 0, "Load generated firmware to /lib/firmware/"},
@@ -172,9 +170,8 @@ struct argp_option options[] = {
 
 int main(int argc, char** argv)
 {
-    char buff[10000];
-    clock_t start_t, end_t;
-    double total_t;    
+    FILE *output;
+    char buff[10000];   
     struct arguments arguments;
     arguments.device_id = MODEL_AUTODETECT;
     sprintf(arguments.input_filename, "%s", "");
@@ -184,7 +181,7 @@ int main(int argc, char** argv)
     arguments.load = 0;
     arguments.preprocess = 0;
     arguments.test = 0;
-    arguments.flags = 0;
+    arguments.compiler_flags = 0;
 
 
     struct argp argp = {options, parse_opt, args_doc, doc};   
@@ -217,37 +214,23 @@ int main(int argc, char** argv)
         {
             if (arguments.pruid == 2 || arguments.pruid == 3)
             {
-                start_t = clock();
-                snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__",arguments.flags, TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
-                end_t = clock();
+                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
             }
             else
             {     
-                start_t = clock();
-                snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", arguments.flags,TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
-                end_t = clock();
+                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH));
             }
         }
         else
         {
-            start_t = clock();
-            snprintf(command, 700, "pru-gcc -O%d /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.flags,arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
-            end_t = clock();
+            snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH));
         }
-            if(popen(command,"r")==NULL)
+            output = popen(command,"r");
+            if(output == NULL)
             {
-            fputs("ERROR\n",stderr);
+            fprintf(stderr,"\e[31mfatal error:\e[0m Could not generate output\ncompilation terminated\n");
             }
-            else
-            {
-            while(fgets(buff,9999,popen(command,"r"))!=NULL){
-            printf("OUTPUT: %s",buff);
-            }
-            }
-            pclose(popen(command,"r"));
-
-    total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
-    printf("Total time taken by CPU: %f\n", total_t  );
+            pclose(output);
     }
     
     if (arguments.load == 1)
