@@ -12,6 +12,7 @@
   int func=0;
   int inside_func=0;
   int brac=0;
+  int ret=0;
 
   void yyerror(char* s);
   int yylex();
@@ -86,6 +87,10 @@ comma                ([,])
     brac--;
     decrement_scope();
 
+  if(inside_func == 1 && ret == 0 && brac ==0)
+    {
+      yyerror("No return statement for function ");
+    }
     if(inside_func==1 && brac==0){
       inside_func-=1;
       func=0;
@@ -317,11 +322,12 @@ comma                ([,])
 {function}              {
   if (!strcmp(yytext, "return"))
   {
+    ret++;
     if (inside_func!=1)
     {
       yyerror("cannot call return outside function definition");
     }
-    if(inside_func==1)
+    if(inside_func==1 && ret > 0)
     {
     return KW_RETURN;
     }

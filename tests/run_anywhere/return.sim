@@ -1,4 +1,4 @@
-def add_subtract: int: int a, int b, bool control {
+def testing: int: int a, int b, bool control {
     int c;
     if: control {
         c := a + b;
@@ -9,5 +9,5 @@ def add_subtract: int: int a, int b, bool control {
         return c;
     }
 }
-int result := add_subtract(3, 4, true);
+int result := testing(3, 4, true);
 print(result);
