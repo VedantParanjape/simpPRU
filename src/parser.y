@@ -190,7 +190,7 @@ statement: compound_statement {
              $$ = create_statement_node(AST_NODE_ARRAY_ASSIGNMENT, (void*)$1);
          }
          | conditional_statement {
-             $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);         
+             $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);
          }
          | conditional_operator {
              $$ = create_statement_node(AST_NODE_CONDITIONAL_OPERATOR, (void*)$1);

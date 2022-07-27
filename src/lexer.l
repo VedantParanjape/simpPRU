@@ -470,7 +470,6 @@ comma                ([,])
 }
 
 {question}              {
-
   return QUESTION;
 }
 {terminal}              {
