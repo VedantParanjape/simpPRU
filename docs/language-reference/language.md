@@ -76,7 +76,6 @@ short_var := var;
 test_var := true;
 ```
 
-
 * Variables to be assigned must be declared earlier.
 * Datatype of the variables cannot change. Only appropriate expressions/constants of their respective datatypes can be assigned to the variables.
 * Integer and Character variable can be assigned only Integer expression/Integer constant/Character constant.
