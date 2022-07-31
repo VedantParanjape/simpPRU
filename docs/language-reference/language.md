@@ -26,7 +26,7 @@
 * `(`,`)` - Parenthesis
 * `/`,`*`,`+`,`-`,`%` - Arithmetic operators
 * `>`,`<`,`==`,`!=`,`>=`,`<=` - Comparison operators
-* `~`,`&`,`^`,`|`,`<<`,`>>` - Bitwise operators: not, and, xor , or and bitshifts
+* `~`,`&`,`^`,`|`,`<<`,`>>` - Bitwise operators: not, and, xor, or and bitshifts
 * `not`,`and`,`or` - Logical operators: not, and, or
 * `:=` - Assignment operator
 
