@@ -4,8 +4,8 @@
   #include "symbol_table.h"
 
   int linenumber = 1;
+  int columnnumber = 1;
   int curr_line = 1;
-  int curr_col  = 1;
   int assignment_flag = 0;
   int for_loop_flag = 0;
   int function_flag = 0;
@@ -15,27 +15,27 @@
   void yyerror(char* s);
   int yylex();
  
-static void updating_column()
-{
-  yylloc.first_line   = curr_line;
-  yylloc.first_column = curr_col;
+  static void updating_column()
+  {
+    yylloc.first_line = curr_line;
+    yylloc.first_column = columnnumber;
 
-    char * s;
-  for(s = yytext; *s != '\0'; s++)
-    {
-      if(*s == '\n')
+      char * s;
+    for(s = yytext; *s != '\0'; s++)
       {
-        curr_line++;
-        curr_col = 0;
+        if(*s == '\n')
+        {
+          curr_line ++;
+          columnnumber = 0;
+        }
+        else
+        {
+          columnnumber ++;
+        }
       }
-      else
-      {
-        curr_col++;
-      }
-    }
-  yylloc.last_line   = curr_line;
-  yylloc.last_column = curr_col-1;
-}
+    yylloc.last_line = curr_line;
+    yylloc.last_column = columnnumber-1;
+  }
 
 #define YY_USER_ACTION updating_column();
 

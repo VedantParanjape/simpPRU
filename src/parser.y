@@ -12,7 +12,6 @@ extern int yyparse();
 extern FILE* yyin;
 
 extern int linenumber;
-extern int yycolumn;
 extern int assignment_flag;
 sym_ptr temp = NULL;
 ast_node *ast = NULL;

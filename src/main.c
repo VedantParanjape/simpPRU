@@ -17,7 +17,7 @@ extern int yyparse();
 extern FILE* yyin;
 
 extern int linenumber;
-extern int curr_col;
+extern int columnnumber;
 extern ast_node *ast;
 
 const char *argp_program_version = TOSTRING(VERSION_NUMBER);
@@ -232,6 +232,6 @@ int main(int argc, char** argv)
 
 void yyerror (const char *s) 
 {
-    fprintf (stderr, "%d %d : error: %s\n", linenumber, curr_col, s);
+    fprintf (stderr, "Error: Line:%d Column:%d  %s\n", linenumber, columnnumber, s);
     exit(0);
 }
