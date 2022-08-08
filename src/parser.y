@@ -905,7 +905,7 @@ unary_increment: OPR_IC INT_IDENTIFIER SEMICOLON {
                     $$ = create_unary_increment_node($2);   
                     printf("++ %d ; \n",$2->value);                       
                 }
-                |OPR_IC CHAR_IDENTIFIER SEMICOLON {
+                | OPR_IC CHAR_IDENTIFIER SEMICOLON {
                 if ($2 == NULL)
                 {
                     yyerror("variable already defined");
@@ -925,7 +925,7 @@ unary_decrement: OPR_DC INT_IDENTIFIER SEMICOLON {
                     $$ = create_unary_decrement_node($2);   
                     printf("-- %d ; \n",$2->value);                       
                 }
-                |OPR_DC CHAR_IDENTIFIER SEMICOLON {
+                | OPR_DC CHAR_IDENTIFIER SEMICOLON {
                 if ($2 == NULL)
                 {
                     yyerror("variable already defined");

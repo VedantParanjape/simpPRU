@@ -1,4 +1,6 @@
-int a := 20;
-++ a;
--- a;
-print(a);
+int a:=10;
+int b:=5;
+int c:= ++a + 2 ;
+int d:= --b;
+println(c);
+print(d);
