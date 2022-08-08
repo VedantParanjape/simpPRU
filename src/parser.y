@@ -922,12 +922,12 @@ parameter: DT_INT IDENTIFIER {
          ;
 
 conditional_operator: arithmetic_expression OPR_ASSIGNMENT boolean_expression QUESTION arithmetic_expression COLON arithmetic_expression SEMICOLON {
-                $$ = create_conditional_operator_node($1,$3,$5,$7);
-                }
-                | boolean_expression OPR_ASSIGNMENT boolean_expression QUESTION boolean_expression COLON boolean_expression SEMICOLON {
-                $$ = create_conditional_operator_node($1,$3,$5,$7);
-                }
-                ;
+                        $$ = create_conditional_operator_node($1, $3, $5, $7);
+                    }
+                    | boolean_expression OPR_ASSIGNMENT boolean_expression QUESTION boolean_expression COLON boolean_expression SEMICOLON {
+                        $$ = create_conditional_operator_node($1, $3, $5, $7);
+                    }
+                    ;
 
 return_statement: KW_RETURN boolean_expression SEMICOLON {
                     $$ = $2;

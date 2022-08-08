@@ -276,7 +276,7 @@ struct ast_node_range_expression
     int node_type;
 
     ast_node_expression  *body1;
-    ast_node_expression *condition;
+    ast_node_expression  *condition;
     ast_node_expression  *body2;
     ast_node_expression  *body3;
 };
