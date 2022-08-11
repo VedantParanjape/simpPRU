@@ -29,12 +29,12 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
 
-            case AST_NODE_ARRAY_ASSIGNMENT:
-                ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
-                break;
-
             case AST_NODE_SUB_ASSIGNMENT:
                 ast_sub_assignment_printer(((ast_node_statements*)temp)->child_nodes.sub_assignment, handle);
+                break;
+
+            case AST_NODE_ARRAY_ASSIGNMENT:
+                ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
             
             case AST_NODE_CONDITIONAL_IF:

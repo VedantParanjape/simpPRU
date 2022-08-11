@@ -327,6 +327,7 @@ comma                ([,])
 {sub_assignment_operator}   {
   return OPR_SUB_ASSIGNMENT;  
 }
+
 {io}                    {
   if (!strcmp(yytext, "digital_write"))
   {

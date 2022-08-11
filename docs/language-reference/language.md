@@ -29,7 +29,6 @@
 * `~`,`&`,`|`,`<<`,`>>` - Bitwise operators: not, and, or and bitshifts
 * `not`,`and`,`or` - Logical operators: not, and, or
 * `:=` - Assignment operator
-* `-=` - Subtract Assignment operator
 
 * Result of Arithmetic and Bitwise operators is Integer constant.
 * Result of Comparison and Logical operators is Boolean constant.
@@ -75,12 +74,6 @@ bool test_var := false;
 var := 45;
 short_var := var;
 test_var := true;
-```
-### Other Assignment Operators
-
-```cpp
-var := 45;
-var -= 40;
 ```
 
 * Variables to be assigned must be declared earlier.

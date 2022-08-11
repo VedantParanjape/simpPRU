@@ -465,10 +465,10 @@ sub_assignment: INT_IDENTIFIER OPR_SUB_ASSIGNMENT arithmetic_expression SEMICOLO
                }
 
                $1->data_type = DT_INTEGER;
-               $1->value =$1->value - $3->value;
+               $1->value = $1->value - $3->value;
                $$ = create_sub_assignment_node($1, $3);
 
-               printf("%s -= %d\n", $1->identifier, $1->value);
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | BOOL_IDENTIFIER OPR_SUB_ASSIGNMENT boolean_expression SEMICOLON {
                 if ($1 == NULL)
@@ -490,7 +490,7 @@ sub_assignment: INT_IDENTIFIER OPR_SUB_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value = $1->value - $3->value;
                 $$ = create_sub_assignment_node($1, $3);
 
-               printf("%s -= %d\n", $1->identifier, $1->value);
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | CHAR_IDENTIFIER OPR_SUB_ASSIGNMENT arithmetic_expression SEMICOLON {
                 if ($1 == NULL)
@@ -512,7 +512,7 @@ sub_assignment: INT_IDENTIFIER OPR_SUB_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value = $1->value - $3->value;
                 $$ = create_sub_assignment_node($1, $3);
 
-                printf("%s -= %c\n", $1->identifier, $1->value);
+                printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
 
