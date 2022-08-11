@@ -324,12 +324,15 @@ comma                ([,])
 {assignment_operator}   {
   return OPR_ASSIGNMENT;  
 }
+
 {mul_assignment_operator}   {
   return OPR_MUL_ASSIGNMENT;  
 }
+
 {div_assignment_operator}   {
   return OPR_DIV_ASSIGNMENT;  
 }
+
 {io}                    {
   if (!strcmp(yytext, "digital_write"))
   {

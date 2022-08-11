@@ -447,12 +447,13 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                 }
 
                 $1->data_type = DT_CHAR_;
-                $1->value =  $3->value ;
+                $1->value = $3->value;
                 $$ = create_assignment_node($1, $3);
 
                 printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
+
 mul_assignment: INT_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($1 == NULL)
                {
@@ -473,7 +474,7 @@ mul_assignment: INT_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLO
                $1->value =  $1->value * $3->value;
                $$ = create_mul_assignment_node($1, $3);
 
-               printf("%s *= %d\n", $1->identifier, $1->value);
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | BOOL_IDENTIFIER OPR_MUL_ASSIGNMENT boolean_expression SEMICOLON {
                 if ($1 == NULL)
@@ -495,7 +496,7 @@ mul_assignment: INT_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value =  $1->value * $3->value;
                 $$ = create_mul_assignment_node($1, $3);
 
-               printf("%s *= %d\n", $1->identifier, $1->value);
+                printf("%s := %d\n", $1->identifier, $1->value);
             }
             | CHAR_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLON {
                 if ($1 == NULL)
@@ -517,9 +518,10 @@ mul_assignment: INT_IDENTIFIER OPR_MUL_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value = $1->value * $3->value;
                 $$ = create_mul_assignment_node($1, $3);
 
-                printf("%s *= %c\n", $1->identifier, $1->value);
+                printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
+
 div_assignment: INT_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLON {
                if ($1 == NULL)
                {
@@ -543,7 +545,7 @@ div_assignment: INT_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLO
                $1->value =  $1->value / $3->value;
                $$ = create_div_assignment_node($1, $3);
 
-               printf("%s /= %d\n", $1->identifier, $1->value);
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | BOOL_IDENTIFIER OPR_DIV_ASSIGNMENT boolean_expression SEMICOLON {
                 if ($1 == NULL)
@@ -568,7 +570,7 @@ div_assignment: INT_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value =  $1->value / $3->value;
                 $$ = create_div_assignment_node($1, $3);
 
-               printf("%s /= %d\n", $1->identifier, $1->value);
+                printf("%s := %d\n", $1->identifier, $1->value);
             }
             | CHAR_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLON {
                 if ($1 == NULL)
@@ -593,9 +595,10 @@ div_assignment: INT_IDENTIFIER OPR_DIV_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value = $1->value / $3->value;
                 $$ = create_div_assignment_node($1, $3);
 
-                printf("%s /= %c\n", $1->identifier, $1->value);
+                printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
+
 array_assignment: INT_ARR_IDENTIFIER LSQUARE arithmetic_expression RSQUARE OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                     if ($1 == NULL)
                     {

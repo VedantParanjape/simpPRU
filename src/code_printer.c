@@ -192,6 +192,7 @@ void ast_mul_assignment_printer(ast_node_mul_assignment *assg, FILE* handle)
     }
     
 }
+
 void ast_div_assignment_printer(ast_node_div_assignment *assg, FILE* handle)
 {
     if (assg != NULL && handle != NULL)
@@ -202,6 +203,7 @@ void ast_div_assignment_printer(ast_node_div_assignment *assg, FILE* handle)
     }
     
 }
+
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handle)
 {
     if (assign != NULL && handle != NULL)

@@ -151,6 +151,7 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
 
     return assgn;
 }
+
 ast_node_mul_assignment *create_mul_assignment_node(sym_ptr symbol, ast_node_expression *exp)
 {
     ast_node_mul_assignment *mul_assgn = (ast_node_mul_assignment*)malloc(sizeof(ast_node_mul_assignment));
