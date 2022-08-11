@@ -324,9 +324,11 @@ comma                ([,])
 {assignment_operator}   {
   return OPR_ASSIGNMENT;  
 }
+
 {assignment_bwl_operator}   {
   return OPR_BWL_ASSIGNMENT;  
 }
+
 {assignment_bwr_operator}   {
   return OPR_BWR_ASSIGNMENT;  
 }
