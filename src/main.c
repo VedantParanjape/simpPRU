@@ -170,8 +170,7 @@ struct argp_option options[] = {
 
 int main(int argc, char** argv)
 {
-    FILE *output;
-    char buff[10000];   
+    FILE *output; 
     struct arguments arguments;
     arguments.device_id = MODEL_AUTODETECT;
     sprintf(arguments.input_filename, "%s", "");
@@ -182,7 +181,6 @@ int main(int argc, char** argv)
     arguments.preprocess = 0;
     arguments.test = 0;
     arguments.compiler_flags = 0;
-
 
     struct argp argp = {options, parse_opt, args_doc, doc};   
     argp_parse(&argp, argc, argv, 0, 0, &arguments); 
@@ -232,7 +230,7 @@ int main(int argc, char** argv)
             }
             pclose(output);
     }
-    
+
     if (arguments.load == 1)
     {
         if (arguments.preprocess == 0 && arguments.test == 0)
