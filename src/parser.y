@@ -33,6 +33,8 @@ ast_node *ast = NULL;
     struct ast_node_declaration *declaration;
     struct ast_node_array_declaration *array_declaration;
     struct ast_node_assignment *assignment;
+    struct ast_node_bwl_assignment *bwl_assignment;
+    struct ast_node_bwr_assignment *bwr_assignment;
     struct ast_node_array_assignment *array_assignment;
     struct ast_node_array_access *array_access;
     struct ast_node_expression *expression;
@@ -75,6 +77,8 @@ ast_node *ast = NULL;
 %right OPR_BW_NOT OPR_LGL_NOT
 
 %token OPR_ASSIGNMENT
+%token OPR_BWL_ASSIGNMENT
+%token OPR_BWR_ASSIGNMENT
 
 %token SEMICOLON COLON COMMA
 
@@ -106,6 +110,8 @@ ast_node *ast = NULL;
 %type <declaration> declaration declaration_assignment
 %type <array_declaration> array_declaration array_declaration_assignment
 %type <assignment> assignment
+%type <bwl_assignment> bwl_assignment
+%type <bwr_assignment> bwr_assignment
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
@@ -182,6 +188,12 @@ statement: compound_statement {
          }
          | assignment {
              $$ = create_statement_node(AST_NODE_ASSIGNMENT, (void*)$1);
+         }
+         | bwl_assignment {
+             $$ = create_statement_node(AST_NODE_BWL_ASSIGNMENT, (void*)$1);
+         }
+         | bwr_assignment {
+             $$ = create_statement_node(AST_NODE_BWR_ASSIGNMENT, (void*)$1);
          }
          | array_assignment {
              $$ = create_statement_node(AST_NODE_ARRAY_ASSIGNMENT, (void*)$1);
@@ -437,6 +449,142 @@ assignment: INT_IDENTIFIER OPR_ASSIGNMENT arithmetic_expression SEMICOLON {
                 $1->data_type = DT_CHAR_;
                 $1->value = $3->value;
                 $$ = create_assignment_node($1, $3);
+
+                printf("%s := %c\n", $1->identifier, $1->value);
+            }
+            ;
+
+bwl_assignment: INT_IDENTIFIER OPR_BWL_ASSIGNMENT arithmetic_expression SEMICOLON {
+               if ($1 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+               
+               if ($1->is_function == 1)
+               {
+                   yyerror("identifier is a function, cannot assign value");
+               }
+               
+               if ($1->is_constant == 1)
+               {
+                   yyerror("identifer is a pin number constant, cannot assign value");
+               }
+
+               $1->data_type = DT_INTEGER;
+               $1->value = $1->value << $3->value;
+               $$ = create_bwl_assignment_node($1, $3);
+
+               printf("%s := %d\n", $1->identifier, $1->value);
+            }
+            | BOOL_IDENTIFIER OPR_BWL_ASSIGNMENT boolean_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+                
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+                
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifer is a pin number constant, cannot assign value");
+                }
+                
+                $1->data_type = DT_BOOLEAN;  
+                $1->value = $1->value << $3->value;
+                $$ = create_bwl_assignment_node($1, $3);
+
+                printf("%s := %d\n", $1->identifier, $1->value);
+            }
+            | CHAR_IDENTIFIER OPR_BWL_ASSIGNMENT arithmetic_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_CHAR_;
+                $1->value = $1->value << $3->value;
+                $$ = create_bwl_assignment_node($1, $3);
+
+                printf("%s := %c\n", $1->identifier, $1->value);
+            }
+            ;
+
+bwr_assignment: INT_IDENTIFIER OPR_BWR_ASSIGNMENT arithmetic_expression SEMICOLON {
+               if ($1 == NULL)
+               {
+                   yyerror("variable already defined");
+               }
+               
+               if ($1->is_function == 1)
+               {
+                   yyerror("identifier is a function, cannot assign value");
+               }
+               
+               if ($1->is_constant == 1)
+               {
+                   yyerror("identifer is a pin number constant, cannot assign value");
+               }
+
+               $1->data_type = DT_INTEGER;
+               $1->value = $1->value >> $3->value;
+               $$ = create_bwr_assignment_node($1, $3);
+
+               printf("%s := %d\n", $1->identifier, $1->value);
+            }
+            | BOOL_IDENTIFIER OPR_BWR_ASSIGNMENT boolean_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+                
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+                
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifer is a pin number constant, cannot assign value");
+                }
+                
+                $1->data_type = DT_BOOLEAN;  
+                $1->value = $1->value >> $3->value;
+                $$ = create_bwr_assignment_node($1, $3);
+
+                printf("%s := %d\n", $1->identifier, $1->value);
+            }
+            | CHAR_IDENTIFIER OPR_BWR_ASSIGNMENT arithmetic_expression SEMICOLON {
+                if ($1 == NULL)
+                {
+                    yyerror("variable already defined");
+                }
+
+                if ($1->is_function == 1)
+                {
+                    yyerror("identifier is a function, cannot assign value");
+                }
+
+                if ($1->is_constant == 1)
+                {
+                    yyerror("identifier is a pin number constant, cannot assign value");
+                }
+
+                $1->data_type = DT_CHAR_;
+                $1->value = $1->value >> $3->value;
+                $$ = create_bwr_assignment_node($1, $3);
 
                 printf("%s := %c\n", $1->identifier, $1->value);
             }

@@ -40,6 +40,14 @@ ast_node_statements *create_statement_node(int node_type, void *child)
             stmt->child_nodes.assignment = child;
             break;
 
+        case AST_NODE_BWL_ASSIGNMENT:
+            stmt->child_nodes.bwl_assignment = child;
+            break;
+
+        case AST_NODE_BWR_ASSIGNMENT:
+            stmt->child_nodes.bwr_assignment = child;
+            break;
+
         case AST_NODE_ARRAY_ASSIGNMENT:
             stmt->child_nodes.array_assignment = child;
             break;
@@ -138,6 +146,28 @@ ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression 
     ast_node_assignment *assgn = (ast_node_assignment*)malloc(sizeof(ast_node_assignment));
 
     assgn->node_type = AST_NODE_ASSIGNMENT;
+    assgn->expression = exp;
+    assgn->symbol_entry = symbol;
+
+    return assgn;
+}
+
+ast_node_bwl_assignment *create_bwl_assignment_node(sym_ptr symbol, ast_node_expression *exp)
+{
+    ast_node_bwl_assignment *assgn = (ast_node_bwl_assignment*)malloc(sizeof(ast_node_bwl_assignment));
+
+    assgn->node_type = AST_NODE_BWL_ASSIGNMENT;
+    assgn->expression = exp;
+    assgn->symbol_entry = symbol;
+
+    return assgn;
+}
+
+ast_node_bwr_assignment *create_bwr_assignment_node(sym_ptr symbol, ast_node_expression *exp)
+{
+    ast_node_bwr_assignment *assgn = (ast_node_bwr_assignment*)malloc(sizeof(ast_node_bwr_assignment));
+
+    assgn->node_type = AST_NODE_BWR_ASSIGNMENT;
     assgn->expression = exp;
     assgn->symbol_entry = symbol;
 
@@ -600,6 +630,14 @@ void ast_node_type(int node_type)
 
         case AST_NODE_ASSIGNMENT:
             printf("ast assignment");
+            break;
+
+        case AST_NODE_BWL_ASSIGNMENT:
+            printf("ast bitwise left shift assignment");
+            break;
+
+        case AST_NODE_BWR_ASSIGNMENT:
+            printf("ast bitwise right shift assignment");
             break;
 
         case AST_NODE_ARRAY_ASSIGNMENT:
