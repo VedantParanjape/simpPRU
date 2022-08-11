@@ -35,6 +35,8 @@ bitwise_operators    ("~"|"&"|"|"|">>"|"<<")
 logical_operators    ("not"|"and"|"or")
 function             ("return"|"void"|"def")
 assignment_operator  ([:][=])
+mul_assignment_operator  ([*][=])
+div_assignment_operator  ([/][=])
 io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counter"|"stop_counter"|"read_counter"|"init_message_channel"|"receive_message"|"send_message"|"send_int"|"send_char"|"send_bool"|"send_ints"|"send_chars"|"send_bools")
 print                ("print"|"println")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
@@ -321,6 +323,14 @@ comma                ([,])
 
 {assignment_operator}   {
   return OPR_ASSIGNMENT;  
+}
+
+{mul_assignment_operator}   {
+  return OPR_MUL_ASSIGNMENT;  
+}
+
+{div_assignment_operator}   {
+  return OPR_DIV_ASSIGNMENT;  
 }
 
 {io}                    {

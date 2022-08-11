@@ -29,6 +29,14 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
 
+            case AST_NODE_MUL_ASSIGNMENT:
+                ast_mul_assignment_printer(((ast_node_statements*)temp)->child_nodes.mul_assignment, handle);
+                break;
+
+            case AST_NODE_DIV_ASSIGNMENT:
+                ast_div_assignment_printer(((ast_node_statements*)temp)->child_nodes.div_assignment, handle);
+                break;
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
@@ -168,6 +176,28 @@ void ast_assignment_printer(ast_node_assignment *assg, FILE* handle)
     if (assg != NULL && handle != NULL)
     {
         fprintf(handle, "\t%s = ", assg->symbol_entry->identifier);
+        ast_expression_printer(assg->expression, handle);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
+void ast_mul_assignment_printer(ast_node_mul_assignment *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s *= ", assg->symbol_entry->identifier);
+        ast_expression_printer(assg->expression, handle);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
+void ast_div_assignment_printer(ast_node_div_assignment *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s /= ", assg->symbol_entry->identifier);
         ast_expression_printer(assg->expression, handle);
         fprintf(handle, "%s", ";\n");
     }
@@ -696,7 +726,15 @@ int code_printer(ast_node* ast, int pru_id, int test)
             case AST_NODE_ASSIGNMENT:
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
-            
+
+            case AST_NODE_MUL_ASSIGNMENT:
+                ast_mul_assignment_printer(((ast_node_statements*)temp)->child_nodes.mul_assignment, handle);
+                break;
+
+            case AST_NODE_DIV_ASSIGNMENT:
+                ast_div_assignment_printer(((ast_node_statements*)temp)->child_nodes.div_assignment, handle);
+                break;
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
