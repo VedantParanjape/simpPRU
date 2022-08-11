@@ -88,7 +88,7 @@ comma                ([,])
     brac -= 1;
     decrement_scope();
 
-  if (inside_func == 1 && ret == 0 && brac == 0)
+    if (inside_func == 1 && ret == 0 && brac == 0)
     {
       yyerror("No return statement for a non void function ");
     }
