@@ -12,7 +12,7 @@ std::mutex output_box_mutex;
 std::atomic_bool stop_read_signal(false);
 std::atomic_bool update_screen(false);
 FILE *fd = NULL;
-int k=0;
+int k = 0;
 
 int device_model()
 {
@@ -182,17 +182,17 @@ int start_pru(int pru_id)
 
     if (!strcmp(state, "offline") && bits_read > 0)
     {
-        k=0;
+        k = 0;
     }
     else
     {
-        k=1;
+        k = 1;
     }
     if (!strcmp(state, "offline") && bits_read > 0)
     {
         if (write(remoteproc_start, "start", 6*sizeof(char)) > 0)
         {
-            k=1;
+            k = 1;
             close(remoteproc_start);
             return 1;
         }
@@ -239,17 +239,17 @@ int stop_pru(int pru_id)
 
     if (!strcmp(state, "running") && bits_read > 0)
     {
-        k=1;
+        k = 1;
     }
     else
     {
-        k=0;
+        k = 0;
     }
     if (!strcmp(state, "running") && bits_read > 0)
     {
         if (write(remoteproc_stop, "stop", 5*sizeof(char)) > 0)
         {
-            k=0;
+            k = 0;
             close(remoteproc_stop);
             return 1;
         }
@@ -343,64 +343,65 @@ console::console()
 Element console::Render() 
 {
     std::lock_guard<std::mutex> output_box_lock(output_box_mutex);
-    if (k==1)
-    return border(vbox({
-        // Console and PRU selection
-        hbox({
+
+    if (k == 1)
+        return border(vbox({
+            // Console and PRU selection
             hbox({
+                hbox({
+                    vbox({
+                        vbox({output_box}),
+                        text(L"   ") | ftxui::select,
+                    }) | frame,                                        
+                }) | flex | border,
                 vbox({
-                    vbox({output_box}),
-                    text(L"   ") | ftxui::select,
-                }) | frame,                                        
-            }) | flex | border,
+                    hcenter(bold(text(L"PRU"))),
+                    separator(),
+                    pru_id_menu->Render(),
+                }) | border,
+            }) | flex,
+            
+            // Input box and PRU start/stop
             vbox({
-                hcenter(bold(text(L"PRU"))),
-                separator(),
-                pru_id_menu->Render(),
+                hbox({
+                    text(L" send : "),
+                    input_box->Render(),
+                    separator(),
+                    pru_start_top->Render(),
+                    separator(),
+                    button->Render() | bold | color(Color::Green),
+                }),
             }) | border,
-        }) | flex,
-        
-        // Input box and PRU start/stop
-        vbox({
-            hbox({
-                text(L" send : "),
-                input_box->Render(),
-                separator(),
-                pru_start_top->Render(),
-                separator(),
-                button->Render() | bold | color(Color::Green),
-            }),
-        }) | border,
-    }));
+        }));
     else
         return border(vbox({
-        // Console and PRU selection
-        hbox({
+            // Console and PRU selection
             hbox({
+                hbox({
+                    vbox({
+                        vbox({output_box}),
+                        text(L"   ") | ftxui::select,
+                    }) | frame,                                        
+                }) | flex | border,
                 vbox({
-                    vbox({output_box}),
-                    text(L"   ") | ftxui::select,
-                }) | frame,                                        
-            }) | flex | border,
+                    hcenter(bold(text(L"PRU"))),
+                    separator(),
+                    pru_id_menu->Render(),
+                }) | border,
+            }) | flex,
+            
+            // Input box and PRU start/stop
             vbox({
-                hcenter(bold(text(L"PRU"))),
-                separator(),
-                pru_id_menu->Render(),
+                hbox({
+                    text(L" send : "),
+                    input_box->Render(),
+                    separator(),
+                    pru_start_top->Render(),
+                    separator(),
+                    button->Render() | bold | color(Color::Red),
+                }),
             }) | border,
-        }) | flex,
-        
-        // Input box and PRU start/stop
-        vbox({
-            hbox({
-                text(L" send : "),
-                input_box->Render(),
-                separator(),
-                pru_start_top->Render(),
-                separator(),
-                button->Render() | bold | color(Color::Red),
-            }),
-        }) | border,
-    }));
+        }));
 }
 
 
