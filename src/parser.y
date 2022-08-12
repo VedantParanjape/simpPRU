@@ -474,7 +474,7 @@ bwa_assignment: INT_IDENTIFIER OPR_BWA_ASSIGNMENT arithmetic_expression SEMICOLO
                $1->value = $1->value & $3->value;
                $$ = create_bwa_assignment_node($1, $3);
 
-               printf("%s &= %d\n", $1->identifier, $1->value);
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | BOOL_IDENTIFIER OPR_BWA_ASSIGNMENT boolean_expression SEMICOLON {
                 if ($1 == NULL)
@@ -496,7 +496,7 @@ bwa_assignment: INT_IDENTIFIER OPR_BWA_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value =$1->value & $3->value;
                 $$ = create_bwa_assignment_node($1, $3);
 
-               printf("%s &= %d\n", $1->identifier, $1->value);
+                printf("%s := %d\n", $1->identifier, $1->value);
             }
             | CHAR_IDENTIFIER OPR_BWA_ASSIGNMENT arithmetic_expression SEMICOLON {
                 if ($1 == NULL)
@@ -518,7 +518,7 @@ bwa_assignment: INT_IDENTIFIER OPR_BWA_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value = $1->value & $3->value;
                 $$ = create_bwa_assignment_node($1, $3);
 
-                printf("%s &= %c\n", $1->identifier, $1->value);
+                printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
 
@@ -542,7 +542,7 @@ bwo_assignment: INT_IDENTIFIER OPR_BWO_ASSIGNMENT arithmetic_expression SEMICOLO
                $1->value = $1->value | $3->value;
                $$ = create_bwo_assignment_node($1, $3);
 
-               printf("%s |= %d\n", $1->identifier, $1->value);
+               printf("%s := %d\n", $1->identifier, $1->value);
             }
             | BOOL_IDENTIFIER OPR_BWO_ASSIGNMENT boolean_expression SEMICOLON {
                 if ($1 == NULL)
@@ -564,7 +564,7 @@ bwo_assignment: INT_IDENTIFIER OPR_BWO_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value =$1->value | $3->value;
                 $$ = create_bwo_assignment_node($1, $3);
 
-               printf("%s |= %d\n", $1->identifier, $1->value);
+                printf("%s := %d\n", $1->identifier, $1->value);
             }
             | CHAR_IDENTIFIER OPR_BWO_ASSIGNMENT arithmetic_expression SEMICOLON {
                 if ($1 == NULL)
@@ -586,7 +586,7 @@ bwo_assignment: INT_IDENTIFIER OPR_BWO_ASSIGNMENT arithmetic_expression SEMICOLO
                 $1->value = $1->value | $3->value;
                 $$ = create_bwo_assignment_node($1, $3);
 
-                printf("%s |= %c\n", $1->identifier, $1->value);
+                printf("%s := %c\n", $1->identifier, $1->value);
             }
             ;
 

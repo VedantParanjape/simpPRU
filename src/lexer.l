@@ -328,6 +328,7 @@ comma                ([,])
 {bwa_assignment_operator}   {
   return OPR_BWA_ASSIGNMENT;  
 }
+
 {bwo_assignment_operator}   {
   return OPR_BWO_ASSIGNMENT;  
 }
