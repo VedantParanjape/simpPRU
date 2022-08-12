@@ -29,6 +29,14 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
 
+            case AST_NODE_BWA_ASSIGNMENT:
+                ast_bwa_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwa_assignment, handle);
+                break;
+
+            case AST_NODE_BWO_ASSIGNMENT:
+                ast_bwo_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwo_assignment, handle);
+                break;
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
@@ -168,6 +176,28 @@ void ast_assignment_printer(ast_node_assignment *assg, FILE* handle)
     if (assg != NULL && handle != NULL)
     {
         fprintf(handle, "\t%s = ", assg->symbol_entry->identifier);
+        ast_expression_printer(assg->expression, handle);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
+void ast_bwa_assignment_printer(ast_node_bwa_assignment *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s &= ", assg->symbol_entry->identifier);
+        ast_expression_printer(assg->expression, handle);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
+void ast_bwo_assignment_printer(ast_node_bwo_assignment *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t%s |= ", assg->symbol_entry->identifier);
         ast_expression_printer(assg->expression, handle);
         fprintf(handle, "%s", ";\n");
     }
@@ -697,6 +727,14 @@ int code_printer(ast_node* ast, int pru_id, int test)
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
             
+            case AST_NODE_BWA_ASSIGNMENT:
+                ast_bwa_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwa_assignment, handle);
+                break;
+            
+            case AST_NODE_BWO_ASSIGNMENT:
+                ast_bwo_assignment_printer(((ast_node_statements*)temp)->child_nodes.bwo_assignment, handle);
+                break;  
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
