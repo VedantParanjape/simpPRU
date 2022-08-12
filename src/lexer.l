@@ -472,6 +472,7 @@ comma                ([,])
 {question}              {
   return QUESTION;
 }
+
 {terminal}              {
   return SEMICOLON;
 }

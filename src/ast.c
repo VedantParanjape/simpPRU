@@ -160,7 +160,7 @@ ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node
     return assign;
 }
 
-ast_node_conditional_operator *create_conditional_operator_node( ast_node_expression *body1,ast_node_expression *condition, ast_node_expression *body2, ast_node_expression *body3)
+ast_node_conditional_operator *create_conditional_operator_node(ast_node_expression *body1, ast_node_expression *condition, ast_node_expression *body2, ast_node_expression *body3)
 {
     ast_node_conditional_operator *cond_operator = (ast_node_conditional_operator*)malloc(sizeof(ast_node_conditional_operator));
 

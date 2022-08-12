@@ -173,9 +173,8 @@ void ast_conditional_operator_printer(ast_node_conditional_operator *opcod, FILE
     {
         ast_expression_printer(opcod->body1, handle);
         fprintf(handle, "%s"," = "); 
-        fprintf(handle, "("); 
         ast_expression_printer(opcod->condition, handle);
-        fprintf(handle, "%s", ") ? "); 
+        fprintf(handle, "%s", " ? "); 
         ast_expression_printer(opcod->body2, handle);
         fprintf(handle, "%s", ":");
         ast_expression_printer(opcod->body3, handle);
