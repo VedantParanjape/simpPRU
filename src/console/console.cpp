@@ -361,7 +361,7 @@ Element console::Render()
                 }) | border,
             }) | flex,
             
-            // Input box and PRU start/stop
+            // Input box, PRU start/stop and PRU-Status Auto-toggle button
             vbox({
                 hbox({
                     text(L" send : "),
@@ -390,7 +390,7 @@ Element console::Render()
                 }) | border,
             }) | flex,
             
-            // Input box and PRU start/stop
+            // Input box, PRU start/stop and PRU-Status Auto-toggle button
             vbox({
                 hbox({
                     text(L" send : "),
@@ -403,7 +403,6 @@ Element console::Render()
             }) | border,
         }));
 }
-
 
 int main(int argc, const char* argv[]) 
 {
