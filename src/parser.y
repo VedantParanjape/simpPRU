@@ -903,7 +903,7 @@ unary_increment: OPR_IC INT_IDENTIFIER SEMICOLON {
                 }
                     $2->value = $2->value + 1;
                     $$ = create_unary_increment_node($2);   
-                    printf("++ %d ; \n",$2->value);                       
+                    printf("++ %d ; \n", $2->value);        
                 }
                 | OPR_IC CHAR_IDENTIFIER SEMICOLON {
                 if ($2 == NULL)
@@ -912,7 +912,7 @@ unary_increment: OPR_IC INT_IDENTIFIER SEMICOLON {
                 }
                     $2->value = $2->value + 1;
                     $$ = create_unary_increment_node($2);   
-                    printf("++ %d ; \n",$2->value);                       
+                    printf("++ %d ; \n", $2->value);           
                 }
                 ;
 
@@ -923,7 +923,7 @@ unary_decrement: OPR_DC INT_IDENTIFIER SEMICOLON {
                 }
                     $2->value = $2->value - 1;
                     $$ = create_unary_decrement_node($2);   
-                    printf("-- %d ; \n",$2->value);                       
+                    printf("-- %d ; \n", $2->value);        
                 }
                 | OPR_DC CHAR_IDENTIFIER SEMICOLON {
                 if ($2 == NULL)
@@ -932,7 +932,7 @@ unary_decrement: OPR_DC INT_IDENTIFIER SEMICOLON {
                 }
                     $2->value = $2->value - 1;
                     $$ = create_unary_decrement_node($2);   
-                    printf("-- %d ; \n",$2->value);                       
+                    printf("-- %d ; \n", $2->value);  
                 }
                 ;
 

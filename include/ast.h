@@ -230,7 +230,6 @@ struct ast_node_array_declaration
     sym_ptr symbol_entry;
 };
 
-
 struct ast_node_array_assignment
 {
     int node_type;
