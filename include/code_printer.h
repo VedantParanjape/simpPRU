@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define _OPR_IC " ++ "
+#define _OPR_DC " -- "
 #define _OPR_LFT " << "
 #define _OPR_RGT " >> "
 #define _OPR_ADD " + " 
@@ -54,6 +56,8 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
 void ast_declaration_printer(ast_node_declaration *decl, FILE* handle);
 void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE* handle);
 void ast_assignment_printer(ast_node_assignment *assg, FILE* handle);
+void ast_unary_increment_printer(ast_node_unary_increment *assg, FILE* handle);
+void ast_unary_decrement_printer(ast_node_unary_decrement *assg, FILE* handle);
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE *handle);
 void ast_array_access_printer(ast_node_array_access *access, FILE* handle);
 void ast_expression_printer(ast_node_expression *node, FILE* handle);

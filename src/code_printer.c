@@ -29,6 +29,14 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
 
+            case AST_NODE_UNARY_INC:
+                ast_unary_increment_printer(((ast_node_statements*)temp)->child_nodes.unary_increment, handle);
+                break;                
+
+            case AST_NODE_UNARY_DC:
+                ast_unary_decrement_printer(((ast_node_statements*)temp)->child_nodes.unary_decrement, handle);
+                break;   
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
@@ -174,6 +182,26 @@ void ast_assignment_printer(ast_node_assignment *assg, FILE* handle)
     
 }
 
+void ast_unary_increment_printer(ast_node_unary_increment *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t ++ %s  ", assg->symbol_entry->identifier);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
+void ast_unary_decrement_printer(ast_node_unary_decrement *assg, FILE* handle)
+{
+    if (assg != NULL && handle != NULL)
+    {
+        fprintf(handle, "\t -- %s  ", assg->symbol_entry->identifier);
+        fprintf(handle, "%s", ";\n");
+    }
+    
+}
+
 void ast_array_assignment_printer(ast_node_array_assignment *assign, FILE* handle)
 {
     if (assign != NULL && handle != NULL)
@@ -200,12 +228,20 @@ void ast_expression_printer(ast_node_expression* node, FILE* handle)
 {
     if (node != NULL && handle != NULL)
     {
-        if (node->opt >= AST_OPR_BW_LFT && node->opt <= AST_OPR_LGL_OR)
+        if (node->opt >= AST_OPR_IC && node->opt <= AST_OPR_LGL_OR)
         {
             fprintf(handle, "%s", "(");
             ast_expression_printer((ast_node_expression*)node->left, handle);
             switch (node->opt)
             {
+                case AST_OPR_IC:
+                    fprintf(handle, "%s", _OPR_IC);
+                    break;
+
+                case AST_OPR_DC:
+                    fprintf(handle, "%s", _OPR_DC);
+                    break;
+
                 case AST_OPR_BW_LFT:
                     fprintf(handle, "%s", _OPR_LFT);
                     break;
@@ -697,6 +733,14 @@ int code_printer(ast_node* ast, int pru_id, int test)
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
             
+            case AST_NODE_UNARY_INC:
+                ast_unary_increment_printer(((ast_node_statements*)temp)->child_nodes.unary_increment, handle);
+                break;    
+
+            case AST_NODE_UNARY_DC:
+                ast_unary_decrement_printer(((ast_node_statements*)temp)->child_nodes.unary_decrement, handle);
+                break; 
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
