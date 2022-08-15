@@ -17,28 +17,25 @@
  
   static void updating_column()
   {
+    char* s;
     yylloc.first_line = curr_line;
     yylloc.first_column = columnnumber;
-
-      char * s;
     for(s = yytext; *s != '\0'; s++)
       {
         if(*s == '\n')
         {
-          curr_line ++;
+          curr_line += 1;
           columnnumber = 0;
         }
         else
         {
-          columnnumber ++;
+          columnnumber += 1;
         }
       }
     yylloc.last_line = curr_line;
-    yylloc.last_column = columnnumber-1;
+    yylloc.last_column = columnnumber - 1;
   }
-
-#define YY_USER_ACTION updating_column();
-
+  #define YY_USER_ACTION updating_column();
 %}
 
 %option noyywrap
