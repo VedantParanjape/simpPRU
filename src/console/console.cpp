@@ -272,10 +272,10 @@ console::console()
 {
     auto container = Container::Vertical({
       pru_id_menu,
+      button,
       Container::Horizontal({
         input_box,
         pru_start_top,
-        button,
       }),
     });
     Add(container);

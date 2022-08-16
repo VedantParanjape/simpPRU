@@ -28,9 +28,8 @@ using namespace ftxui;
 class console : public ComponentBase
 {
     public:
-        console(); 
-        static inline auto screen = ScreenInteractive::Fullscreen();
-        
+        console();
+
     private:
         int pru_id = 0;
         std::vector<std::wstring> pru_id_entries;
