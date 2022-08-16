@@ -169,7 +169,7 @@ void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE *handl
 
 void ast_conditional_operator_printer(ast_node_conditional_operator *opcod, FILE* handle)
 {
-    if (opcod!=NULL && handle != NULL)
+    if (opcod != NULL && handle != NULL)
     {
         ast_expression_printer(opcod->body1, handle);
         fprintf(handle, "%s"," = "); 

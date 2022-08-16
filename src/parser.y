@@ -701,7 +701,7 @@ boolean_expression: CONST_BOOL {
               $$ = $1;
           }
           | LPAREN boolean_expression RPAREN {
-             $$ = $2;
+              $$ = $2;
           }
           ;
 
