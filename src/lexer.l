@@ -21,17 +21,17 @@
     yylloc.first_line = curr_line;
     yylloc.first_column = columnnumber;
     for(s = yytext; *s != '\0'; s++)
+    {
+      if(*s == '\n')
       {
-        if(*s == '\n')
-        {
-          curr_line += 1;
-          columnnumber = 0;
-        }
-        else
-        {
-          columnnumber += 1;
-        }
+        curr_line += 1;
+        columnnumber = 0;
       }
+      else
+      {
+        columnnumber += 1;
+      }
+    }
     yylloc.last_line = curr_line;
     yylloc.last_column = columnnumber - 1;
   }
