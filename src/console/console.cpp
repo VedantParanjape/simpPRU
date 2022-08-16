@@ -346,7 +346,7 @@ Element console::Render()
 
     if (k == 1)
         return border(vbox({
-            // Console and PRU selection
+            // Console, PRU selection and PRU-Status Auto-toggle button
             hbox({
                 hbox({
                     vbox({
@@ -358,24 +358,24 @@ Element console::Render()
                     hcenter(bold(text(L"PRU"))),
                     separator(),
                     pru_id_menu->Render(),
+                    separator(),
+                    button->Render() | bold | color(Color::Green),
                 }) | border,
             }) | flex,
             
-            // Input box, PRU start/stop and PRU-Status Auto-toggle button
+            // Input box and PRU start/stop
             vbox({
                 hbox({
                     text(L" send : "),
                     input_box->Render(),
                     separator(),
                     pru_start_top->Render(),
-                    separator(),
-                    button->Render() | bold | color(Color::Green),
                 }),
             }) | border,
         }));
     else
         return border(vbox({
-            // Console and PRU selection
+            // Console, PRU selection and PRU-Status Auto-toggle button
             hbox({
                 hbox({
                     vbox({
@@ -387,18 +387,18 @@ Element console::Render()
                     hcenter(bold(text(L"PRU"))),
                     separator(),
                     pru_id_menu->Render(),
+                    separator(),
+                    button->Render() | bold | color(Color::Red),
                 }) | border,
             }) | flex,
             
-            // Input box, PRU start/stop and PRU-Status Auto-toggle button
+            // Input box and PRU start/stop
             vbox({
                 hbox({
                     text(L" send : "),
                     input_box->Render(),
                     separator(),
                     pru_start_top->Render(),
-                    separator(),
-                    button->Render() | bold | color(Color::Red),
                 }),
             }) | border,
         }));

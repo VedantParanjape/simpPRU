@@ -29,6 +29,7 @@ class console : public ComponentBase
 {
     public:
         console(); 
+        static inline auto screen = ScreenInteractive::Fullscreen();
         
     private:
         int pru_id = 0;
