@@ -171,6 +171,7 @@ struct argp_option options[] = {
 int main(int argc, char** argv)
 {
     FILE *output; 
+    char *str;
     struct arguments arguments;
     arguments.device_id = MODEL_AUTODETECT;
     sprintf(arguments.input_filename, "%s", "");
@@ -228,6 +229,10 @@ int main(int argc, char** argv)
             {
             fprintf(stderr,"\e[31mfatal error:\e[0m Could not generate output\ncompilation terminated\n");
             }
+            if(fgets(str, 999, output) != NULL) 
+            {
+            fprintf(output, "%s", str);
+            }            
             pclose(output);
     }
 
