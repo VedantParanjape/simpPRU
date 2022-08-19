@@ -12,7 +12,7 @@ std::mutex output_box_mutex;
 std::atomic_bool stop_read_signal(false);
 std::atomic_bool update_screen(false);
 FILE *fd = NULL;
-int k = 0;
+int status[4] = {0, 0, 0, 0};
 
 int device_model()
 {
@@ -182,17 +182,9 @@ int start_pru(int pru_id)
 
     if (!strcmp(state, "offline") && bits_read > 0)
     {
-        k = 0;
-    }
-    else
-    {
-        k = 1;
-    }
-    if (!strcmp(state, "offline") && bits_read > 0)
-    {
         if (write(remoteproc_start, "start", 6*sizeof(char)) > 0)
         {
-            k = 1;
+            status[pru_id] = 1;
             close(remoteproc_start);
             return 1;
         }
@@ -239,17 +231,9 @@ int stop_pru(int pru_id)
 
     if (!strcmp(state, "running") && bits_read > 0)
     {
-        k = 1;
-    }
-    else
-    {
-        k = 0;
-    }
-    if (!strcmp(state, "running") && bits_read > 0)
-    {
         if (write(remoteproc_stop, "stop", 5*sizeof(char)) > 0)
         {
-            k = 0;
+            status[pru_id] = 0;
             close(remoteproc_stop);
             return 1;
         }
@@ -271,8 +255,8 @@ using namespace ftxui;
 console::console() 
 {
     auto container = Container::Vertical({
-      pru_id_menu,
       button,
+      pru_id_menu,
       Container::Horizontal({
         input_box,
         pru_start_top,
@@ -344,7 +328,7 @@ Element console::Render()
 {
     std::lock_guard<std::mutex> output_box_lock(output_box_mutex);
 
-    if (k == 1)
+    if (status[pru_id] == 1)
         return border(vbox({
             // Console, PRU selection and PRU-Status Auto-toggle button
             hbox({
@@ -355,11 +339,9 @@ Element console::Render()
                     }) | frame,                                        
                 }) | flex | border,
                 vbox({
-                    hcenter(bold(text(L"PRU"))),
+                    button->Render() | bold | color(Color::Green),
                     separator(),
                     pru_id_menu->Render(),
-                    separator(),
-                    button->Render() | bold | color(Color::Green),
                 }) | border,
             }) | flex,
             
@@ -384,11 +366,9 @@ Element console::Render()
                     }) | frame,                                        
                 }) | flex | border,
                 vbox({
-                    hcenter(bold(text(L"PRU"))),
+                    button->Render() | bold | color(Color::Red),
                     separator(),
                     pru_id_menu->Render(),
-                    separator(),
-                    button->Render() | bold | color(Color::Red),
                 }) | border,
             }) | flex,
             
