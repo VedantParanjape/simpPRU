@@ -3,11 +3,6 @@
 #include <string>
 #include <errno.h>
 #include "console.hpp"
-#include "ftxui/component/component.hpp"       
-#include "ftxui/component/component_base.hpp" 
-#include "ftxui/component/screen_interactive.hpp" 
-#include "ftxui/dom/elements.hpp" 
-#include "ftxui/screen/color.hpp" 
 
 static int model_beaglebone__ = 0;
 static int rpmsg_fd = -1;
@@ -16,7 +11,10 @@ std::timed_mutex rpmsg_mutex;
 std::mutex output_box_mutex;
 std::atomic_bool stop_read_signal(false);
 std::atomic_bool update_screen(false);
+std::atomic_bool exit_console(false);
 FILE *fd = NULL;
+
+
 
 int device_model()
 {
@@ -254,14 +252,15 @@ int stop_pru(int pru_id)
 }
 
 using namespace ftxui;
-console::console() 
+console::console(ScreenInteractive* s)
 {
+    q_buton = Button("Quit",[&]{s->ExitLoopClosure()();exit_console.store(true);} );
     auto container = Container::Vertical({
       pru_id_menu,
       Container::Horizontal({
         input_box,
         pru_start_top,
-        quit_button,
+        q_buton,
       }),
     });
     Add(container);
@@ -324,7 +323,6 @@ console::console()
             }
         }
     };
-    
 }
   
 Element console::Render() 
@@ -347,7 +345,7 @@ Element console::Render()
             }) | border,
         }) | flex,
         
-        // Input box , PRU start/stop
+        // Input box and PRU start/stop
         vbox({
             hbox({
                 text(L" send : "),
@@ -355,7 +353,7 @@ Element console::Render()
                 separator(),
                 pru_start_top->Render(),
                 separator(),
-                quit_button->Render() | bold | color(Color::Red),
+                q_buton->Render(),
             }),
         }) | border,
     }));
@@ -371,15 +369,17 @@ int main(int argc, const char* argv[])
         fprintf(stderr, "Not a beagleboard device\n");
         // return 0;
     }
-
+    
     stop_pru(0);
     stop_pru(1);
     stop_pru(2);
     stop_pru(3);
-    
+
     auto screen = ScreenInteractive::Fullscreen();
-    std::thread update([&screen]() {
-    for (;;) {
+
+    std::thread update([&]() {
+
+    while (!exit_console.load()) {
       using namespace std::chrono_literals;
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       if(update_screen.load())
@@ -389,6 +389,9 @@ int main(int argc, const char* argv[])
       }
     }
     });
-    screen.Loop(ftxui::Make<console>());
 
+    screen.Loop(ftxui::Make<console>(&screen));
+    if(update.joinable()){
+        update.join();
+    }
 }

@@ -35,7 +35,7 @@ using namespace ftxui;
 class console : public ComponentBase
 {
     public:
-        console(); 
+        console(ScreenInteractive* ); 
         
     private:
         int pru_id = 0;
@@ -49,14 +49,11 @@ class console : public ComponentBase
         std::vector<std::wstring> pru_start_top_entries;
         Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
         
-        std::string button_label = "Quit";
-        std::function<void()> on_button_clicked_;
-        Component quit_button = Button(&button_label , screen.ExitLoopClosure());
-        
+        Component q_buton;
         int started = 0;
         Elements output_box;
         int data_sent = 0;
-        
+
         Element Render() override;
 };
 
