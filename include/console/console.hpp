@@ -49,7 +49,7 @@ class console : public ComponentBase
         std::vector<std::wstring> pru_start_top_entries;
         Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
         
-        Component q_buton;
+        Component quit_button;
         int started = 0;
         Elements output_box;
         int data_sent = 0;

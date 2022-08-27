@@ -254,13 +254,13 @@ int stop_pru(int pru_id)
 using namespace ftxui;
 console::console(ScreenInteractive* s)
 {
-    q_buton = Button("Quit",[&]{s->ExitLoopClosure()();exit_console.store(true);} );
+    quit_button = Button("Quit",[&]{s->ExitLoopClosure()();exit_console.store(true);} );
     auto container = Container::Vertical({
       pru_id_menu,
       Container::Horizontal({
         input_box,
         pru_start_top,
-        q_buton,
+        quit_button,
       }),
     });
     Add(container);
@@ -353,7 +353,7 @@ Element console::Render()
                 separator(),
                 pru_start_top->Render(),
                 separator(),
-                q_buton->Render(),
+                quit_button->Render() | bold | color(Color::Red),
             }),
         }) | border,
     }));
