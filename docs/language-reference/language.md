@@ -29,6 +29,9 @@
 * `~`,`&`,`|`,`<<`,`>>` - Bitwise operators: not, and, or and bitshifts
 * `not`,`and`,`or` - Logical operators: not, and, or
 * `:=` - Assignment operator
+* `+=`,`-=`,`&=`,`|=`,`*=`,`/=` - More assignment operators
+* `++`,`--` - Unary Operators
+* `?=`- Conditional Operators
 
 * Result of Arithmetic and Bitwise operators is Integer constant.
 * Result of Comparison and Logical operators is Boolean constant.
@@ -80,6 +83,27 @@ test_var := true;
 * Datatype of the variables cannot change. Only appropriate expressions/constants of their respective datatypes can be assigned to the variables.
 * Integer and Character variable can be assigned only Integer expression/Integer constant/Character constant.
 * Boolean variable can be assigned only Boolean expression/constant.
+
+### Unary Operators
+```cpp
+int a:=10;
+int b:=5;
+int c:= ++a + 2 ;
+int d:= --b;
+println(c);
+print(d);
+```
+
+### Conditional Operators
+```cpp
+int a:=10;
+int b;
+bool c;
+b :=(a>5)? a+5 : a-5 ;
+println(b);
+c:=(a>5)?true:false;
+print(c);
+```
 
 ## Arrays
 
@@ -413,19 +437,7 @@ def <function_name> : <data_type> : <data_type> <param_name>, <data_type> <param
 
 !!! Note
     If return data type is void, then return statement is not needed, and if still it is added, it must be return nothing, i.e., something like this `return ;`
-
-!!! Warning
-    `return` can only be present in the body of the function only once, that too at the end of the function, not inside any compound statements.
     
-!!! fail "Wrong"
-    * `return` inside a compound statement, this syntax is not allowed.
-    ```python
-    def test : int : int a {
-        if : a < 4 {
-            return a;
-        }
-    }
-    ```
 
 !!! done "Correct"
     * `return` is not inside compound statments, It should be placed only at the end of function definition
@@ -438,6 +450,22 @@ def <function_name> : <data_type> : <data_type> <param_name>, <data_type> <param
 
         return gf;
     }
+    ```
+!!! Multiple return statements
+    ```
+    def testing: int: int a, int b, bool control {
+    int c;
+    if: control {
+        c := a + b;
+        return c;
+    }
+    else {
+        c := a * b;
+        return c;
+    }
+}
+    int result := testing(3, 4, true);
+    print(result);
     ```
 
 
