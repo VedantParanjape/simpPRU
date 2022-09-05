@@ -84,7 +84,26 @@ test_var := true;
 * Integer and Character variable can be assigned only Integer expression/Integer constant/Character constant.
 * Boolean variable can be assigned only Boolean expression/constant.
 
+### Other Assignment Operators
+
+```cpp
+int var;
+int var1;
+var := 45;
+var1 += var;
+var1 /= var;
+var1 *= 3;
+var1 &= 10;
+var1 <<= 5;
+var1 |= 4;
+```
+
+* We can use these different assignment operators according to the user requirements. 
+* These assignment operators can be used for easier calculations.
+* These assignment operators include bitwise,arithmetic assignment operators.
+
 ### Unary Operators
+
 ```cpp
 int a:=10;
 int b:=5;
@@ -94,7 +113,19 @@ println(c);
 print(d);
 ```
 
+```cpp
+int[10] arr;
+for: i in 0:10 {
+    arr[i] := 0;
+    i++;
+}
+```
+
+* The unary increment and decrement operators are introduced for easier and faster calculations.
+* These can be used independently in compound statements and arithmetic expressions.
+
 ### Conditional Operators
+
 ```cpp
 int a:=10;
 int b;
@@ -104,6 +135,7 @@ println(b);
 c:=(a>5)?true:false;
 print(c);
 ```
+* The conditional operators can be used where there is only one condition and results in either of true or false case.
 
 ## Arrays
 
@@ -437,10 +469,12 @@ def <function_name> : <data_type> : <data_type> <param_name>, <data_type> <param
 
 !!! Note
     If return data type is void, then return statement is not needed, and if still it is added, it must be return nothing, i.e., something like this `return ;`
-    
+!!! Note
+    Every non-void function should have a return type
 
 !!! done "Correct"
-    * `return` is not inside compound statments, It should be placed only at the end of function definition
+    * `return`statement can be placed at the end of function definition or anywhere in the function block inside compound statements.
+
     ```python
     def test : int : int a {
         int gf := 8;
@@ -451,7 +485,7 @@ def <function_name> : <data_type> : <data_type> <param_name>, <data_type> <param
         return gf;
     }
     ```
-!!! Multiple return statements
+!!! Multiple return statements,It can be called anywhere inside the function scope
     ```
     def testing: int: int a, int b, bool control {
     int c;
@@ -522,6 +556,38 @@ Examples according to return types
         int temp := 90;
 
         return;
+    }
+    ```
+Examples of multiple return types 
+
+=== "Integer"
+    ```python
+    def test_func : int : int a, int b {
+        int aa := a + 5;
+
+        if : aa < 3 {
+            aa : = 0;
+            return aa + b;
+        }
+        else {
+            aa : = 10;
+            return aa + b;
+        }        
+    }
+    ```
+=== "Boolean"
+    ```python
+    def compare : bool : int val {
+        bool ret := false;
+
+        if : val < 0 {
+            ret := true;
+            return ret;
+        }
+        else {
+            ret := true;
+            return ret;
+        }
     }
     ```
 
