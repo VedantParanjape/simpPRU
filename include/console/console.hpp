@@ -17,12 +17,6 @@
 #include <ftxui/component/container.hpp>
 #include <ftxui/component/input.hpp>
 #include <ftxui/component/toggle.hpp>
-#include "ftxui/component/component.hpp"      
-#include "ftxui/component/component_base.hpp" 
-#include "ftxui/dom/elements.hpp" 
-#include "ftxui/screen/color.hpp" 
-#include "console.hpp"
-
 
 #define MODEL_POCKETBEAGLE 1
 #define MODEL_BEAGLEBONE_BLACK 2
@@ -30,12 +24,11 @@
 #define MODEL_BEAGLEBONE_AI 4
 #define MODEL_BEAGLEBONE_BLUE 5
 
-
 using namespace ftxui;
 class console : public ComponentBase
 {
     public:
-        console(ScreenInteractive* ); 
+        console(ScreenInteractive* s); 
         
     private:
         int pru_id = 0;

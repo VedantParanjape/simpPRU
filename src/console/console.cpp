@@ -14,8 +14,6 @@ std::atomic_bool update_screen(false);
 std::atomic_bool exit_console(false);
 FILE *fd = NULL;
 
-
-
 int device_model()
 {
     FILE *model = fopen("/proc/device-tree/model", "r");
@@ -369,7 +367,7 @@ int main(int argc, const char* argv[])
         fprintf(stderr, "Not a beagleboard device\n");
         // return 0;
     }
-    
+
     stop_pru(0);
     stop_pru(1);
     stop_pru(2);
@@ -378,7 +376,6 @@ int main(int argc, const char* argv[])
     auto screen = ScreenInteractive::Fullscreen();
 
     std::thread update([&]() {
-
     while (!exit_console.load()) {
       using namespace std::chrono_literals;
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
