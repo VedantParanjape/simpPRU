@@ -29,9 +29,9 @@
 * `~`,`&`,`|`,`<<`,`>>` - Bitwise operators: not, and, or and bitshifts
 * `not`,`and`,`or` - Logical operators: not, and, or
 * `:=` - Assignment operator
-* `+=`,`-=`,`&=`,`|=`,`*=`,`/=` - More assignment operators
-* `++`,`--` - Unary Operators
-* `?=`- Conditional Operators
+* `+=`,`-=`,`&=`,`|=`,`*=`,`/=`,`>>=`,`<<=` - More assignment operators
+* `++`,`--`- Unary Operators
+* `?`- Conditional Operators
 
 * Result of Arithmetic and Bitwise operators is Integer constant.
 * Result of Comparison and Logical operators is Boolean constant.

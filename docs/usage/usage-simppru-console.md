@@ -44,5 +44,3 @@ The large box in the screen shows data received from the PRU, It runs using a fo
 Using the radio box in the upper right corner, one can change the PRU id, i.e. if one wants to use the features for PRU0 or PRU1
 
 ![](images/select_pru_id_screen.png)
-
-### 
