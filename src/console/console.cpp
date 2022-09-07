@@ -11,6 +11,7 @@ std::timed_mutex rpmsg_mutex;
 std::mutex output_box_mutex;
 std::atomic_bool stop_read_signal(false);
 std::atomic_bool update_screen(false);
+std::atomic_bool exit_console(false);
 FILE *fd = NULL;
 
 int device_model()
@@ -249,13 +250,15 @@ int stop_pru(int pru_id)
 }
 
 using namespace ftxui;
-console::console() 
+console::console(ScreenInteractive* s)
 {
+    quit_button = Button("Quit",[&]{s->ExitLoopClosure()();exit_console.store(true);} );
     auto container = Container::Vertical({
       pru_id_menu,
       Container::Horizontal({
         input_box,
         pru_start_top,
+        quit_button,
       }),
     });
     Add(container);
@@ -347,6 +350,8 @@ Element console::Render()
                 input_box->Render(),
                 separator(),
                 pru_start_top->Render(),
+                separator(),
+                quit_button->Render() | bold | color(Color::Red),
             }),
         }) | border,
     }));
@@ -370,8 +375,8 @@ int main(int argc, const char* argv[])
 
     auto screen = ScreenInteractive::Fullscreen();
 
-    std::thread update([&screen]() {
-    for (;;) {
+    std::thread update([&]() {
+    while (!exit_console.load()) {
       using namespace std::chrono_literals;
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
       if(update_screen.load())
@@ -382,5 +387,8 @@ int main(int argc, const char* argv[])
     }
     });
 
-    screen.Loop(ftxui::Make<console>());
+    screen.Loop(ftxui::Make<console>(&screen));
+    if(update.joinable()){
+        update.join();
+    }
 }
