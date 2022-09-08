@@ -28,8 +28,8 @@ using namespace ftxui;
 class console : public ComponentBase
 {
     public:
-        console(); 
-        
+        console();
+
     private:
         int pru_id = 0;
         std::vector<std::wstring> pru_id_entries;
@@ -41,6 +41,8 @@ class console : public ComponentBase
         int pru_start_top_selected = 0;
         std::vector<std::wstring> pru_start_top_entries;
         Component pru_start_top = Toggle(&pru_start_top_entries, &pru_start_top_selected);
+       
+        Component button = Button(" PRU ", NULL);
 
         int started = 0;
         Elements output_box;

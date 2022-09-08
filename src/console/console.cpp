@@ -12,6 +12,7 @@ std::mutex output_box_mutex;
 std::atomic_bool stop_read_signal(false);
 std::atomic_bool update_screen(false);
 FILE *fd = NULL;
+int status[4] = {0, 0, 0, 0};
 
 int device_model()
 {
@@ -183,6 +184,7 @@ int start_pru(int pru_id)
     {
         if (write(remoteproc_start, "start", 6*sizeof(char)) > 0)
         {
+            status[pru_id] = 1;
             close(remoteproc_start);
             return 1;
         }
@@ -231,6 +233,7 @@ int stop_pru(int pru_id)
     {
         if (write(remoteproc_stop, "stop", 5*sizeof(char)) > 0)
         {
+            status[pru_id] = 0;
             close(remoteproc_stop);
             return 1;
         }
@@ -252,6 +255,7 @@ using namespace ftxui;
 console::console() 
 {
     auto container = Container::Vertical({
+      button,
       pru_id_menu,
       Container::Horizontal({
         input_box,
@@ -323,33 +327,61 @@ console::console()
 Element console::Render() 
 {
     std::lock_guard<std::mutex> output_box_lock(output_box_mutex);
-    
-    return border(vbox({
-        // Console and PRU selection
-        hbox({
+
+    if (status[pru_id] == 1)
+        return border(vbox({
+            // Console, PRU selection and PRU-Status Auto-toggle button
             hbox({
+                hbox({
+                    vbox({
+                        vbox({output_box}),
+                        text(L"   ") | ftxui::select,
+                    }) | frame,                                        
+                }) | flex | border,
                 vbox({
-                    vbox({output_box}),
-                    text(L"   ") | ftxui::select,
-                }) | frame,                                        
-            }) | flex | border,
+                    button->Render() | bold | color(Color::Green),
+                    separator(),
+                    pru_id_menu->Render(),
+                }) | border,
+            }) | flex,
+            
+            // Input box and PRU start/stop
             vbox({
-                hcenter(bold(text(L"PRU"))),
-                separator(),
-                pru_id_menu->Render(),
+                hbox({
+                    text(L" send : "),
+                    input_box->Render(),
+                    separator(),
+                    pru_start_top->Render(),
+                }),
             }) | border,
-        }) | flex,
-        
-        // Input box and PRU start/stop
-        vbox({
+        }));
+    else
+        return border(vbox({
+            // Console, PRU selection and PRU-Status Auto-toggle button
             hbox({
-                text(L" send : "),
-                input_box->Render(),
-                separator(),
-                pru_start_top->Render(),
-            }),
-        }) | border,
-    }));
+                hbox({
+                    vbox({
+                        vbox({output_box}),
+                        text(L"   ") | ftxui::select,
+                    }) | frame,                                        
+                }) | flex | border,
+                vbox({
+                    button->Render() | bold | color(Color::Red),
+                    separator(),
+                    pru_id_menu->Render(),
+                }) | border,
+            }) | flex,
+            
+            // Input box and PRU start/stop
+            vbox({
+                hbox({
+                    text(L" send : "),
+                    input_box->Render(),
+                    separator(),
+                    pru_start_top->Render(),
+                }),
+            }) | border,
+        }));
 }
 
 int main(int argc, const char* argv[]) 
