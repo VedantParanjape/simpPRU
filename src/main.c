@@ -224,16 +224,19 @@ int main(int argc, char** argv)
         {
             snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH));
         }
-            output = popen(command,"r");
-            if(output == NULL)
-            {
+
+        output = popen(command,"r");
+
+        if (output == NULL)
+        {
             fprintf(stderr,"\e[31mfatal error:\e[0m Could not generate output\ncompilation terminated\n");
-            }
-            if(fgets(str, 999, output) != NULL) 
-            {
+        }
+        if (fgets(str, 999, output) != NULL) 
+        {
             fprintf(output, "%s", str);
-            }            
-            pclose(output);
+        }
+              
+        pclose(output);
     }
 
     if (arguments.load == 1)
