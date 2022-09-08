@@ -19,7 +19,7 @@ Use these button to start/stop the selected PRU. If PRU is already running, on s
 
 ### Status for PRU
 
-It shows the status of PRU(whether its on or off).It is an auto-toggle button which changes its status with respect to the PRU.
+It shows the status of PRU (if its on or off). It is an auto-toggle button which changes its status with respect to the PRU.
 
 !!! Warning
     Do not click this button as it is in sync with the PRU and would exit on manual click.
