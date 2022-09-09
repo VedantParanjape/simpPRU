@@ -19,6 +19,7 @@ ast_node *ast = NULL;
 #define YYDEBUG 1
 %}
 
+%locations
 %define parse.error verbose
 %glr-parser 
 
