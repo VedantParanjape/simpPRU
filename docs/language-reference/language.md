@@ -653,3 +653,9 @@ println("");
 #### Stub functions
 
 PRU specific functions will be replaced by stub functions which print "function_name called with arguments arg_name" when called.
+
+#### Error Handling
+
+Currently for error detection there are linenumber and columnnumber specified for precise error/bug location.
+This depicts how the current error detection works!
+![](/images/column.png)
