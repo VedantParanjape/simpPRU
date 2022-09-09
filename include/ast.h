@@ -53,40 +53,41 @@
 
 #define AST_OPR_BW_NOT     38 // ~
 #define AST_OPR_BW_AND     39 // &
-#define AST_OPR_BW_OR      40 // |
-#define AST_OPR_LGL_NOT    41 // not
-#define AST_OPR_LGL_AND    42 // and
-#define AST_OPR_LGL_OR     43 // or
+#define AST_OPR_BW_XOR     40 // ^
+#define AST_OPR_BW_OR      41 // |
+#define AST_OPR_LGL_NOT    42 // not
+#define AST_OPR_LGL_AND    43 // and
+#define AST_OPR_LGL_OR     44 // or
 
-#define AST_OPR_ASSIGNMENT 44 // :=
+#define AST_OPR_ASSIGNMENT 45 // :=
 
-#define AST_CONST_INT  45 // INT CONSTANT
-#define AST_CONST_BOOL 46 // BOOL CONSTANT
-#define AST_IDENTIFIER 47 // IDENTIFIER
+#define AST_CONST_INT  46 // INT CONSTANT
+#define AST_CONST_BOOL 47 // BOOL CONSTANT
+#define AST_IDENTIFIER 48 // IDENTIFIER
 
-#define AST_DT_INT  48 // DATA TYPE INT
-#define AST_DT_BOOL 49 // DATA TYPE BOOL
-#define AST_DT_VOID 50 // DATA TYPE VOID
+#define AST_DT_INT  49 // DATA TYPE INT
+#define AST_DT_BOOL 50 // DATA TYPE BOOL
+#define AST_DT_VOID 51 // DATA TYPE VOID
 #define AST_DT_CHAR 10001 // DATA TYPE CHAR
 
-#define AST_NODE_DIGITAL_READ_CALL          51 
-#define AST_NODE_DIGITAL_WRITE_CALL         52
-#define AST_NODE_DELAY_CALL                 53
-#define AST_NODE_PWM_CALL                   54
-#define AST_NODE_START_COUNTER_CALL         55
-#define AST_NODE_STOP_COUNTER_CALL          56
-#define AST_NODE_READ_COUNTER_CALL          57
-#define AST_NODE_INIT_RPMSG_CALL            58
-#define AST_NODE_RECV_RPMSG_CALL            59
-#define AST_NODE_SEND_RPMSG_CALL            60
-#define AST_NODE_SEND_INT_RPMSG_CALL        61
-#define AST_NODE_SEND_CHAR_RPMSG_CALL       62
-#define AST_NODE_SEND_BOOL_RPMSG_CALL       63
-#define AST_NODE_SEND_INTS_RPMSG_CALL       64
-#define AST_NODE_SEND_CHARS_RPMSG_CALL      65
-#define AST_NODE_SEND_BOOLS_RPMSG_CALL      66
-#define AST_NODE_PRINT_STRING_FUNCTION_CALL 67
-#define AST_NODE_PRINT_EXP_FUNCTION_CALL    68
+#define AST_NODE_DIGITAL_READ_CALL          52 
+#define AST_NODE_DIGITAL_WRITE_CALL         53
+#define AST_NODE_DELAY_CALL                 54
+#define AST_NODE_PWM_CALL                   55
+#define AST_NODE_START_COUNTER_CALL         56
+#define AST_NODE_STOP_COUNTER_CALL          57
+#define AST_NODE_READ_COUNTER_CALL          58
+#define AST_NODE_INIT_RPMSG_CALL            59
+#define AST_NODE_RECV_RPMSG_CALL            60
+#define AST_NODE_SEND_RPMSG_CALL            61
+#define AST_NODE_SEND_INT_RPMSG_CALL        62
+#define AST_NODE_SEND_CHAR_RPMSG_CALL       63
+#define AST_NODE_SEND_BOOL_RPMSG_CALL       64
+#define AST_NODE_SEND_INTS_RPMSG_CALL       65
+#define AST_NODE_SEND_CHARS_RPMSG_CALL      66
+#define AST_NODE_SEND_BOOLS_RPMSG_CALL      67
+#define AST_NODE_PRINT_STRING_FUNCTION_CALL 68
+#define AST_NODE_PRINT_EXP_FUNCTION_CALL    69
 
 typedef vec_t(struct ast_node*) ast_nodes;
 typedef vec_t(struct ast_node_statements*) ast_nodes_statements;

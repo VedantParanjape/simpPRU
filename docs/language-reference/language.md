@@ -26,7 +26,7 @@
 * `(`,`)` - Parenthesis
 * `/`,`*`,`+`,`-`,`%` - Arithmetic operators
 * `>`,`<`,`==`,`!=`,`>=`,`<=` - Comparison operators
-* `~`,`&`,`|`,`<<`,`>>` - Bitwise operators: not, and, or and bitshifts
+* `~`,`&`,`^`,`|`,`<<`,`>>` - Bitwise operators: not, and, xor, or and bitshifts
 * `not`,`and`,`or` - Logical operators: not, and, or
 * `:=` - Assignment operator
 
@@ -184,6 +184,8 @@ Detailed info: [https://www.includehelp.com/c/identifier-variable-naming-convent
 2
 => 2 * 6 << 2 + 1;
 96
+=> 5 ^ 2;
+7
 => ~0xFFFFFFFF;
 0
 ```
