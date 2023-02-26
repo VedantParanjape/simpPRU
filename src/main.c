@@ -35,6 +35,7 @@ struct arguments
     int load;
     int preprocess;
     int test;
+    int compiler_flags;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -127,6 +128,26 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
             arguments->test = 1;
             break;
 
+        case 'O':
+            if (atoi(arg) == 1)
+            {
+                arguments->compiler_flags = 1;
+            }
+            else if (atoi(arg) == 2)
+            {
+                arguments->compiler_flags = 2;
+            }
+            else if (atoi(arg) == 3)
+            {
+                arguments->compiler_flags = 3;
+            }
+            else
+            {
+                fprintf(stderr, "\e[31mfatal error:\e[0m incorrect flag\n");
+                argp_usage(state);
+            }
+            break;
+
         default:
             return ARGP_ERR_UNKNOWN;
             break;
@@ -138,6 +159,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 struct argp_option options[] = {
     {"output", 'o', "<file>", 0, "Place the output into <file>"},
     {"pru", 'p', "<pru_id>", 0, "Select which pru id (0/1) for which program is to be compiled"},
+    {"compiler_flags", 'O', "<compiler_flags>", 0, "Select the compiler flag -O1,-O2,-O3"},
     {"device", 888, "<device_name>", 0, "Select for which BeagleBoard to compile (pocketbeagle, bbb, bbbwireless, bbai)"},
     {"verbose", 999, 0, 0, "Enable verbose mode (dump symbol table and ast graph"},
     {"load", 1111, 0, 0, "Load generated firmware to /lib/firmware/"},
@@ -149,6 +171,8 @@ struct argp_option options[] = {
 
 int main(int argc, char** argv)
 {
+    FILE *output; 
+    char *str;
     struct arguments arguments;
     arguments.device_id = MODEL_AUTODETECT;
     sprintf(arguments.input_filename, "%s", "");
@@ -158,6 +182,7 @@ int main(int argc, char** argv)
     arguments.load = 0;
     arguments.preprocess = 0;
     arguments.test = 0;
+    arguments.compiler_flags = 0;
 
     struct argp argp = {options, parse_opt, args_doc, doc};   
     argp_parse(&argp, argc, argv, 0, 0, &arguments); 
@@ -189,26 +214,30 @@ int main(int argc, char** argv)
         {
             if (arguments.pruid == 2 || arguments.pruid == 3)
             {
-                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
+                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1 -D__AM572X_ICSS1_PRU%d__", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH), arguments.pruid%2);
             }
             else
-            {
-                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.pruid%2, TOSTRING(INSTALL_PATH));
-            }
-            
-            if (system(command) == -1)
-            {
-                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call pru-gcc\n");
+            {     
+                snprintf(command, 700, "pru-gcc /tmp/temp.c -L%s/lib/ -lprurpmsg%d -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/  -DCONFIG_ENABLE_RPMSG=1", TOSTRING(INSTALL_PATH), arguments.pruid%2, arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH));
             }
         }
         else
         {
-            snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid ,arguments.pruid%2, TOSTRING(INSTALL_PATH));
-            if (system(command) == -1)
-            {
-                fprintf(stderr, "\e[31mfatal error:\e[0m unable to call gcc-pru\n");
-            }
+            snprintf(command, 700, "pru-gcc /tmp/temp.c -o %s.pru%d -O%d -mmcu=am335x.pru%d -I%s/include/pru/ -DCONFIG_ENABLE_RPMSG=0", arguments.output_filename, arguments.pruid, arguments.compiler_flags, arguments.pruid%2, TOSTRING(INSTALL_PATH));
         }
+
+        output = popen(command,"r");
+
+        if (output == NULL)
+        {
+            fprintf(stderr,"\e[31mfatal error:\e[0m Could not generate output\ncompilation terminated\n");
+        }
+        if (fgets(str, 999, output) != NULL) 
+        {
+            fprintf(output, "%s", str);
+        }
+              
+        pclose(output);
     }
 
     if (arguments.load == 1)
