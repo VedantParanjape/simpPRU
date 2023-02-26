@@ -1,0 +1,13 @@
+def testing: int: int a, int b, bool control {
+    int c;
+    if: control {
+        c := a + b;
+        return c;
+    }
+    else {
+        c := a * b;
+        return c;
+    }
+}
+int result := testing(3, 4, true);
+print(result);

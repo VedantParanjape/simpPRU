@@ -11,6 +11,10 @@
   int function_flag = 0;
   int inside_loop = 0;
   int brackets = 0;
+  int func = 0;
+  int inside_func = 0;
+  int brac = 0;
+  int ret = 0;
 
   void yyerror(char* s);
   int yylex();
@@ -78,6 +82,11 @@ comma                ([,])
 {braces}                {
   if (!strcmp(yytext, "{"))
   {
+    brac += 1;
+    if (func == 1)
+    {
+      inside_func = 1;
+    }
     if (for_loop_flag == -1)
     {
       for_loop_flag = 0;
@@ -100,8 +109,18 @@ comma                ([,])
   }
   else if (!strcmp(yytext, "}"))
   {
+    brac -= 1;
     decrement_scope();
 
+    if (inside_func == 1 && ret == 0 && brac == 0)
+    {
+      yyerror("No return statement for a non void function ");
+    }
+    if (inside_func == 1 && brac == 0)
+    {
+      inside_func -= 1;
+      func = 0;
+    }
     if (inside_loop)
     {
       brackets -= 1;
@@ -333,7 +352,15 @@ comma                ([,])
 {function}              {
   if (!strcmp(yytext, "return"))
   {
+    ret += 1;
+    if (inside_func != 1)
+    {
+      yyerror("Cannot call return outside function definition");
+    }
+    if (inside_func == 1 && ret > 0)
+    {
     return KW_RETURN;
+    }
   }
   else if (!strcmp(yytext, "void"))
   {
@@ -342,7 +369,7 @@ comma                ([,])
   else if (!strcmp(yytext, "def"))
   {
     function_flag = 1;
-
+    func = 1;
     return KW_DEF;
   }
 }
