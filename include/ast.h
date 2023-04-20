@@ -14,6 +14,7 @@
 #define AST_NODE_DECLARATION         6
 #define AST_NODE_ARRAY_DECLARATION   2000
 #define AST_NODE_ASSIGNMENT          7
+#define AST_NODE_CONDITIONAL_OPERATOR 11011
 #define AST_NODE_ARRAY_ASSIGNMENT    2001
 #define AST_NODE_ARRAY_ACCESS        2002
 #define AST_NODE_ARITHMETIC_EXP      8
@@ -100,6 +101,7 @@ struct ast_node_statements;
 struct ast_node_compound_statement;
 struct ast_node_declaration;
 struct ast_node_array_declaration;
+struct ast_node_conditional_operator;
 struct ast_node_assignment;
 struct ast_node_array_assignment;
 struct ast_node_array_access;
@@ -125,6 +127,7 @@ typedef struct ast_node_statements ast_node_statements;
 typedef struct ast_node_compound_statement ast_node_compound_statement;
 typedef struct ast_node_declaration ast_node_declaration;
 typedef struct ast_node_array_declaration ast_node_array_declaration;
+typedef struct ast_node_conditional_operator ast_node_conditional_operator;
 typedef struct ast_node_assignment ast_node_assignment;
 typedef struct ast_node_array_assignment ast_node_array_assignment;
 typedef struct ast_node_array_access ast_node_array_access;
@@ -160,6 +163,7 @@ struct ast_node
         ast_node_compound_statement *compound_statement;
         ast_node_declaration *declaration;
         ast_node_array_declaration *array_declaration;
+        ast_node_conditional_operator *conditional_operator;
         ast_node_assignment *assignment;
         ast_node_array_assignment *array_assignment;
         ast_node_conditional_if *if_else;
@@ -268,6 +272,16 @@ struct ast_node_range_expression
     ast_node_compound_statement *else_part;
 };
 
+ struct ast_node_conditional_operator
+{
+    int node_type;
+
+    ast_node_expression  *body1;
+    ast_node_expression  *condition;
+    ast_node_expression  *body2;
+    ast_node_expression  *body3;
+};
+
  struct ast_node_conditional_else_if
 {
     int node_type;
@@ -363,6 +377,7 @@ ast_node_compound_statement *create_compound_statement_node();
 ast_node_compound_statement *add_compound_statement_node(ast_node_compound_statement *parent, ast_node_statements *child);
 ast_node_declaration *create_declaration_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_declaration *create_array_declaration_node(sym_ptr symbol, ast_node_expression *size, char *initial_string);
+ast_node_conditional_operator *create_conditional_operator_node(ast_node_expression *body1, ast_node_expression *condition, ast_node_expression *body2, ast_node_expression *body3);
 ast_node_assignment *create_assignment_node(sym_ptr symbol, ast_node_expression *exp);
 ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node_expression *index, ast_node_expression *exp);
 ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index);

@@ -43,6 +43,10 @@ ast_node_statements *create_statement_node(int node_type, void *child)
         case AST_NODE_ARRAY_ASSIGNMENT:
             stmt->child_nodes.array_assignment = child;
             break;
+
+        case AST_NODE_CONDITIONAL_OPERATOR:
+            stmt->child_nodes.conditional_operator = child;
+            break;       
         
         case AST_NODE_CONDITIONAL_IF:
             stmt->child_nodes.if_else = child;
@@ -154,6 +158,19 @@ ast_node_array_assignment *create_array_assignment_node(sym_ptr symbol, ast_node
     assign->symbol_entry = symbol;
 
     return assign;
+}
+
+ast_node_conditional_operator *create_conditional_operator_node(ast_node_expression *body1, ast_node_expression *condition, ast_node_expression *body2, ast_node_expression *body3)
+{
+    ast_node_conditional_operator *cond_operator = (ast_node_conditional_operator*)malloc(sizeof(ast_node_conditional_operator));
+
+    cond_operator->node_type = AST_NODE_CONDITIONAL_OPERATOR;
+    cond_operator->condition = condition;
+    cond_operator->body1 = body1;
+    cond_operator->body2 = body2;
+    cond_operator->body3 = body3;
+
+    return cond_operator;
 }
 
 ast_node_array_access *create_array_access_node(sym_ptr symbol, ast_node_expression *index)
@@ -602,6 +619,10 @@ void ast_node_type(int node_type)
             printf("ast assignment");
             break;
 
+        case AST_NODE_CONDITIONAL_OPERATOR:
+            printf("ast conditional operator");
+            break;     
+            
         case AST_NODE_ARRAY_ASSIGNMENT:
             printf("ast array assignment");
             break;

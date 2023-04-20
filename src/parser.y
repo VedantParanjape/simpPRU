@@ -22,6 +22,7 @@ ast_node *ast = NULL;
 %locations
 %define parse.error verbose
 %glr-parser 
+%expect 6
 
 %union{
     int integer;
@@ -40,6 +41,7 @@ ast_node *ast = NULL;
     struct ast_node_range_expression *range_expression;
     struct ast_node_constant *constant;
     struct ast_node_variable *variable;
+    struct ast_node_conditional_operator *conditional_operator;
     struct ast_node_conditional_if *conditional_if;
     struct ast_node_conditional_else_if *conditional_else_if;
     struct ast_node_loop_for *loop_for;
@@ -78,7 +80,7 @@ ast_node *ast = NULL;
 
 %token OPR_ASSIGNMENT
 
-%token SEMICOLON COLON COMMA
+%token SEMICOLON COLON COMMA QUESTION
 
 %token DT_INT
 %token DT_BOOL
@@ -108,6 +110,7 @@ ast_node *ast = NULL;
 %type <declaration> declaration declaration_assignment
 %type <array_declaration> array_declaration array_declaration_assignment
 %type <assignment> assignment
+%type <conditional_operator> conditional_operator
 %type <expression> arithmetic_expression boolean_expression relational_expression logical_expression return_statement function_call_datatypes
 %type <range_expression> range_expression
 %type <array_assignment> array_assignment
@@ -191,6 +194,9 @@ statement: compound_statement {
          | conditional_statement {
              $$ = create_statement_node(AST_NODE_CONDITIONAL_IF, (void*)$1);
          }
+         | conditional_operator {
+             $$ = create_statement_node(AST_NODE_CONDITIONAL_OPERATOR, (void*)$1);
+         }         
          | loop_statement_for {
              $$ = create_statement_node(AST_NODE_LOOP_FOR, (void*)$1);
          }
@@ -919,6 +925,14 @@ parameter: DT_INT IDENTIFIER {
             $$ = create_variable_node(AST_DT_CHAR, $2);
          }
          ;
+
+conditional_operator: arithmetic_expression OPR_ASSIGNMENT boolean_expression QUESTION arithmetic_expression COLON arithmetic_expression SEMICOLON {
+                        $$ = create_conditional_operator_node($1, $3, $5, $7);
+                    }
+                    | boolean_expression OPR_ASSIGNMENT boolean_expression QUESTION boolean_expression COLON boolean_expression SEMICOLON {
+                        $$ = create_conditional_operator_node($1, $3, $5, $7);
+                    }
+                    ;
 
 return_statement: KW_RETURN boolean_expression SEMICOLON {
                     $$ = $2;

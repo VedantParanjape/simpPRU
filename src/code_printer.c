@@ -32,6 +32,10 @@ void ast_compound_statement_printer(ast_node_compound_statement *cmpd_stmt, FILE
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;
+
+            case AST_NODE_CONDITIONAL_OPERATOR:
+                ast_conditional_operator_printer(((ast_node_statements*)temp)->child_nodes.conditional_operator, handle);
+                break;          
             
             case AST_NODE_CONDITIONAL_IF:
                 ast_conditional_if_printer(((ast_node_statements*)temp)->child_nodes.if_else, handle); 
@@ -160,6 +164,21 @@ void ast_array_declaration_printer(ast_node_array_declaration *decl, FILE *handl
     else
     {
         printf("NULL!!\n");
+    }
+}
+
+void ast_conditional_operator_printer(ast_node_conditional_operator *opcod, FILE* handle)
+{
+    if (opcod != NULL && handle != NULL)
+    {
+        ast_expression_printer(opcod->body1, handle);
+        fprintf(handle, "%s"," = "); 
+        ast_expression_printer(opcod->condition, handle);
+        fprintf(handle, "%s", " ? "); 
+        ast_expression_printer(opcod->body2, handle);
+        fprintf(handle, "%s", ":");
+        ast_expression_printer(opcod->body3, handle);
+        fprintf(handle, "%s", ";\n");
     }
 }
 
@@ -700,7 +719,11 @@ int code_printer(ast_node* ast, int pru_id, int test)
             case AST_NODE_ASSIGNMENT:
                 ast_assignment_printer(((ast_node_statements*)temp)->child_nodes.assignment, handle);
                 break;
-            
+
+            case AST_NODE_CONDITIONAL_OPERATOR:
+                ast_conditional_operator_printer(((ast_node_statements*)temp)->child_nodes.conditional_operator, handle); 
+                break;
+
             case AST_NODE_ARRAY_ASSIGNMENT:
                 ast_array_assignment_printer(((ast_node_statements*)temp)->child_nodes.array_assignment, handle);
                 break;

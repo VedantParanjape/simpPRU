@@ -63,6 +63,7 @@ io                   ("digital_read"|"digital_write"|"delay"|"pwm"|"start_counte
 print                ("print"|"println")
 identifier           ([a-zA-Z_][a-zA-Z0-9_]*)
 terminal             ([;])
+question             ([?])
 separator            ([:])
 comma                ([,])
 %%
@@ -494,6 +495,10 @@ comma                ([,])
   }
 
   return IDENTIFIER;
+}
+
+{question}              {
+  return QUESTION;
 }
 
 {terminal}              {
