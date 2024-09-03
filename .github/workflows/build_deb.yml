@@ -50,13 +50,13 @@ jobs:
         steps:
             - name: Download artifacts amd64
               id: amd64-artifact-download
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v4.1.7
               with:
                 name: amd64-package
                 path: .
             - name: Download artifacts arm32
               id: arm32-artifact-download
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v4.1.7
               with:
                 name: arm32-package
                 path: .
